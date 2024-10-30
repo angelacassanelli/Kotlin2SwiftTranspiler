@@ -1,2 +1,2 @@
 # Kotlin2SwiftTranspiler
-Transpiler Kotlin to Swift
+Kotlin to Swift Transpiler
