@@ -9,6 +9,12 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     converting them into their corresponding Swift representations.
     """
 
+    kotlin2swiftTypes = {
+        "String": "String",
+        "Int": "Int",
+        "Boolean": "Bool"
+    }
+
     def visitProgram(self, ctx):
         print(f"Visiting program: {ctx.getText()}")
         # Ensure to return a string even if ctx.statement() is empty
@@ -38,16 +44,21 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     def visitVarDeclaration(self, ctx):
         print(f"Visiting var declaration: {ctx.getText()}")
         var_name = ctx.IDENTIFIER().getText()
-        var_type = ctx.type_().getText() if ctx.type_() else "Any"  # Optional type
-        var_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"  # Optional initialization
+        var_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
+        var_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"
         return f"var {var_name}: {var_type} = {var_value}"
 
     def visitValDeclaration(self, ctx):
         print(f"Visiting val declaration: {ctx.getText()}")
         val_name = ctx.IDENTIFIER().getText()
-        val_type = ctx.type_().getText() if ctx.type_() else "Any"  # Optional type
-        val_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"  # Optional initialization
+        val_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
+        val_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"
         return f"let {val_name}: {val_type} = {val_value}"
+
+    def visitType(self, ctx): 
+        kotlin_type = ctx.getText()  
+        swift_type = self.kotlin2swiftTypes.get(kotlin_type, kotlin_type)  
+        return swift_type
 
     def visitIfStatement(self, ctx):
         print(f"Visiting if statement: {ctx.getText()}")

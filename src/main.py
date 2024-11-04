@@ -18,6 +18,9 @@ def main():
     
     val str: String = "stringa"
     val num: Int = 1
+
+    val b: Boolean = true
+    val b: Boolean = true
     
     val line = readLine()
     println("Hello, world!") 
