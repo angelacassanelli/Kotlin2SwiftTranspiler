@@ -12,8 +12,15 @@ def main():
     prints the generated Swift code or an error message.
     """
         
-    kotlin_code = """
-    println("Hello, World")
+    kotlin_code = """ 
+    val input = readline()
+    println("Hello, world!") 
+    for (i in 1..5) {
+        println("for instruction") 
+    }      
+    if(true) {
+        println("if instruction") 
+    } 
     """
     
     tree = parseKotlinCode(kotlin_code)
@@ -29,7 +36,7 @@ def main():
     if swift_code is None or swift_code.strip() == "":
         print("Oops! No Swift code generated.")
     else:
-        print(swift_code)
+        print(f"Swift code generated:\n{swift_code}")
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     def visitIfStatement(self, ctx):
         print(f"Visiting if statement: {ctx.getText()}")
         condition = self.visitExpression(ctx.expression())
-        body = self.visitBlock(ctx.block())
+        body = self.visitBlock(ctx.block()[0])
         return f"if ({condition}):\n{body}"
 
     def visitForStatement(self, ctx):
@@ -41,7 +41,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         start = self.visitExpression(ctx.expression(0))  # start expression
         end = self.visitExpression(ctx.expression(1))    # end expression
         body = self.visitBlock(ctx.block())
-        return f"for {identifier} in range({start}, {end + 1}):\n{body}"
+        return f"for {identifier} in range({start}, {end}):\n{body}"
 
     def visitPrintStatement(self, ctx):
         print(f"Visiting print statement: {ctx.getText()}")
@@ -60,9 +60,11 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         return f"class {class_name}:\n{body}"
 
     def visitBlock(self, ctx):
-        print(f"Visiting block: {ctx.getText()}")
+        print(f"Visiting block: {ctx.getText()}")        
+        for stmt in ctx.statement():
+            print(stmt.getText()) 
         statements = [self.visitStatement(stmt) for stmt in ctx.statement()]
-        return "\n".join(filter(None, statements))  # Filter out None values
+        return "\n".join(filter(None, statements)) 
 
     def visitExpression(self, ctx):
         print(f"Visiting expression: {ctx.getText()}")
