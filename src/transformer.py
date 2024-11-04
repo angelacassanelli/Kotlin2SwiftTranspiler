@@ -17,7 +17,11 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
 
     def visitStatement(self, ctx):
         print(f"Visiting statement: {ctx.getText()}")
-        if ctx.ifStatement():
+        if ctx.varDeclaration(): 
+            return self.visitVarDeclaration(ctx.varDeclaration())
+        elif ctx.valDeclaration(): 
+            return self.visitValDeclaration(ctx.valDeclaration())
+        elif ctx.ifStatement():
             return self.visitIfStatement(ctx.ifStatement())
         elif ctx.forStatement():
             return self.visitForStatement(ctx.forStatement())
@@ -27,7 +31,23 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
             return self.visitReadStatement(ctx.readStatement())
         elif ctx.classDeclaration():
             return self.visitClassDeclaration(ctx.classDeclaration())
-        return ""  # Return an empty string if no branch is activated
+        else: 
+            print(f"Unrecognized statement: {ctx.getText()}")
+            return ""  # Return an empty string if no branch is activated
+        
+    def visitVarDeclaration(self, ctx):
+        print(f"Visiting var declaration: {ctx.getText()}")
+        var_name = ctx.IDENTIFIER().getText()
+        var_type = ctx.type_().getText() if ctx.type_() else "Any"  # Optional type
+        var_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"  # Optional initialization
+        return f"var {var_name}: {var_type} = {var_value}"
+
+    def visitValDeclaration(self, ctx):
+        print(f"Visiting val declaration: {ctx.getText()}")
+        val_name = ctx.IDENTIFIER().getText()
+        val_type = ctx.type_().getText() if ctx.type_() else "Any"  # Optional type
+        val_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"  # Optional initialization
+        return f"let {val_name}: {val_type} = {val_value}"
 
     def visitIfStatement(self, ctx):
         print(f"Visiting if statement: {ctx.getText()}")
@@ -77,7 +97,9 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
             op = ctx.children[1].getText()  # Operator
             right = self.visitExpression(ctx.expression(1))
             return f"{left} {op} {right}"
-        return ""  # Return an empty string if it doesn't match any case
+        else:
+            print(f"Unrecognized expression format: {ctx.getText()}")
+            return ""  # Fallback for unrecognized expression
 
     def visitLiteral(self, ctx):
         print(f"Visiting literal: {ctx.getText()}")

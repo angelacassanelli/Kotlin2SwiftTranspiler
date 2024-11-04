@@ -7,11 +7,21 @@ program
     ;
 
 statement
-    : ifStatement
+    : varDeclaration
+    | valDeclaration
+    | ifStatement
     | forStatement
     | printStatement
     | readStatement
     | classDeclaration
+    ;
+
+varDeclaration
+    : 'var' IDENTIFIER (':' type)? ('=' expression)? ';'?
+    ;
+
+valDeclaration
+    : 'val' IDENTIFIER (':' type)? ('=' expression)? ';'?
     ;
 
 ifStatement
@@ -27,11 +37,7 @@ printStatement
     ;
 
 readStatement
-    : IDENTIFIER '=' 'readline' '(' ')' ';'?
-    ;
-
-classDeclaration
-    : 'class' IDENTIFIER '(' parameterList? ')' '{' classBody '}'
+    : ('var' | 'val')? IDENTIFIER '=' 'readLine' '(' ')' ';'?
     ;
 
 parameterList
@@ -39,19 +45,19 @@ parameterList
     ;
 
 parameter
-    : 'val' IDENTIFIER ':' type
+    : IDENTIFIER ':' type
+    ;
+
+functionDeclaration
+    : 'fun' IDENTIFIER '(' parameterList? ')' block
     ;
 
 classBody
     : (varDeclaration | functionDeclaration)*
     ;
 
-varDeclaration
-    : 'var' IDENTIFIER ':' type
-    ;
-
-functionDeclaration
-    : 'fun' IDENTIFIER '(' parameterList? ')' block
+classDeclaration
+    : 'class' IDENTIFIER '(' parameterList? ')' '{' classBody '}'
     ;
 
 block
@@ -62,7 +68,7 @@ block
 expression
     : literal                                        
     | IDENTIFIER     
-    | expression ('+' | '-' | '*' | '/') expression
+    | expression ('+' | '-' | '*' | '/' | '==') expression
     | '(' expression ')'
     ;
 

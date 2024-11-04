@@ -13,12 +13,20 @@ def main():
     """
         
     kotlin_code = """ 
-    val input = readline()
+    var str: String = "stringa"
+    var num: Int = 1
+    
+    val str: String = "stringa"
+    val num: Int = 1
+    
+    val line = readLine()
     println("Hello, world!") 
+
     for (i in 1..5) {
         println("for instruction") 
     }      
-    if(true) {
+    
+    if(1==1) {
         println("if instruction") 
     } 
     """
@@ -34,9 +42,9 @@ def main():
     swift_code = transformer.visitProgram(tree)
     
     if swift_code is None or swift_code.strip() == "":
-        print("Oops! No Swift code generated.")
+        print("\nOops! No Swift code generated.")
     else:
-        print(f"Swift code generated:\n{swift_code}")
+        print(f"\nSwift code generated:\n{swift_code}")
 
 
 if __name__ == "__main__":
