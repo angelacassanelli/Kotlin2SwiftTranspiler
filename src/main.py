@@ -4,12 +4,11 @@ from transformer import KotlinToSwiftTransformer
 def main():
     """
     Entry point of the program: 
-    this function defines a sample Kotlin code snippet, 
-    calls the parseKotlinCode function to generate the parse tree, 
-    creates an instance of the KotlinToSwiftTransformer class 
-    which is used to visit the parse tree,
-    then generates the corresponding Swift code and, finally, 
-    prints the generated Swift code or an error message.
+    - Defines a sample Kotlin code snippet.
+    - Parses the Kotlin code snippet by calling the parseKotlinCode function to generate a parse tree.
+    - Instantiates the KotlinToSwiftTransformer class to traverse the parse tree.
+    - Generates the corresponding Swift code by visiting the parse tree.
+    - Prints the generated Swift code or an error message if parsing or transformation fails.
     """
         
     kotlin_code = """ 
