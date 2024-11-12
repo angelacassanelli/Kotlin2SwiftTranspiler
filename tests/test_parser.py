@@ -19,12 +19,32 @@ def generate_swift_from_kotlin(kotlin_code):
 
 
 class TestKotlinToSwiftTransformer(unittest.TestCase):
-    def test_variable_declarations(self):
+    def test_variable_string_declarations(self):
+        kotlin_code = 'var s: String = true'
+        expected_swift = 'var s: String = true'
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    
+    def test_variable_int_declarations(self):
+        kotlin_code = 'var i: Int = true'
+        expected_swift = 'var i: Int = true'
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    
+    def test_variable_boolean_declarations(self):
         kotlin_code = 'var b: Boolean = true'
         expected_swift = 'var b: Bool = true'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
-    def test_constant_declarations(self):
+    def test_constant_string_declarations(self):
+        kotlin_code = 'val s: String = true'
+        expected_swift = 'let s: String = true'
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+        
+    def test_constant_int_declarations(self):
+        kotlin_code = 'var i: Int = true'
+        expected_swift = 'var i: Int = true'
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+
+    def test_constant_boolean_declarations(self):
         kotlin_code = 'val b: Boolean = true'
         expected_swift = 'let b: Bool = true'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
@@ -41,19 +61,28 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     def test_if_statement(self):
         kotlin_code = """
-        if (1 == 1) { println("if instruction") }
+        if (1 > 2) { println("if instruction") }
         """
         expected_swift = """
-        if 1 == 1 { print("if instruction") }
+        if 1 > 2 { print("if instruction") }
+        """.strip()
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    
+    def test_if_statement(self):
+        kotlin_code = """
+        if (true) { println("if instruction") }
+        """
+        expected_swift = """
+        if true { print("if instruction") }
         """.strip()
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_if_else_statement(self):
         kotlin_code = """
-        if (1 == 1) { println("if instruction") } else { println("else instruction") }
+        if (1 <= 2) { println("if instruction") } else { println("else instruction") }
         """
         expected_swift = """
-        if 1 == 1 { print("if instruction") } else { print("else instruction") }
+        if 1 <= 2 { print("if instruction") } else { print("else instruction") }
         """.strip()
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 

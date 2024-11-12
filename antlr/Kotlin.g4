@@ -85,7 +85,7 @@ block
 expression
     : literal                                        
     | IDENTIFIER     
-    | expression ('+' | '-' | '*' | '/' | '==') expression
+    | expression ('+' | '-' | '*' | '/' | '==' | '>' | '>=' | '<' | '<=') expression
     | '(' expression ')'
     ;
 

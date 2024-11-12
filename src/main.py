@@ -10,14 +10,20 @@ def main():
     - Generates the corresponding Swift code by visiting the parse tree.
     - Prints the generated Swift code or an error message if parsing or transformation fails.
     """
+
+    kotlin_code_file = "tests/kotlin_code"
+
+    try:
+        # Open and read the contents of the file
+        with open(kotlin_code_file, 'r') as file:
+            kotlin_code = file.read()
         
-    kotlin_code = """     
-    if(1==1) {
-        println("if instruction") 
-    } else {
-        println("else instruction")
-    }
-    """
+    except FileNotFoundError:
+        print(f"Error: The file {kotlin_code_file} was not found.")
+        return
+    except Exception as e:
+        print(f"Error reading the file: {e}")
+        return
     
     tree = parseKotlinCode(kotlin_code)
     

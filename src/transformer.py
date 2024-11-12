@@ -70,7 +70,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         # Then, it checks if the second-to-last child is the 'else' keyword by comparing its text value.
         # If both conditions are true, it means an 'else' block exists, and we can process it.
         print(f"Visiting if statement: {ctx.getText()}")
-        condition = self.visitExpression(ctx.expression(0))
+        condition = self.visitExpression(ctx.expression())
         body = self.visitBlock(ctx.block()[0]) 
         if len(ctx.children) > 4 and ctx.children[-2].getText() == 'else':
             else_body = self.visitBlock(ctx.block()[-1])            
