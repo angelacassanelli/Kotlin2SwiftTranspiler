@@ -11,26 +11,12 @@ def main():
     - Prints the generated Swift code or an error message if parsing or transformation fails.
     """
         
-    kotlin_code = """ 
-    var str: String = "stringa"
-    var num: Int = 1
-    
-    val str: String = "stringa"
-    val num: Int = 1
-
-    val b: Boolean = true
-    val b: Boolean = true
-    
-    val line = readLine()
-    println("Hello, world!") 
-
-    for (i in 1..5) {
-        println("for instruction") 
-    }      
-    
+    kotlin_code = """     
     if(1==1) {
         println("if instruction") 
-    } 
+    } else {
+        println("else instruction")
+    }
     """
     
     tree = parseKotlinCode(kotlin_code)

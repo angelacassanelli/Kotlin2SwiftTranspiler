@@ -64,11 +64,18 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         return swift_type
 
     def visitIfStatement(self, ctx):
-        """Converts a Kotlin if statement to Swift, including condition and body."""
+        """Converts a Kotlin if-else-if statement to Swift, with else and else-if being optional."""
+        # This checks if the 'if' statement has an 'else' block.
+        # First, it ensures that the number of children in the 'if' statement is greater than 4, which indicates the presence of an 'else' block.
+        # Then, it checks if the second-to-last child is the 'else' keyword by comparing its text value.
+        # If both conditions are true, it means an 'else' block exists, and we can process it.
         print(f"Visiting if statement: {ctx.getText()}")
-        condition = self.visitExpression(ctx.expression())
-        body = self.visitBlock(ctx.block()[0])
-        return f"if ({condition}):\n{body}"
+        condition = self.visitExpression(ctx.expression(0))
+        body = self.visitBlock(ctx.block()[0]) 
+        if len(ctx.children) > 4 and ctx.children[-2].getText() == 'else':
+            else_body = self.visitBlock(ctx.block()[-1])            
+            return f"if {condition} {{ {body} }} else {{ {else_body} }}"
+        return f"if {condition} {{ {body} }}"
 
     def visitForStatement(self, ctx):
         """Converts a Kotlin for loop with a range to a Swift-compatible loop."""
@@ -77,7 +84,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         start = self.visitExpression(ctx.expression(0))  # start expression
         end = self.visitExpression(ctx.expression(1))    # end expression
         body = self.visitBlock(ctx.block())
-        return f"for {identifier} in range({start}, {end}):\n{body}"
+        return f"for {identifier} in {start}...{end} {{ {body} }}"
 
     def visitPrintStatement(self, ctx):
         """Transforms a Kotlin print statement to a Swift print statement."""
@@ -89,7 +96,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         """Converts a Kotlin readLine statement to Swift, supporting optional var/val keyword."""
         print(f"Visiting read statement: {ctx.getText()}")
         identifier = ctx.IDENTIFIER().getText()
-        return f"{identifier} = input()"
+        return f"{identifier} = readLine()"
 
     def visitClassDeclaration(self, ctx):
         """Transforms a Kotlin class declaration to Swift, handling class name and body."""

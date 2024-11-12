@@ -33,7 +33,7 @@ valDeclaration
 
 // Parses conditional 'if' statements with an optional 'else' block.
 ifStatement
-    : 'if' '(' expression ')' block ('else' block)?
+    : 'if' '(' expression ')' block ( 'else' block )? 
     ;
 
 // Parses 'for' loops with a specified range, from start to end expression.
