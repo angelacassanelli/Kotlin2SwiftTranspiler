@@ -95,6 +95,29 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         """.strip()
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
+    def test_class_declaration(self):
+        kotlin_code = """
+        class Person(val name: String, var age: Int) {
+            fun greet() {
+                println("Hello, World!")
+            }
+        }"""
+        expected_swift = """
+        class Person {
+            var name: String
+            var age: Int
+
+            init(name: String, age: Int) {
+                self.name = name
+                self.age = age
+            }
+            
+            func greet() {
+                print("Hello, World!")
+            }
+        }
+        """
+
 
 if __name__ == "__main__":
     unittest.main()

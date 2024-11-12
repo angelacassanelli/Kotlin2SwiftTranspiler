@@ -63,7 +63,7 @@ parameter
 
 // Parses function declarations, including an optional parameter list and function body.
 functionDeclaration
-    : 'fun' IDENTIFIER '(' parameterList? ')' block
+    : 'fun' IDENTIFIER '(' parameterList? ')' (':' type)? block
     ;
 
 // Parses the body of a class, which may contain variable declarations or functions.
@@ -78,7 +78,7 @@ classDeclaration
 
 // Parses a code block, which can contain multiple statements enclosed in curly braces.
 block
-    : '{' statement* '}'
+    : '{' (statement | functionDeclaration)* '}'
     ;
 
 // Parses expressions, including literals, identifiers, binary operations, and nested expressions.

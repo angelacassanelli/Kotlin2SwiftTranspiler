@@ -102,8 +102,50 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         """Transforms a Kotlin class declaration to Swift, handling class name and body."""
         print(f"Visiting declaration: {ctx.getText()}")
         class_name = ctx.IDENTIFIER().getText()
-        body = self.visit(ctx.classBody())
-        return f"class {class_name}:\n{body}"
+        constructor_params = ctx.parameterList()
+        if constructor_params:
+            params = [self.visitParameter(param) for param in constructor_params.parameter()]
+            constructor_params = ", ".join(params)
+            attributes_declarations = "\n".join([f"var {param.split(':')[0].strip()}: {param.split(':')[1].strip()}" for param in params])
+            attributes_assignments = "\n".join([f"self.{param.split(':')[0].strip()} = {param.split(':')[0].strip()}" for param in params])
+            constructor = f"init({constructor_params}) {{\n{attributes_assignments}\n}}"
+        else:
+            attributes_declarations = ""
+            constructor = "init()"
+        body = self.visitClassBody(ctx.classBody())        
+        return f"class {class_name} {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
+    
+    def visitClassBody(self, ctx):
+        """Visits the body of a class, converting variables and fuctions."""
+        print(f"Visiting class body: {ctx.getText()}")
+        statements = []
+        
+        for stmt in ctx.getChildren():
+            if stmt.getText().startswith("fun"):
+                statements.append(self.visitFunctionDeclaration(stmt))
+            else:
+                statements.append(self.visitStatement(stmt))
+        
+        return "\n".join(statements)
+
+    def visitFunctionDeclaration(self, ctx):
+        """Visits and transforms a Kotlin function declaration into a Swift function declaration."""
+        print(f"Visiting function declaration: {ctx.getText()}")
+        func_name = ctx.IDENTIFIER().getText()
+        parameters = self.visitParameterList(ctx.parameterList()) if ctx.parameterList() else ""
+        return_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
+        body = self.visitBlock(ctx.block())
+        return f"func {func_name}({parameters}): {return_type} {{ {body} }}"
+    
+    def visitParameterList(self, ctx):
+        """Visits and converts a list of Kotlin parameters into a list of Swift parameters."""
+        return ", ".join([self.visitParameter(param) for param in ctx.parameter()])
+    
+    def visitParameter(self, ctx):
+        """Visits a parameter and converts it to Swift."""
+        param_name = ctx.IDENTIFIER().getText()
+        param_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
+        return f"{param_name}: {param_type}"
 
     def visitBlock(self, ctx):
         """Visits a block of statements, joining them with newlines."""

@@ -1,13 +1,5 @@
-val number = 10
-
-if (number > 5) {
-    println("Number is greater than 5")
-} else {
-    println("Number is less than or equal to 5")
-}
-
-if (number == 10) {
-    println("Number is exactly 10")
-} else {
-    println("Number is not 10")
+class Person(val name: String, var age: Int) {
+    fun greet() {
+        println("Hello, World!")
+    }
 }
