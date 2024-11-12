@@ -97,9 +97,39 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     def test_class_declaration(self):
         kotlin_code = """
+        class Example {
+            var a: Int = 10
+            var b: Int = 100
+
+            fun isAGreaterThanB(): Boolean {
+                if (a > b) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+        """
+        expected_swift = """
+        class Example {
+            var a: Int = 0
+            var b: Int = 0
+
+            func isAGreaterThanB() -> Bool {
+                if a > b {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+        """
+        
+    def test_class_with_params_declaration(self):
+        kotlin_code = """
         class Person(val name: String, var age: Int) {
             fun greet() {
-                println("Hello, World!")
+                println("Hello!")
             }
         }"""
         expected_swift = """
@@ -113,7 +143,7 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
             }
             
             func greet() {
-                print("Hello, World!")
+                print("Hello!")
             }
         }
         """
