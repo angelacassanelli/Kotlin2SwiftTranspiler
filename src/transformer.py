@@ -143,13 +143,17 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         """Transforms a Kotlin class declaration to Swift, handling class name and body."""
         print(f"Visiting declaration: {ctx.getText()}")
         class_name = self.visitIdentifier(ctx.IDENTIFIER())
-        body = self.visitClassBody(ctx.classBody()) 
-        constructor_params = ctx.parameterList()
-        if constructor_params:
-            params = [self.visitParameter(param) for param in constructor_params.parameter()]
-            constructor_params = ", ".join(params)            
-            attributes_declarations = "\n".join([f"var {param.split(':')[0].strip()}: {param.split(':')[1].split('=')[0].strip()}" for param in params])        
-            attributes_assignments = "\n".join([f"self.{param.split(':')[0].strip()} = {param.split(':')[0].strip()}" for param in params])
+        body = self.visitClassBody(ctx.classBody())
+        if ctx.parameterList():
+            constructor_params = self.visitParameterList(ctx.parameterList())
+            attributes_declarations = "\n".join([
+                f"var {param.split(':')[0].strip()}: {param.split(':')[1].strip().split('=')[0]}"
+                for param in constructor_params.split(", ")
+            ])
+            attributes_assignments = "\n".join([
+                f"self.{param.split(':')[0].strip()} = {param.split(':')[0].strip()}"
+                for param in constructor_params.split(", ")
+            ])
             constructor = f"init({constructor_params}) {{\n{attributes_assignments}\n}}"
             return f"class {class_name}() {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
         return f"class {class_name}() {{\n{body}\n}}"
