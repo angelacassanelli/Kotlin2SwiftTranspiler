@@ -12,23 +12,36 @@ program
 // Specifies different types of statements, including variable and constant declarations, 
 // conditional statements, loops, print and read statements, and class declarations.
 statement
-    : varDeclaration
+    : classDeclaration
+    | functionDeclaration    
+    | varDeclaration
     | valDeclaration
+    | assignmentStatement
+    | returnStatement
     | ifStatement
     | forStatement
     | printStatement
     | readStatement
-    | classDeclaration
+    ;
+
+// Return statement rule: 'return' followed by an optional expression and optional semicolon.
+returnStatement
+    : 'return' expression
     ;
 
 // Parses variable declarations using 'var' with an optional type and initial value.
-varDeclaration
-    : 'var' IDENTIFIER (':' type)? ('=' expression)? ';'?
+varDeclaration    
+    : 'var' IDENTIFIER (':' type)? '=' expression
     ;
 
 // Parses constant declarations using 'val' with an optional type and initial value.
 valDeclaration
-    : 'val' IDENTIFIER (':' type)? ('=' expression)? ';'?
+    : 'val' IDENTIFIER (':' type)? '=' expression    
+    ;
+
+// Parses variable and constants assignment.
+assignmentStatement
+    : IDENTIFIER '=' expression
     ;
 
 // Parses conditional 'if' statements with an optional 'else' block.
@@ -43,12 +56,12 @@ forStatement
 
 // Parses print statements that print an expression to the output.
 printStatement
-    : 'println' '(' expression ')' ';'?
+    : 'println' '(' expression ')'
     ;
 
 // Parses statements for reading input, optionally assigning it to a variable.
 readStatement
-    : ('var' | 'val')? IDENTIFIER '=' 'readLine' '(' ')' ';'?
+    : ('var' | 'val')? IDENTIFIER '=' 'readLine' '(' ')' 
     ;
 
 // Parses a list of parameters separated by commas, for use in functions.
@@ -58,7 +71,7 @@ parameterList
 
 // Parses a single parameter with an identifier and type.
 parameter
-    : IDENTIFIER ':' type
+    : IDENTIFIER ':' type ('=' literal)?
     ;
 
 // Parses function declarations, including an optional parameter list and function body.
@@ -105,7 +118,7 @@ type
 
 // Defines identifiers, which can start with a letter or underscore, followed by alphanumeric characters.
 IDENTIFIER
-    : [a-zA-Z_] [a-zA-Z_0-9]*
+    : [a-zA-Z_] [a-zA-Z_0-9]* 
     ;
 
 // Defines integer literals, which are sequences of digits.

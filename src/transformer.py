@@ -1,4 +1,7 @@
 from antlr4 import *
+from generated.antlr.KotlinParser import KotlinParser
+
+reserved_keywords = {"Boolean", "Int", "String", "class", "else", "for", "fun", "if", "return", "val", "var", "true", "false"}
 
 class KotlinToSwiftTransformer(ParseTreeVisitor):
     """Transforms Kotlin code into Swift code: this class extends the ParseTreeVisitor class 
@@ -27,35 +30,73 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
             return self.visitVarDeclaration(ctx.varDeclaration())
         elif ctx.valDeclaration(): 
             return self.visitValDeclaration(ctx.valDeclaration())
-        elif ctx.ifStatement():
-            return self.visitIfStatement(ctx.ifStatement())
-        elif ctx.forStatement():
-            return self.visitForStatement(ctx.forStatement())
+        elif ctx.assignmentStatement():
+            return self.visitAssignment(ctx.assignmentStatement())
         elif ctx.printStatement():
             return self.visitPrintStatement(ctx.printStatement())
         elif ctx.readStatement():
             return self.visitReadStatement(ctx.readStatement())
+        elif ctx.returnStatement():
+            return self.visitReturnStatement(ctx.returnStatement())
+        elif ctx.ifStatement():
+            return self.visitIfStatement(ctx.ifStatement())
+        elif ctx.forStatement():
+            return self.visitForStatement(ctx.forStatement())
+        elif ctx.functionDeclaration():
+            return self.visitFunctionDeclaration(ctx.functionDeclaration())
         elif ctx.classDeclaration():
             return self.visitClassDeclaration(ctx.classDeclaration())
         else: 
             print(f"Unrecognized statement: {ctx.getText()}")
             return ""
+        
+    def visitAssignment(self, ctx):
+        """Converts Kotlin variable assignment to Swift"""
+        var_name = self.visitIdentifier(ctx.IDENTIFIER())
+        var_value = self.visitExpression(ctx.expression())
+        return f"{var_name} = {var_value}"
 
+    def visitReturnStatement(self, ctx):
+        """Visits a 'return' statement."""
+        print(f"Visiting return statement: {ctx.getText()}")            
+        if ctx.expression():
+            expression = self.visitExpression(ctx.expression())
+            return f"return {expression}"
+        return "return"
+
+    def visitIdentifier(self, ctx):
+        """Checks if the identifier is a reserved keyword and raises an error if so."""
+        print(f"Visiting identifier: {ctx.getText()}")
+        identifier_name = ctx.getText()
+        if identifier_name is reserved_keywords:
+            raise ValueError(f"Error: '{identifier_name}' is a reserved keyword and cannot be used as an identifier.")
+        return identifier_name
+    
     def visitVarDeclaration(self, ctx):
         """Converts a Kotlin 'var' declaration to Swift, handling type and optional initialization."""
         print(f"Visiting var declaration: {ctx.getText()}")
-        var_name = ctx.IDENTIFIER().getText()
-        var_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
-        var_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"
-        return f"var {var_name}: {var_type} = {var_value}"
+        var_name = self.visitIdentifier(ctx.IDENTIFIER())
+        var_type = self.visitType(ctx.type_()) if ctx.type_() else None
+        var_value = self.visitExpression(ctx.expression()) if ctx.expression() else None
+        declaration = f"var {var_name}"
+        if var_type:
+            declaration += f": {var_type}"
+        if var_value:
+            declaration += f" = {var_value}"
+        return declaration
 
     def visitValDeclaration(self, ctx):
         """Converts a Kotlin 'val' declaration to Swift, handling type and optional initialization."""
         print(f"Visiting val declaration: {ctx.getText()}")
-        val_name = ctx.IDENTIFIER().getText()
-        val_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
-        val_value = self.visitExpression(ctx.expression()) if ctx.expression() else "nil"
-        return f"let {val_name}: {val_type} = {val_value}"
+        val_name = self.visitIdentifier(ctx.IDENTIFIER())
+        val_type = self.visitType(ctx.type_()) if ctx.type_() else None
+        val_value = self.visitExpression(ctx.expression()) if ctx.expression() else None
+        declaration = f"let {val_name}"
+        if val_type:
+            declaration += f": {val_type}"
+        if val_value:
+            declaration += f" = {val_value}"
+        return declaration
 
     def visitType(self, ctx): 
         """Maps a Kotlin type to its Swift equivalent, defaulting to the original type if unmapped."""
@@ -80,7 +121,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     def visitForStatement(self, ctx):
         """Converts a Kotlin for loop with a range to a Swift-compatible loop."""
         print(f"Visiting for statement: {ctx.getText()}")
-        identifier = ctx.IDENTIFIER().getText()
+        identifier = self.visitIdentifier(ctx.IDENTIFIER())
         start = self.visitExpression(ctx.expression(0))  # start expression
         end = self.visitExpression(ctx.expression(1))    # end expression
         body = self.visitBlock(ctx.block())
@@ -95,47 +136,48 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     def visitReadStatement(self, ctx):
         """Converts a Kotlin readLine statement to Swift, supporting optional var/val keyword."""
         print(f"Visiting read statement: {ctx.getText()}")
-        identifier = ctx.IDENTIFIER().getText()
+        identifier = self.visitIdentifier(ctx.IDENTIFIER())
         return f"{identifier} = readLine()"
 
     def visitClassDeclaration(self, ctx):
         """Transforms a Kotlin class declaration to Swift, handling class name and body."""
         print(f"Visiting declaration: {ctx.getText()}")
-        class_name = ctx.IDENTIFIER().getText()
+        class_name = self.visitIdentifier(ctx.IDENTIFIER())
+        body = self.visitClassBody(ctx.classBody()) 
         constructor_params = ctx.parameterList()
         if constructor_params:
             params = [self.visitParameter(param) for param in constructor_params.parameter()]
-            constructor_params = ", ".join(params)
-            attributes_declarations = "\n".join([f"var {param.split(':')[0].strip()}: {param.split(':')[1].strip()}" for param in params])
+            constructor_params = ", ".join(params)            
+            attributes_declarations = "\n".join([f"var {param.split(':')[0].strip()}: {param.split(':')[1].split('=')[0].strip()}" for param in params])        
             attributes_assignments = "\n".join([f"self.{param.split(':')[0].strip()} = {param.split(':')[0].strip()}" for param in params])
             constructor = f"init({constructor_params}) {{\n{attributes_assignments}\n}}"
-        else:
-            attributes_declarations = ""
-            constructor = "init()"
-        body = self.visitClassBody(ctx.classBody())        
-        return f"class {class_name} {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
+            return f"class {class_name}() {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
+        return f"class {class_name}() {{\n{body}\n}}"
     
     def visitClassBody(self, ctx):
-        """Visits the body of a class, converting variables and fuctions."""
+        """Visits the body of a class and processes each statement."""
         print(f"Visiting class body: {ctx.getText()}")
         statements = []
-        
-        for stmt in ctx.getChildren():
-            if stmt.getText().startswith("fun"):
-                statements.append(self.visitFunctionDeclaration(stmt))
-            else:
-                statements.append(self.visitStatement(stmt))
-        
-        return "\n".join(statements)
+        if ctx.children:
+            for stmt in ctx.children:
+                if isinstance(stmt, KotlinParser.VarDeclarationContext):
+                    statements.append(self.visitVarDeclaration(stmt))
+                elif isinstance(stmt, KotlinParser.FunctionDeclarationContext):
+                    statements.append(self.visitFunctionDeclaration(stmt))
+                else:
+                    statements.append(self.visitStatement(stmt))
+        return "\n".join(filter(None, statements))
 
     def visitFunctionDeclaration(self, ctx):
         """Visits and transforms a Kotlin function declaration into a Swift function declaration."""
         print(f"Visiting function declaration: {ctx.getText()}")
-        func_name = ctx.IDENTIFIER().getText()
+        func_name = self.visitIdentifier(ctx.IDENTIFIER())
         parameters = self.visitParameterList(ctx.parameterList()) if ctx.parameterList() else ""
-        return_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
         body = self.visitBlock(ctx.block())
-        return f"func {func_name}({parameters}): {return_type} {{ {body} }}"
+        if ctx.type_():
+            return_type = self.visitType(ctx.type_()) 
+            return f"func {func_name}({parameters}) -> {return_type} {{ {body} }}"
+        return f"func {func_name}({parameters}) {{ {body} }}"
     
     def visitParameterList(self, ctx):
         """Visits and converts a list of Kotlin parameters into a list of Swift parameters."""
@@ -143,8 +185,11 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     
     def visitParameter(self, ctx):
         """Visits a parameter and converts it to Swift."""
-        param_name = ctx.IDENTIFIER().getText()
-        param_type = self.visitType(ctx.type_()) if ctx.type_() else "Any"
+        param_name = self.visitIdentifier(ctx.IDENTIFIER())
+        param_type = self.visitType(ctx.type_()) 
+        if (ctx.literal()):
+            param_value = self.visitLiteral(ctx.literal()) 
+            return f"{param_name}: {param_type} = {param_value}"
         return f"{param_name}: {param_type}"
 
     def visitBlock(self, ctx):
@@ -161,7 +206,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         if ctx.literal():
             return self.visitLiteral(ctx.literal())
         elif ctx.IDENTIFIER():
-            return ctx.IDENTIFIER().getText()
+            return self.visitIdentifier(ctx.IDENTIFIER())
         elif len(ctx.children) == 3:  # Binary operation
             left = self.visitExpression(ctx.expression(0))
             op = ctx.children[1].getText()  # Operator

@@ -26,6 +26,15 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by KotlinParser#returnStatement.
+    def enterReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#returnStatement.
+    def exitReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
+        pass
+
+
     # Enter a parse tree produced by KotlinParser#varDeclaration.
     def enterVarDeclaration(self, ctx:KotlinParser.VarDeclarationContext):
         pass
@@ -41,6 +50,15 @@ class KotlinListener(ParseTreeListener):
 
     # Exit a parse tree produced by KotlinParser#valDeclaration.
     def exitValDeclaration(self, ctx:KotlinParser.ValDeclarationContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#assignmentStatement.
+    def enterAssignmentStatement(self, ctx:KotlinParser.AssignmentStatementContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#assignmentStatement.
+    def exitAssignmentStatement(self, ctx:KotlinParser.AssignmentStatementContext):
         pass
 
 
