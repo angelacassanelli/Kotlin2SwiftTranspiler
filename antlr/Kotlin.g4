@@ -86,19 +86,21 @@ classBody
 
 // Parses class declarations, with optional constructor parameters and a class body.
 classDeclaration
-    : 'class' IDENTIFIER '(' parameterList? ')' '{' classBody '}'
+    : 'class' IDENTIFIER ('(' parameterList? ')')? '{' classBody '}'
     ;
 
 // Parses a code block, which can contain multiple statements enclosed in curly braces.
 block
-    : '{' (statement | functionDeclaration)* '}'
+    : '{' (varDeclaration | functionDeclaration | statement)* '}'
     ;
 
 // Parses expressions, including literals, identifiers, binary operations, and nested expressions.
 expression
     : literal                                        
     | IDENTIFIER     
-    | expression ('+' | '-' | '*' | '/' | '==' | '>' | '>=' | '<' | '<=') expression
+    | ('!' | ' -') expression
+    | expression ('+' | '-' | '*' | '/' ) expression
+    | expression ('==' | '!=' | '>' | '>=' | '<' | '<=') expression
     | '(' expression ')'
     ;
 
@@ -120,6 +122,10 @@ type
 IDENTIFIER
     : [a-zA-Z_] [a-zA-Z_0-9]* 
     ;
+
+// Defines left and right arenthesis
+L_BRACKET: '(';
+R_BRACKET: ')';
 
 // Defines integer literals, which are sequences of digits.
 INT_LITERAL

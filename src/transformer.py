@@ -144,6 +144,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         print(f"Visiting declaration: {ctx.getText()}")
         class_name = self.visitIdentifier(ctx.IDENTIFIER())
         body = self.visitClassBody(ctx.classBody())
+        has_parentheses = ctx.L_BRACKET() is not None and ctx.R_BRACKET() is not None                    
         if ctx.parameterList():
             constructor_params = self.visitParameterList(ctx.parameterList())
             attributes_declarations = "\n".join([
@@ -155,8 +156,10 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
                 for param in constructor_params.split(", ")
             ])
             constructor = f"init({constructor_params}) {{\n{attributes_assignments}\n}}"
-            return f"class {class_name}() {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
-        return f"class {class_name}() {{\n{body}\n}}"
+            class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
+            return f"{class_declaration} {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
+        class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
+        return f"{class_declaration} {{\n{body}\n}}"
     
     def visitClassBody(self, ctx):
         """Visits the body of a class and processes each statement."""

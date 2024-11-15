@@ -1,1 +1,1 @@
-class Example(val name: String = "Alessia") { }
+class Example(var a: String = "a") { }

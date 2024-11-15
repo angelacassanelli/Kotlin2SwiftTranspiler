@@ -141,6 +141,11 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # Class Declaration
 
+    def test_class_without_brackets_declaration(self):
+        kotlin_code = """class Example {\n\n}"""
+        expected_swift = """class Example {\n\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+
     def test_class_with_empty_body_declaration(self):
         kotlin_code = """class Example() {\n\n}"""
         expected_swift = """class Example() {\n\n}"""
