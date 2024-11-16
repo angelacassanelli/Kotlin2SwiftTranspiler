@@ -43,14 +43,14 @@ forStatement
     : FOR LEFT_ROUND_BRACKET IDENTIFIER IN expression RANGE expression RIGHT_ROUND_BRACKET block
     ;
 
-// Read statement: reads input, optionally assigning it to a variable.
-readStatement
-    : (VAR | VAL)? IDENTIFIER EQ READLINE LEFT_ROUND_BRACKET RIGHT_ROUND_BRACKET
-    ;
-
 // Conditional 'if' statement with an optional 'else' block.
 ifStatement
     : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET block ( ELSE block )? 
+    ;
+
+// Read statement: reads input, optionally assigning it to a variable.
+readStatement
+    : (VAR | VAL)? IDENTIFIER EQ READLINE LEFT_ROUND_BRACKET RIGHT_ROUND_BRACKET
     ;
 
 // Print statement that prints an expression to the output.
