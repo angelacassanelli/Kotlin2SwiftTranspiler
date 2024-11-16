@@ -44,13 +44,13 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
     # Variable/Constant Assignment & Declarations + Data Types
     
     def test_string_variable_declarations(self): 
-        kotlin_code = 'var s: String = true'
-        expected_swift = 'var s: String = true'
+        kotlin_code = 'var s: String = "s"'
+        expected_swift = 'var s: String = "s"'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_int_variable_declarations(self):
-        kotlin_code = 'var i: Int = true'
-        expected_swift = 'var i: Int = true'
+        kotlin_code = 'var i: Int = 10'
+        expected_swift = 'var i: Int = 10'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_variable_boolean_variable_declarations(self):
@@ -59,13 +59,13 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_string_constant_declarations(self):
-        kotlin_code = 'val s: String = true'
-        expected_swift = 'let s: String = true'
+        kotlin_code = 'val s: String = "s"'
+        expected_swift = 'let s: String = "s"'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_int_constant_declarations(self):
-        kotlin_code = 'var i: Int = true'
-        expected_swift = 'var i: Int = true'
+        kotlin_code = 'var i: Int = 10'
+        expected_swift = 'var i: Int = 10'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_boolean_constant_declarations(self):

@@ -3,14 +3,12 @@ grammar Kotlin;
 
 // Parser Rules 
 
-// Defines the entry point for the program, allowing zero or more statements 
-// until the end of the file (EOF).
+// Entry point: the program consists of zero or more statements followed by EOF
 program
     : statement* EOF 
     ;
 
-// Specifies different types of statements, including variable and constant declarations, 
-// conditional statements, loops, print and read statements, and class declarations.
+// Statement rule: different types of statements like variable declarations, functions, etc.
 statement
     : classDeclaration
     | functionDeclaration    
@@ -24,125 +22,177 @@ statement
     | readStatement
     ;
 
-// Return statement rule: 'return' followed by an optional expression and optional semicolon.
-returnStatement
-    : 'return' expression
+// Variable declarations using 'var' with an optional type and initial value.
+varDeclaration        
+    : VAR IDENTIFIER (COLON type)? EQ expression
     ;
 
-// Parses variable declarations using 'var' with an optional type and initial value.
-varDeclaration    
-    : 'var' IDENTIFIER (':' type)? '=' expression
-    ;
-
-// Parses constant declarations using 'val' with an optional type and initial value.
+// Constant declarations using 'val' with an optional type and initial value.
 valDeclaration
-    : 'val' IDENTIFIER (':' type)? '=' expression    
+    : VAL IDENTIFIER (COLON type)? EQ expression    
     ;
 
-// Parses variable and constants assignment.
+// Assignment statement: variable assignment using '='.
 assignmentStatement
-    : IDENTIFIER '=' expression
+    : IDENTIFIER EQ expression
     ;
 
-// Parses conditional 'if' statements with an optional 'else' block.
-ifStatement
-    : 'if' '(' expression ')' block ( 'else' block )? 
-    ;
-
-// Parses 'for' loops with a specified range, from start to end expression.
+// 'for' loop with a specified range.
 forStatement
-    : 'for' '(' IDENTIFIER 'in' expression '..' expression ')' block
+    : FOR LEFT_ROUND_BRACKET IDENTIFIER IN expression RANGE expression RIGHT_ROUND_BRACKET block
     ;
 
-// Parses print statements that print an expression to the output.
-printStatement
-    : 'println' '(' expression ')'
-    ;
-
-// Parses statements for reading input, optionally assigning it to a variable.
+// Read statement: reads input, optionally assigning it to a variable.
 readStatement
-    : ('var' | 'val')? IDENTIFIER '=' 'readLine' '(' ')' 
+    : (VAR | VAL)? IDENTIFIER EQ READLINE LEFT_ROUND_BRACKET RIGHT_ROUND_BRACKET
     ;
 
-// Parses a list of parameters separated by commas, for use in functions.
-parameterList
-    : parameter (',' parameter)*
+// Conditional 'if' statement with an optional 'else' block.
+ifStatement
+    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET block ( ELSE block )? 
     ;
 
-// Parses a single parameter with an identifier and type.
-parameter
-    : IDENTIFIER ':' type ('=' literal)?
+// Print statement that prints an expression to the output.
+printStatement
+    : PRINTLN LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
     ;
 
-// Parses function declarations, including an optional parameter list and function body.
-functionDeclaration
-    : 'fun' IDENTIFIER '(' parameterList? ')' (':' type)? block
+// Code block, which can contain multiple statements.
+block
+    : LEFT_CURLY_BRACKET (varDeclaration | functionDeclaration | statement)* RIGHT_CURLY_BRACKET
     ;
 
-// Parses the body of a class, which may contain variable declarations or functions.
+// Expression rule: literals, identifiers, unary operators, binary operations, and parentheses.
+expression
+    : literal                                        
+    | IDENTIFIER     
+    | (NOT | MINUS) expression
+    | expression (PLUS | MINUS | MULT | DIV | MOD | EQEQ | NEQ | GT | GTE | LT | LTE | AND | OR) expression
+    | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
+    ;
+
+// Literal values, which can be integers, booleans, or strings.
+literal
+    : INT_LITERAL
+    | STRING_LITERAL
+    | booleanLiteral
+    ;
+
+// Defines recognized types.
+type
+    : TYPE_INT
+    | TYPE_STRING
+    | TYPE_BOOLEAN
+    ;
+
+// Class declarations with an optional constructor and a class body.
+classDeclaration
+    : CLASS IDENTIFIER (LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET)? LEFT_CURLY_BRACKET classBody RIGHT_CURLY_BRACKET
+    ;
+
+// Class body, can contain variable declarations or functions.
 classBody
     : (varDeclaration | functionDeclaration)*
     ;
 
-// Parses class declarations, with optional constructor parameters and a class body.
-classDeclaration
-    : 'class' IDENTIFIER ('(' parameterList? ')')? '{' classBody '}'
+// Function declarations, including parameters and a block of code.
+functionDeclaration
+    : FUN IDENTIFIER LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET (COLON type)? block
+    ;
+    
+// Return statement: 'return' followed by an optional expression.
+returnStatement
+    : RETURN expression
     ;
 
-// Parses a code block, which can contain multiple statements enclosed in curly braces.
-block
-    : '{' (varDeclaration | functionDeclaration | statement)* '}'
+// Parameter list, used in function declarations.
+parameterList
+    : parameter (COMMA parameter)*
     ;
 
-// Parses expressions, including literals, identifiers, binary operations, and nested expressions.
-expression
-    : literal                                        
-    | IDENTIFIER     
-    | ('!' | ' -') expression
-    | expression ('+' | '-' | '*' | '/' ) expression
-    | expression ('==' | '!=' | '>' | '>=' | '<' | '<=') expression
-    | '(' expression ')'
+// Single parameter with an identifier, type, and an optional initial value.
+parameter
+    : IDENTIFIER COLON type (EQ literal)?
     ;
 
-// Parses literal values, which can be integers, booleans, or strings.
-literal
-    : INT_LITERAL
-    | BOOLEAN_LITERAL
-    | STRING_LITERAL
+// Boolean literals: 'true' or 'false'.
+booleanLiteral
+    : BOOLEAN_TRUE | BOOLEAN_FALSE
     ;
+    
+// Lexer Rules: Token definitions
 
-// Defines recognized data types, including Int, Boolean, and String.
-type
-    : 'Int'
-    | 'Boolean'
-    | 'String'
-    ;
+VAR: 'var';
+VAL: 'val';
 
-// Defines identifiers, which can start with a letter or underscore, followed by alphanumeric characters.
+TYPE_INT: 'Int';
+TYPE_STRING: 'String';
+TYPE_BOOLEAN: 'Boolean';
+
+BOOLEAN_TRUE: 'true';
+BOOLEAN_FALSE: 'false';
+
+CLASS: 'class';
+FUN: 'fun';
+RETURN: 'return';
+IF: 'if';
+ELSE: 'else';
+FOR: 'for';
+IN: 'in';
+PRINTLN: 'println';
+READLINE: 'readLine';
+
+COMMA: ',';  
+SEMICOLON: ';';  
+COLON: ':';  
+DOT: '.';  
+
+LEFT_ROUND_BRACKET: '(';
+RIGHT_ROUND_BRACKET: ')';
+LEFT_CURLY_BRACKET: '{';
+RIGHT_CURLY_BRACKET: '}';
+LEFT_SQUARE_BRACKET: '[';
+RIGHT_SQUARE_BRACKET: ']';
+
+PLUS: '+';
+MINUS: '-';
+MULT: '*';
+DIV: '/';
+MOD: '%';
+
+EQ: '=';
+EQEQ: '==';
+NEQ: '!=';
+GT: '>';
+GTE: '>=';
+LT: '<';
+LTE: '<=';
+
+AND: '&&';
+OR: '||';
+NOT: '!';
+
+RANGE: '..';
+
+QUOTE: '"';
+APEX: '\'';
+
+// Identifiers: letters or underscores followed by alphanumeric characters.
 IDENTIFIER
     : [a-zA-Z_] [a-zA-Z_0-9]* 
     ;
 
-// Defines left and right arenthesis
-L_BRACKET: '(';
-R_BRACKET: ')';
-
-// Defines integer literals, which are sequences of digits.
+// Integer literals: sequences of digits.
 INT_LITERAL
     : [0-9]+
     ;
 
-// Defines boolean literals with the values true or false.
-BOOLEAN_LITERAL
-    : 'true' | 'false'
-    ;
-
-// Defines string literals, which are enclosed in double quotes and allow escaped characters.
+// String literals: enclosed in double quotes, with escape characters allowed.
 STRING_LITERAL
-    : '"' (~["\\] | '\\' .)* '"'
+    : QUOTE (~["\\] | '\\' .)* QUOTE
     ;
 
-// Ignored Tokens: ignores whitespace, including spaces, tabs, and newline characters, by skipping them in parsing.
+// Skip whitespace characters (spaces, tabs, newlines).
 WS
     : [ \t\r\n]+ -> skip
     ;

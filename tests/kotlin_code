@@ -1,1 +1,1 @@
-class Example(var a: String = "a") { }
+var s: String = "s"

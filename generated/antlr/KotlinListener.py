@@ -26,15 +26,6 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#returnStatement.
-    def enterReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#returnStatement.
-    def exitReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
-        pass
-
-
     # Enter a parse tree produced by KotlinParser#varDeclaration.
     def enterVarDeclaration(self, ctx:KotlinParser.VarDeclarationContext):
         pass
@@ -62,30 +53,12 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#ifStatement.
-    def enterIfStatement(self, ctx:KotlinParser.IfStatementContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#ifStatement.
-    def exitIfStatement(self, ctx:KotlinParser.IfStatementContext):
-        pass
-
-
     # Enter a parse tree produced by KotlinParser#forStatement.
     def enterForStatement(self, ctx:KotlinParser.ForStatementContext):
         pass
 
     # Exit a parse tree produced by KotlinParser#forStatement.
     def exitForStatement(self, ctx:KotlinParser.ForStatementContext):
-        pass
-
-
-    # Enter a parse tree produced by KotlinParser#printStatement.
-    def enterPrintStatement(self, ctx:KotlinParser.PrintStatementContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#printStatement.
-    def exitPrintStatement(self, ctx:KotlinParser.PrintStatementContext):
         pass
 
 
@@ -98,48 +71,21 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#parameterList.
-    def enterParameterList(self, ctx:KotlinParser.ParameterListContext):
+    # Enter a parse tree produced by KotlinParser#ifStatement.
+    def enterIfStatement(self, ctx:KotlinParser.IfStatementContext):
         pass
 
-    # Exit a parse tree produced by KotlinParser#parameterList.
-    def exitParameterList(self, ctx:KotlinParser.ParameterListContext):
-        pass
-
-
-    # Enter a parse tree produced by KotlinParser#parameter.
-    def enterParameter(self, ctx:KotlinParser.ParameterContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#parameter.
-    def exitParameter(self, ctx:KotlinParser.ParameterContext):
+    # Exit a parse tree produced by KotlinParser#ifStatement.
+    def exitIfStatement(self, ctx:KotlinParser.IfStatementContext):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#functionDeclaration.
-    def enterFunctionDeclaration(self, ctx:KotlinParser.FunctionDeclarationContext):
+    # Enter a parse tree produced by KotlinParser#printStatement.
+    def enterPrintStatement(self, ctx:KotlinParser.PrintStatementContext):
         pass
 
-    # Exit a parse tree produced by KotlinParser#functionDeclaration.
-    def exitFunctionDeclaration(self, ctx:KotlinParser.FunctionDeclarationContext):
-        pass
-
-
-    # Enter a parse tree produced by KotlinParser#classBody.
-    def enterClassBody(self, ctx:KotlinParser.ClassBodyContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#classBody.
-    def exitClassBody(self, ctx:KotlinParser.ClassBodyContext):
-        pass
-
-
-    # Enter a parse tree produced by KotlinParser#classDeclaration.
-    def enterClassDeclaration(self, ctx:KotlinParser.ClassDeclarationContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#classDeclaration.
-    def exitClassDeclaration(self, ctx:KotlinParser.ClassDeclarationContext):
+    # Exit a parse tree produced by KotlinParser#printStatement.
+    def exitPrintStatement(self, ctx:KotlinParser.PrintStatementContext):
         pass
 
 
@@ -176,6 +122,69 @@ class KotlinListener(ParseTreeListener):
 
     # Exit a parse tree produced by KotlinParser#type.
     def exitType(self, ctx:KotlinParser.TypeContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#classDeclaration.
+    def enterClassDeclaration(self, ctx:KotlinParser.ClassDeclarationContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#classDeclaration.
+    def exitClassDeclaration(self, ctx:KotlinParser.ClassDeclarationContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#classBody.
+    def enterClassBody(self, ctx:KotlinParser.ClassBodyContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#classBody.
+    def exitClassBody(self, ctx:KotlinParser.ClassBodyContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#functionDeclaration.
+    def enterFunctionDeclaration(self, ctx:KotlinParser.FunctionDeclarationContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#functionDeclaration.
+    def exitFunctionDeclaration(self, ctx:KotlinParser.FunctionDeclarationContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#returnStatement.
+    def enterReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#returnStatement.
+    def exitReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#parameterList.
+    def enterParameterList(self, ctx:KotlinParser.ParameterListContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#parameterList.
+    def exitParameterList(self, ctx:KotlinParser.ParameterListContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#parameter.
+    def enterParameter(self, ctx:KotlinParser.ParameterContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#parameter.
+    def exitParameter(self, ctx:KotlinParser.ParameterContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#booleanLiteral.
+    def enterBooleanLiteral(self, ctx:KotlinParser.BooleanLiteralContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#booleanLiteral.
+    def exitBooleanLiteral(self, ctx:KotlinParser.BooleanLiteralContext):
         pass
 
 
