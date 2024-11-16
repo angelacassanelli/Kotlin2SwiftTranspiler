@@ -161,7 +161,7 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         expected_swift = """class Person() {\nvar name: String\nvar age: Int\ninit(name: String, age: Int) {\nself.name = name\nself.age = age\n}\nfunc greet() { print("Hello!") }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # comments 
+    # Comment Statement
 
     def test_inline_comment_statement(self):
         kotlin_code = """// this is a comment"""
