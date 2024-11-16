@@ -161,6 +161,23 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         expected_swift = """class Person() {\nvar name: String\nvar age: Int\ninit(name: String, age: Int) {\nself.name = name\nself.age = age\n}\nfunc greet() { print("Hello!") }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
+    # comments 
+
+    def test_inline_comment_statement(self):
+        kotlin_code = """// this is a comment"""
+        expected_swift = """# this is a comment"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+
+    def test_block_comment_statement(self):
+        kotlin_code = """/* this is a block comment */"""
+        expected_swift = """/* this is a block comment */"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+
+    def test_block_multiple_lines_comment_statement(self):
+        kotlin_code = """/* this is a \nmultiple line block comment */"""
+        expected_swift = """/* this is a \nmultiple line block comment */"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+
 
 if __name__ == "__main__":
     unittest.main()
