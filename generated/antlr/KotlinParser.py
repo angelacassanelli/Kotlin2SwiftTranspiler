@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,50,217,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,51,217,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,1,0,5,0,44,8,0,10,0,12,0,47,9,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,
@@ -28,7 +28,7 @@ def serializedATN():
         1,17,1,17,1,17,5,17,201,8,17,10,17,12,17,204,9,17,1,18,1,18,1,18,
         1,18,1,18,3,18,211,8,18,1,19,1,19,1,20,1,20,1,20,0,1,20,21,0,2,4,
         6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,0,6,1,0,1,2,
-        2,0,28,28,41,41,2,0,27,31,33,40,1,0,3,5,1,0,6,7,1,0,48,49,229,0,
+        2,0,28,28,41,41,2,0,27,31,33,40,1,0,3,5,1,0,6,7,1,0,49,50,229,0,
         45,1,0,0,0,2,61,1,0,0,0,4,63,1,0,0,0,6,72,1,0,0,0,8,81,1,0,0,0,10,
         85,1,0,0,0,12,95,1,0,0,0,14,111,1,0,0,0,16,119,1,0,0,0,18,124,1,
         0,0,0,20,144,1,0,0,0,22,157,1,0,0,0,24,159,1,0,0,0,26,161,1,0,0,
@@ -115,8 +115,8 @@ class KotlinParser ( Parser ):
                       "PLUS", "MINUS", "MULT", "DIV", "MOD", "EQ", "EQEQ", 
                       "NEQ", "GT", "GTE", "LT", "LTE", "AND", "OR", "NOT", 
                       "RANGE", "QUOTE", "APEX", "IDENTIFIER", "INT_LITERAL", 
-                      "STRING_LITERAL", "LINE_COMMENT", "BLOCK_COMMENT", 
-                      "WS" ]
+                      "STRING_LITERAL", "INTERPOLATION", "LINE_COMMENT", 
+                      "BLOCK_COMMENT", "WS" ]
 
     RULE_program = 0
     RULE_statement = 1
@@ -195,9 +195,10 @@ class KotlinParser ( Parser ):
     IDENTIFIER=45
     INT_LITERAL=46
     STRING_LITERAL=47
-    LINE_COMMENT=48
-    BLOCK_COMMENT=49
-    WS=50
+    INTERPOLATION=48
+    LINE_COMMENT=49
+    BLOCK_COMMENT=50
+    WS=51
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -249,7 +250,7 @@ class KotlinParser ( Parser ):
             self.state = 45
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 879609302265606) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 1724034232397574) != 0):
                 self.state = 42
                 self.statement()
                 self.state = 47
@@ -773,7 +774,7 @@ class KotlinParser ( Parser ):
                 self.state = 99
                 self.block()
                 pass
-            elif token in [1, 2, 8, 9, 10, 11, 13, 15, 45, 48, 49]:
+            elif token in [1, 2, 8, 9, 10, 11, 13, 15, 45, 49, 50]:
                 self.state = 100
                 self.statement()
                 pass
@@ -793,7 +794,7 @@ class KotlinParser ( Parser ):
                     self.state = 104
                     self.block()
                     pass
-                elif token in [1, 2, 8, 9, 10, 11, 13, 15, 45, 48, 49]:
+                elif token in [1, 2, 8, 9, 10, 11, 13, 15, 45, 49, 50]:
                     self.state = 105
                     self.statement()
                     pass
@@ -1009,7 +1010,7 @@ class KotlinParser ( Parser ):
             self.state = 130
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 879609302265606) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 1724034232397574) != 0):
                 self.state = 128
                 self._errHandler.sync(self)
                 la_ = self._interp.adaptivePredict(self._input,8,self._ctx)
@@ -1848,7 +1849,7 @@ class KotlinParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 214
             _la = self._input.LA(1)
-            if not(_la==48 or _la==49):
+            if not(_la==49 or _la==50):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)

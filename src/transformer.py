@@ -2,11 +2,11 @@ from antlr4 import *
 from generated.antlr.KotlinParser import KotlinParser
 
 reserved_keywords = {
-    "Boolean", "Int", "String", "class", "else", "for", "fun", "if", "return", "val", "var",
-    "true", "false", "println", "readLine", 
-    ",", ";", ":", ".", "(", ")", "{", "}", "[", "]", 
+    "readLine", "println", "val", "var", "Boolean", "Int", "String", 
+    "if", "else", "for", "class", "fun", "return", "true", "false", 
     "+", "-", "*", "/", "%", "=", "==", "!=", ">", ">=", "<", "<=",
-    "&&", "||", "!", "..", "\"", "\'"
+    ",", ";", ":", ".", "(", ")", "{", "}", "[", "]", "&&", "||",
+      "!", "..", "\"", "\'"
 }
 
 class KotlinToSwiftTransformer(ParseTreeVisitor):
@@ -244,6 +244,7 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     
     def visitComment(self, ctx):
         """Trannsforms inline and blockc comments."""
+        print(f"Visiting comment: {ctx.getText()}")
         if ctx.LINE_COMMENT():
             return self.visitLineComment(ctx.LINE_COMMENT())
         elif ctx.BLOCK_COMMENT():
@@ -253,10 +254,12 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
     
     def visitLineComment(self, ctx):
         """Transforms inline comments."""
+        print(f"Visiting inline comment: {ctx.getText()}")
         comment = ctx.getText()[2:].strip() 
         return f"# {comment}"
 
     def visitBlockComment(self, ctx):
         """Transforms block comments."""
+        print(f"Visiting block: {ctx.getText()}")
         comment = ctx.getText()[2:-2].strip() 
         return f"/* {comment} */"
