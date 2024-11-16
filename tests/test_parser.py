@@ -1,6 +1,6 @@
 import unittest
 from src.parser import parseKotlinCode
-from src.transformer import KotlinToSwiftTransformer
+from src.transformer import KotlinToSwiftVisitor
 
 def generate_swift_from_kotlin(kotlin_code):
     """
@@ -13,7 +13,7 @@ def generate_swift_from_kotlin(kotlin_code):
     if tree is None:
         return "Parsing failed"
 
-    transformer = KotlinToSwiftTransformer()
+    transformer = KotlinToSwiftVisitor()
     swift_code = transformer.visitProgram(tree)
     return swift_code.strip() if swift_code else "No Swift code generated"
 

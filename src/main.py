@@ -1,5 +1,5 @@
 from parser import parseKotlinCode
-from transformer import KotlinToSwiftTransformer
+from transformer import KotlinToSwiftVisitor
 
 def main():
     """
@@ -31,7 +31,7 @@ def main():
         print("Oops! Failed to parse Kotlin code.")
         return
     
-    transformer = KotlinToSwiftTransformer()
+    transformer = KotlinToSwiftVisitor()
     
     swift_code = transformer.visitProgram(tree)
     
