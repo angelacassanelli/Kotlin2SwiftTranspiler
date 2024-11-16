@@ -20,6 +20,7 @@ statement
     | forStatement
     | printStatement
     | readStatement
+    | commentStatement
     ;
 
 // Variable declarations using 'var' with an optional type and initial value.
@@ -119,7 +120,11 @@ parameter
 booleanLiteral
     : BOOLEAN_TRUE | BOOLEAN_FALSE
     ;
-    
+
+commentStatement
+    : LINE_COMMENT | BLOCK_COMMENT
+    ;
+
 // Lexer Rules: Token definitions
 
 VAR: 'var';
@@ -190,6 +195,16 @@ INT_LITERAL
 // String literals: enclosed in double quotes, with escape characters allowed.
 STRING_LITERAL
     : QUOTE (~["\\] | '\\' .)* QUOTE
+    ;
+
+// Ignores inline comments.
+LINE_COMMENT
+    : '//' ~[\r\n]* 
+    ;
+
+// Ignores block comments.
+BLOCK_COMMENT
+    : '/*' .*? '*/' 
     ;
 
 // Skip whitespace characters (spaces, tabs, newlines).

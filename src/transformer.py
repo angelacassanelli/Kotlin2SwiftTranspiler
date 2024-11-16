@@ -1,6 +1,5 @@
 from antlr4 import *
 from generated.antlr.KotlinParser import KotlinParser
-from generated.antlr.KotlinLexer import KotlinLexer
 
 reserved_keywords = {
     "Boolean", "Int", "String", "class", "else", "for", "fun", "if", "return", "val", "var",
@@ -56,6 +55,8 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
             return self.visitFunctionDeclaration(ctx.functionDeclaration())
         elif ctx.classDeclaration():
             return self.visitClassDeclaration(ctx.classDeclaration())
+        elif ctx.commentStatement():
+            return self.visitComment(ctx.commentStatement())        
         else: 
             print(f"Unrecognized statement: {ctx.getText()}")
             return ""
@@ -237,3 +238,22 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
         """Returns the literal value as text for Swift conversion."""
         print(f"Visiting literal: {ctx.getText()}")
         return ctx.getText()
+    
+    def visitComment(self, ctx):
+        """Trannsforms inline and blockc comments."""
+        if ctx.LINE_COMMENT():
+            return self.visitLineComment(ctx.LINE_COMMENT())
+        elif ctx.BLOCK_COMMENT():
+            return self.visitBlockComment(ctx.BLOCK_COMMENT())
+        else:
+            return ""
+    
+    def visitLineComment(self, ctx):
+        """Transforms inline comments."""
+        comment = ctx.getText()[2:].strip() 
+        return f"# {comment}"
+
+    def visitBlockComment(self, ctx):
+        """Transforms block comments."""
+        comment = ctx.getText()[2:-2].strip() 
+        return f"/* {comment} */"

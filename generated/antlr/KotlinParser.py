@@ -10,77 +10,79 @@ else:
 
 def serializedATN():
     return [
-        4,1,48,206,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,50,211,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
-        2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,1,0,
-        5,0,42,8,0,10,0,12,0,45,9,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        1,1,1,1,1,1,3,1,59,8,1,1,2,1,2,1,2,1,2,3,2,65,8,2,1,2,1,2,1,2,1,
-        3,1,3,1,3,1,3,3,3,74,8,3,1,3,1,3,1,3,1,4,1,4,1,4,1,4,1,5,1,5,1,5,
-        1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,6,3,6,94,8,6,1,6,1,6,1,6,1,6,1,6,1,
-        6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,109,8,7,1,8,1,8,1,8,1,8,1,8,1,
-        9,1,9,1,9,1,9,5,9,120,8,9,10,9,12,9,123,9,9,1,9,1,9,1,10,1,10,1,
-        10,1,10,1,10,1,10,1,10,1,10,1,10,3,10,136,8,10,1,10,1,10,1,10,5,
-        10,141,8,10,10,10,12,10,144,9,10,1,11,1,11,1,11,3,11,149,8,11,1,
-        12,1,12,1,13,1,13,1,13,1,13,3,13,157,8,13,1,13,3,13,160,8,13,1,13,
-        1,13,1,13,1,13,1,14,1,14,5,14,168,8,14,10,14,12,14,171,9,14,1,15,
-        1,15,1,15,1,15,3,15,177,8,15,1,15,1,15,1,15,3,15,182,8,15,1,15,1,
-        15,1,16,1,16,1,16,1,17,1,17,1,17,5,17,192,8,17,10,17,12,17,195,9,
-        17,1,18,1,18,1,18,1,18,1,18,3,18,202,8,18,1,19,1,19,1,19,0,1,20,
-        20,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,0,5,1,
-        0,1,2,2,0,28,28,41,41,2,0,27,31,33,40,1,0,3,5,1,0,6,7,216,0,43,1,
-        0,0,0,2,58,1,0,0,0,4,60,1,0,0,0,6,69,1,0,0,0,8,78,1,0,0,0,10,82,
-        1,0,0,0,12,93,1,0,0,0,14,101,1,0,0,0,16,110,1,0,0,0,18,115,1,0,0,
-        0,20,135,1,0,0,0,22,148,1,0,0,0,24,150,1,0,0,0,26,152,1,0,0,0,28,
-        169,1,0,0,0,30,172,1,0,0,0,32,185,1,0,0,0,34,188,1,0,0,0,36,196,
-        1,0,0,0,38,203,1,0,0,0,40,42,3,2,1,0,41,40,1,0,0,0,42,45,1,0,0,0,
-        43,41,1,0,0,0,43,44,1,0,0,0,44,46,1,0,0,0,45,43,1,0,0,0,46,47,5,
-        0,0,1,47,1,1,0,0,0,48,59,3,26,13,0,49,59,3,30,15,0,50,59,3,4,2,0,
-        51,59,3,6,3,0,52,59,3,8,4,0,53,59,3,32,16,0,54,59,3,14,7,0,55,59,
-        3,10,5,0,56,59,3,16,8,0,57,59,3,12,6,0,58,48,1,0,0,0,58,49,1,0,0,
-        0,58,50,1,0,0,0,58,51,1,0,0,0,58,52,1,0,0,0,58,53,1,0,0,0,58,54,
-        1,0,0,0,58,55,1,0,0,0,58,56,1,0,0,0,58,57,1,0,0,0,59,3,1,0,0,0,60,
-        61,5,1,0,0,61,64,5,45,0,0,62,63,5,19,0,0,63,65,3,24,12,0,64,62,1,
-        0,0,0,64,65,1,0,0,0,65,66,1,0,0,0,66,67,5,32,0,0,67,68,3,20,10,0,
-        68,5,1,0,0,0,69,70,5,2,0,0,70,73,5,45,0,0,71,72,5,19,0,0,72,74,3,
-        24,12,0,73,71,1,0,0,0,73,74,1,0,0,0,74,75,1,0,0,0,75,76,5,32,0,0,
-        76,77,3,20,10,0,77,7,1,0,0,0,78,79,5,45,0,0,79,80,5,32,0,0,80,81,
-        3,20,10,0,81,9,1,0,0,0,82,83,5,13,0,0,83,84,5,21,0,0,84,85,5,45,
-        0,0,85,86,5,14,0,0,86,87,3,20,10,0,87,88,5,42,0,0,88,89,3,20,10,
-        0,89,90,5,22,0,0,90,91,3,18,9,0,91,11,1,0,0,0,92,94,7,0,0,0,93,92,
-        1,0,0,0,93,94,1,0,0,0,94,95,1,0,0,0,95,96,5,45,0,0,96,97,5,32,0,
-        0,97,98,5,16,0,0,98,99,5,21,0,0,99,100,5,22,0,0,100,13,1,0,0,0,101,
-        102,5,11,0,0,102,103,5,21,0,0,103,104,3,20,10,0,104,105,5,22,0,0,
-        105,108,3,18,9,0,106,107,5,12,0,0,107,109,3,18,9,0,108,106,1,0,0,
-        0,108,109,1,0,0,0,109,15,1,0,0,0,110,111,5,15,0,0,111,112,5,21,0,
-        0,112,113,3,20,10,0,113,114,5,22,0,0,114,17,1,0,0,0,115,121,5,23,
-        0,0,116,120,3,4,2,0,117,120,3,30,15,0,118,120,3,2,1,0,119,116,1,
-        0,0,0,119,117,1,0,0,0,119,118,1,0,0,0,120,123,1,0,0,0,121,119,1,
-        0,0,0,121,122,1,0,0,0,122,124,1,0,0,0,123,121,1,0,0,0,124,125,5,
-        24,0,0,125,19,1,0,0,0,126,127,6,10,-1,0,127,136,3,22,11,0,128,136,
-        5,45,0,0,129,130,7,1,0,0,130,136,3,20,10,3,131,132,5,21,0,0,132,
-        133,3,20,10,0,133,134,5,22,0,0,134,136,1,0,0,0,135,126,1,0,0,0,135,
-        128,1,0,0,0,135,129,1,0,0,0,135,131,1,0,0,0,136,142,1,0,0,0,137,
-        138,10,2,0,0,138,139,7,2,0,0,139,141,3,20,10,3,140,137,1,0,0,0,141,
-        144,1,0,0,0,142,140,1,0,0,0,142,143,1,0,0,0,143,21,1,0,0,0,144,142,
-        1,0,0,0,145,149,5,46,0,0,146,149,5,47,0,0,147,149,3,38,19,0,148,
-        145,1,0,0,0,148,146,1,0,0,0,148,147,1,0,0,0,149,23,1,0,0,0,150,151,
-        7,3,0,0,151,25,1,0,0,0,152,153,5,8,0,0,153,159,5,45,0,0,154,156,
-        5,21,0,0,155,157,3,34,17,0,156,155,1,0,0,0,156,157,1,0,0,0,157,158,
-        1,0,0,0,158,160,5,22,0,0,159,154,1,0,0,0,159,160,1,0,0,0,160,161,
-        1,0,0,0,161,162,5,23,0,0,162,163,3,28,14,0,163,164,5,24,0,0,164,
-        27,1,0,0,0,165,168,3,4,2,0,166,168,3,30,15,0,167,165,1,0,0,0,167,
-        166,1,0,0,0,168,171,1,0,0,0,169,167,1,0,0,0,169,170,1,0,0,0,170,
-        29,1,0,0,0,171,169,1,0,0,0,172,173,5,9,0,0,173,174,5,45,0,0,174,
-        176,5,21,0,0,175,177,3,34,17,0,176,175,1,0,0,0,176,177,1,0,0,0,177,
-        178,1,0,0,0,178,181,5,22,0,0,179,180,5,19,0,0,180,182,3,24,12,0,
-        181,179,1,0,0,0,181,182,1,0,0,0,182,183,1,0,0,0,183,184,3,18,9,0,
-        184,31,1,0,0,0,185,186,5,10,0,0,186,187,3,20,10,0,187,33,1,0,0,0,
-        188,193,3,36,18,0,189,190,5,17,0,0,190,192,3,36,18,0,191,189,1,0,
-        0,0,192,195,1,0,0,0,193,191,1,0,0,0,193,194,1,0,0,0,194,35,1,0,0,
-        0,195,193,1,0,0,0,196,197,5,45,0,0,197,198,5,19,0,0,198,201,3,24,
-        12,0,199,200,5,32,0,0,200,202,3,22,11,0,201,199,1,0,0,0,201,202,
-        1,0,0,0,202,37,1,0,0,0,203,204,7,4,0,0,204,39,1,0,0,0,19,43,58,64,
-        73,93,108,119,121,135,142,148,156,159,167,169,176,181,193,201
+        2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
+        7,20,1,0,5,0,44,8,0,10,0,12,0,47,9,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,3,1,62,8,1,1,2,1,2,1,2,1,2,3,2,68,8,2,1,
+        2,1,2,1,2,1,3,1,3,1,3,1,3,3,3,77,8,3,1,3,1,3,1,3,1,4,1,4,1,4,1,4,
+        1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,6,3,6,97,8,6,1,6,1,6,1,
+        6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,112,8,7,1,8,1,8,1,
+        8,1,8,1,8,1,9,1,9,1,9,1,9,5,9,123,8,9,10,9,12,9,126,9,9,1,9,1,9,
+        1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,3,10,139,8,10,1,10,
+        1,10,1,10,5,10,144,8,10,10,10,12,10,147,9,10,1,11,1,11,1,11,3,11,
+        152,8,11,1,12,1,12,1,13,1,13,1,13,1,13,3,13,160,8,13,1,13,3,13,163,
+        8,13,1,13,1,13,1,13,1,13,1,14,1,14,5,14,171,8,14,10,14,12,14,174,
+        9,14,1,15,1,15,1,15,1,15,3,15,180,8,15,1,15,1,15,1,15,3,15,185,8,
+        15,1,15,1,15,1,16,1,16,1,16,1,17,1,17,1,17,5,17,195,8,17,10,17,12,
+        17,198,9,17,1,18,1,18,1,18,1,18,1,18,3,18,205,8,18,1,19,1,19,1,20,
+        1,20,1,20,0,1,20,21,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,
+        34,36,38,40,0,6,1,0,1,2,2,0,28,28,41,41,2,0,27,31,33,40,1,0,3,5,
+        1,0,6,7,1,0,48,49,221,0,45,1,0,0,0,2,61,1,0,0,0,4,63,1,0,0,0,6,72,
+        1,0,0,0,8,81,1,0,0,0,10,85,1,0,0,0,12,96,1,0,0,0,14,104,1,0,0,0,
+        16,113,1,0,0,0,18,118,1,0,0,0,20,138,1,0,0,0,22,151,1,0,0,0,24,153,
+        1,0,0,0,26,155,1,0,0,0,28,172,1,0,0,0,30,175,1,0,0,0,32,188,1,0,
+        0,0,34,191,1,0,0,0,36,199,1,0,0,0,38,206,1,0,0,0,40,208,1,0,0,0,
+        42,44,3,2,1,0,43,42,1,0,0,0,44,47,1,0,0,0,45,43,1,0,0,0,45,46,1,
+        0,0,0,46,48,1,0,0,0,47,45,1,0,0,0,48,49,5,0,0,1,49,1,1,0,0,0,50,
+        62,3,26,13,0,51,62,3,30,15,0,52,62,3,4,2,0,53,62,3,6,3,0,54,62,3,
+        8,4,0,55,62,3,32,16,0,56,62,3,14,7,0,57,62,3,10,5,0,58,62,3,16,8,
+        0,59,62,3,12,6,0,60,62,3,40,20,0,61,50,1,0,0,0,61,51,1,0,0,0,61,
+        52,1,0,0,0,61,53,1,0,0,0,61,54,1,0,0,0,61,55,1,0,0,0,61,56,1,0,0,
+        0,61,57,1,0,0,0,61,58,1,0,0,0,61,59,1,0,0,0,61,60,1,0,0,0,62,3,1,
+        0,0,0,63,64,5,1,0,0,64,67,5,45,0,0,65,66,5,19,0,0,66,68,3,24,12,
+        0,67,65,1,0,0,0,67,68,1,0,0,0,68,69,1,0,0,0,69,70,5,32,0,0,70,71,
+        3,20,10,0,71,5,1,0,0,0,72,73,5,2,0,0,73,76,5,45,0,0,74,75,5,19,0,
+        0,75,77,3,24,12,0,76,74,1,0,0,0,76,77,1,0,0,0,77,78,1,0,0,0,78,79,
+        5,32,0,0,79,80,3,20,10,0,80,7,1,0,0,0,81,82,5,45,0,0,82,83,5,32,
+        0,0,83,84,3,20,10,0,84,9,1,0,0,0,85,86,5,13,0,0,86,87,5,21,0,0,87,
+        88,5,45,0,0,88,89,5,14,0,0,89,90,3,20,10,0,90,91,5,42,0,0,91,92,
+        3,20,10,0,92,93,5,22,0,0,93,94,3,18,9,0,94,11,1,0,0,0,95,97,7,0,
+        0,0,96,95,1,0,0,0,96,97,1,0,0,0,97,98,1,0,0,0,98,99,5,45,0,0,99,
+        100,5,32,0,0,100,101,5,16,0,0,101,102,5,21,0,0,102,103,5,22,0,0,
+        103,13,1,0,0,0,104,105,5,11,0,0,105,106,5,21,0,0,106,107,3,20,10,
+        0,107,108,5,22,0,0,108,111,3,18,9,0,109,110,5,12,0,0,110,112,3,18,
+        9,0,111,109,1,0,0,0,111,112,1,0,0,0,112,15,1,0,0,0,113,114,5,15,
+        0,0,114,115,5,21,0,0,115,116,3,20,10,0,116,117,5,22,0,0,117,17,1,
+        0,0,0,118,124,5,23,0,0,119,123,3,4,2,0,120,123,3,30,15,0,121,123,
+        3,2,1,0,122,119,1,0,0,0,122,120,1,0,0,0,122,121,1,0,0,0,123,126,
+        1,0,0,0,124,122,1,0,0,0,124,125,1,0,0,0,125,127,1,0,0,0,126,124,
+        1,0,0,0,127,128,5,24,0,0,128,19,1,0,0,0,129,130,6,10,-1,0,130,139,
+        3,22,11,0,131,139,5,45,0,0,132,133,7,1,0,0,133,139,3,20,10,3,134,
+        135,5,21,0,0,135,136,3,20,10,0,136,137,5,22,0,0,137,139,1,0,0,0,
+        138,129,1,0,0,0,138,131,1,0,0,0,138,132,1,0,0,0,138,134,1,0,0,0,
+        139,145,1,0,0,0,140,141,10,2,0,0,141,142,7,2,0,0,142,144,3,20,10,
+        3,143,140,1,0,0,0,144,147,1,0,0,0,145,143,1,0,0,0,145,146,1,0,0,
+        0,146,21,1,0,0,0,147,145,1,0,0,0,148,152,5,46,0,0,149,152,5,47,0,
+        0,150,152,3,38,19,0,151,148,1,0,0,0,151,149,1,0,0,0,151,150,1,0,
+        0,0,152,23,1,0,0,0,153,154,7,3,0,0,154,25,1,0,0,0,155,156,5,8,0,
+        0,156,162,5,45,0,0,157,159,5,21,0,0,158,160,3,34,17,0,159,158,1,
+        0,0,0,159,160,1,0,0,0,160,161,1,0,0,0,161,163,5,22,0,0,162,157,1,
+        0,0,0,162,163,1,0,0,0,163,164,1,0,0,0,164,165,5,23,0,0,165,166,3,
+        28,14,0,166,167,5,24,0,0,167,27,1,0,0,0,168,171,3,4,2,0,169,171,
+        3,30,15,0,170,168,1,0,0,0,170,169,1,0,0,0,171,174,1,0,0,0,172,170,
+        1,0,0,0,172,173,1,0,0,0,173,29,1,0,0,0,174,172,1,0,0,0,175,176,5,
+        9,0,0,176,177,5,45,0,0,177,179,5,21,0,0,178,180,3,34,17,0,179,178,
+        1,0,0,0,179,180,1,0,0,0,180,181,1,0,0,0,181,184,5,22,0,0,182,183,
+        5,19,0,0,183,185,3,24,12,0,184,182,1,0,0,0,184,185,1,0,0,0,185,186,
+        1,0,0,0,186,187,3,18,9,0,187,31,1,0,0,0,188,189,5,10,0,0,189,190,
+        3,20,10,0,190,33,1,0,0,0,191,196,3,36,18,0,192,193,5,17,0,0,193,
+        195,3,36,18,0,194,192,1,0,0,0,195,198,1,0,0,0,196,194,1,0,0,0,196,
+        197,1,0,0,0,197,35,1,0,0,0,198,196,1,0,0,0,199,200,5,45,0,0,200,
+        201,5,19,0,0,201,204,3,24,12,0,202,203,5,32,0,0,203,205,3,22,11,
+        0,204,202,1,0,0,0,204,205,1,0,0,0,205,37,1,0,0,0,206,207,7,4,0,0,
+        207,39,1,0,0,0,208,209,7,5,0,0,209,41,1,0,0,0,19,45,61,67,76,96,
+        111,122,124,138,145,151,159,162,170,172,179,184,196,204
     ]
 
 class KotlinParser ( Parser ):
@@ -110,7 +112,8 @@ class KotlinParser ( Parser ):
                       "PLUS", "MINUS", "MULT", "DIV", "MOD", "EQ", "EQEQ", 
                       "NEQ", "GT", "GTE", "LT", "LTE", "AND", "OR", "NOT", 
                       "RANGE", "QUOTE", "APEX", "IDENTIFIER", "INT_LITERAL", 
-                      "STRING_LITERAL", "WS" ]
+                      "STRING_LITERAL", "LINE_COMMENT", "BLOCK_COMMENT", 
+                      "WS" ]
 
     RULE_program = 0
     RULE_statement = 1
@@ -132,12 +135,14 @@ class KotlinParser ( Parser ):
     RULE_parameterList = 17
     RULE_parameter = 18
     RULE_booleanLiteral = 19
+    RULE_commentStatement = 20
 
     ruleNames =  [ "program", "statement", "varDeclaration", "valDeclaration", 
                    "assignmentStatement", "forStatement", "readStatement", 
                    "ifStatement", "printStatement", "block", "expression", 
                    "literal", "type", "classDeclaration", "classBody", "functionDeclaration", 
-                   "returnStatement", "parameterList", "parameter", "booleanLiteral" ]
+                   "returnStatement", "parameterList", "parameter", "booleanLiteral", 
+                   "commentStatement" ]
 
     EOF = Token.EOF
     VAR=1
@@ -187,7 +192,9 @@ class KotlinParser ( Parser ):
     IDENTIFIER=45
     INT_LITERAL=46
     STRING_LITERAL=47
-    WS=48
+    LINE_COMMENT=48
+    BLOCK_COMMENT=49
+    WS=50
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -236,17 +243,17 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 43
+            self.state = 45
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 35184372133638) != 0):
-                self.state = 40
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 879609302265606) != 0):
+                self.state = 42
                 self.statement()
-                self.state = 45
+                self.state = 47
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 46
+            self.state = 48
             self.match(KotlinParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -304,6 +311,10 @@ class KotlinParser ( Parser ):
             return self.getTypedRuleContext(KotlinParser.ReadStatementContext,0)
 
 
+        def commentStatement(self):
+            return self.getTypedRuleContext(KotlinParser.CommentStatementContext,0)
+
+
         def getRuleIndex(self):
             return KotlinParser.RULE_statement
 
@@ -323,67 +334,73 @@ class KotlinParser ( Parser ):
         localctx = KotlinParser.StatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_statement)
         try:
-            self.state = 58
+            self.state = 61
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 48
+                self.state = 50
                 self.classDeclaration()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 49
+                self.state = 51
                 self.functionDeclaration()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 50
+                self.state = 52
                 self.varDeclaration()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 51
+                self.state = 53
                 self.valDeclaration()
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 52
+                self.state = 54
                 self.assignmentStatement()
                 pass
 
             elif la_ == 6:
                 self.enterOuterAlt(localctx, 6)
-                self.state = 53
+                self.state = 55
                 self.returnStatement()
                 pass
 
             elif la_ == 7:
                 self.enterOuterAlt(localctx, 7)
-                self.state = 54
+                self.state = 56
                 self.ifStatement()
                 pass
 
             elif la_ == 8:
                 self.enterOuterAlt(localctx, 8)
-                self.state = 55
+                self.state = 57
                 self.forStatement()
                 pass
 
             elif la_ == 9:
                 self.enterOuterAlt(localctx, 9)
-                self.state = 56
+                self.state = 58
                 self.printStatement()
                 pass
 
             elif la_ == 10:
                 self.enterOuterAlt(localctx, 10)
-                self.state = 57
+                self.state = 59
                 self.readStatement()
+                pass
+
+            elif la_ == 11:
+                self.enterOuterAlt(localctx, 11)
+                self.state = 60
+                self.commentStatement()
                 pass
 
 
@@ -444,23 +461,23 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 60
+            self.state = 63
             self.match(KotlinParser.VAR)
-            self.state = 61
-            self.match(KotlinParser.IDENTIFIER)
             self.state = 64
+            self.match(KotlinParser.IDENTIFIER)
+            self.state = 67
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==19:
-                self.state = 62
+                self.state = 65
                 self.match(KotlinParser.COLON)
-                self.state = 63
+                self.state = 66
                 self.type_()
 
 
-            self.state = 66
+            self.state = 69
             self.match(KotlinParser.EQ)
-            self.state = 67
+            self.state = 70
             self.expression(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -519,23 +536,23 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 69
+            self.state = 72
             self.match(KotlinParser.VAL)
-            self.state = 70
-            self.match(KotlinParser.IDENTIFIER)
             self.state = 73
+            self.match(KotlinParser.IDENTIFIER)
+            self.state = 76
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==19:
-                self.state = 71
+                self.state = 74
                 self.match(KotlinParser.COLON)
-                self.state = 72
+                self.state = 75
                 self.type_()
 
 
-            self.state = 75
+            self.state = 78
             self.match(KotlinParser.EQ)
-            self.state = 76
+            self.state = 79
             self.expression(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -583,11 +600,11 @@ class KotlinParser ( Parser ):
         self.enterRule(localctx, 8, self.RULE_assignmentStatement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 78
+            self.state = 81
             self.match(KotlinParser.IDENTIFIER)
-            self.state = 79
+            self.state = 82
             self.match(KotlinParser.EQ)
-            self.state = 80
+            self.state = 83
             self.expression(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -654,23 +671,23 @@ class KotlinParser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_forStatement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 82
-            self.match(KotlinParser.FOR)
-            self.state = 83
-            self.match(KotlinParser.LEFT_ROUND_BRACKET)
-            self.state = 84
-            self.match(KotlinParser.IDENTIFIER)
             self.state = 85
-            self.match(KotlinParser.IN)
+            self.match(KotlinParser.FOR)
             self.state = 86
-            self.expression(0)
+            self.match(KotlinParser.LEFT_ROUND_BRACKET)
             self.state = 87
-            self.match(KotlinParser.RANGE)
+            self.match(KotlinParser.IDENTIFIER)
             self.state = 88
-            self.expression(0)
+            self.match(KotlinParser.IN)
             self.state = 89
-            self.match(KotlinParser.RIGHT_ROUND_BRACKET)
+            self.expression(0)
             self.state = 90
+            self.match(KotlinParser.RANGE)
+            self.state = 91
+            self.expression(0)
+            self.state = 92
+            self.match(KotlinParser.RIGHT_ROUND_BRACKET)
+            self.state = 93
             self.block()
         except RecognitionException as re:
             localctx.exception = re
@@ -730,11 +747,11 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 93
+            self.state = 96
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==1 or _la==2:
-                self.state = 92
+                self.state = 95
                 _la = self._input.LA(1)
                 if not(_la==1 or _la==2):
                     self._errHandler.recoverInline(self)
@@ -743,15 +760,15 @@ class KotlinParser ( Parser ):
                     self.consume()
 
 
-            self.state = 95
-            self.match(KotlinParser.IDENTIFIER)
-            self.state = 96
-            self.match(KotlinParser.EQ)
-            self.state = 97
-            self.match(KotlinParser.READLINE)
             self.state = 98
-            self.match(KotlinParser.LEFT_ROUND_BRACKET)
+            self.match(KotlinParser.IDENTIFIER)
             self.state = 99
+            self.match(KotlinParser.EQ)
+            self.state = 100
+            self.match(KotlinParser.READLINE)
+            self.state = 101
+            self.match(KotlinParser.LEFT_ROUND_BRACKET)
+            self.state = 102
             self.match(KotlinParser.RIGHT_ROUND_BRACKET)
         except RecognitionException as re:
             localctx.exception = re
@@ -813,23 +830,23 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 101
-            self.match(KotlinParser.IF)
-            self.state = 102
-            self.match(KotlinParser.LEFT_ROUND_BRACKET)
-            self.state = 103
-            self.expression(0)
             self.state = 104
-            self.match(KotlinParser.RIGHT_ROUND_BRACKET)
+            self.match(KotlinParser.IF)
             self.state = 105
-            self.block()
+            self.match(KotlinParser.LEFT_ROUND_BRACKET)
+            self.state = 106
+            self.expression(0)
+            self.state = 107
+            self.match(KotlinParser.RIGHT_ROUND_BRACKET)
             self.state = 108
+            self.block()
+            self.state = 111
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==12:
-                self.state = 106
+                self.state = 109
                 self.match(KotlinParser.ELSE)
-                self.state = 107
+                self.state = 110
                 self.block()
 
 
@@ -882,13 +899,13 @@ class KotlinParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_printStatement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 110
-            self.match(KotlinParser.PRINTLN)
-            self.state = 111
-            self.match(KotlinParser.LEFT_ROUND_BRACKET)
-            self.state = 112
-            self.expression(0)
             self.state = 113
+            self.match(KotlinParser.PRINTLN)
+            self.state = 114
+            self.match(KotlinParser.LEFT_ROUND_BRACKET)
+            self.state = 115
+            self.expression(0)
+            self.state = 116
             self.match(KotlinParser.RIGHT_ROUND_BRACKET)
         except RecognitionException as re:
             localctx.exception = re
@@ -954,36 +971,36 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 115
+            self.state = 118
             self.match(KotlinParser.LEFT_CURLY_BRACKET)
-            self.state = 121
+            self.state = 124
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 35184372133638) != 0):
-                self.state = 119
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 879609302265606) != 0):
+                self.state = 122
                 self._errHandler.sync(self)
                 la_ = self._interp.adaptivePredict(self._input,6,self._ctx)
                 if la_ == 1:
-                    self.state = 116
+                    self.state = 119
                     self.varDeclaration()
                     pass
 
                 elif la_ == 2:
-                    self.state = 117
+                    self.state = 120
                     self.functionDeclaration()
                     pass
 
                 elif la_ == 3:
-                    self.state = 118
+                    self.state = 121
                     self.statement()
                     pass
 
 
-                self.state = 123
+                self.state = 126
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 124
+            self.state = 127
             self.match(KotlinParser.RIGHT_CURLY_BRACKET)
         except RecognitionException as re:
             localctx.exception = re
@@ -1086,41 +1103,41 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 135
+            self.state = 138
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [6, 7, 46, 47]:
-                self.state = 127
+                self.state = 130
                 self.literal()
                 pass
             elif token in [45]:
-                self.state = 128
+                self.state = 131
                 self.match(KotlinParser.IDENTIFIER)
                 pass
             elif token in [28, 41]:
-                self.state = 129
+                self.state = 132
                 _la = self._input.LA(1)
                 if not(_la==28 or _la==41):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 130
+                self.state = 133
                 self.expression(3)
                 pass
             elif token in [21]:
-                self.state = 131
+                self.state = 134
                 self.match(KotlinParser.LEFT_ROUND_BRACKET)
-                self.state = 132
+                self.state = 135
                 self.expression(0)
-                self.state = 133
+                self.state = 136
                 self.match(KotlinParser.RIGHT_ROUND_BRACKET)
                 pass
             else:
                 raise NoViableAltException(self)
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 142
+            self.state = 145
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,9,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -1130,20 +1147,20 @@ class KotlinParser ( Parser ):
                     _prevctx = localctx
                     localctx = KotlinParser.ExpressionContext(self, _parentctx, _parentState)
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_expression)
-                    self.state = 137
+                    self.state = 140
                     if not self.precpred(self._ctx, 2):
                         from antlr4.error.Errors import FailedPredicateException
                         raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
-                    self.state = 138
+                    self.state = 141
                     _la = self._input.LA(1)
                     if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 2194594070528) != 0)):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
                         self.consume()
-                    self.state = 139
+                    self.state = 142
                     self.expression(3) 
-                self.state = 144
+                self.state = 147
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,9,self._ctx)
 
@@ -1192,22 +1209,22 @@ class KotlinParser ( Parser ):
         localctx = KotlinParser.LiteralContext(self, self._ctx, self.state)
         self.enterRule(localctx, 22, self.RULE_literal)
         try:
-            self.state = 148
+            self.state = 151
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [46]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 145
+                self.state = 148
                 self.match(KotlinParser.INT_LITERAL)
                 pass
             elif token in [47]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 146
+                self.state = 149
                 self.match(KotlinParser.STRING_LITERAL)
                 pass
             elif token in [6, 7]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 147
+                self.state = 150
                 self.booleanLiteral()
                 pass
             else:
@@ -1259,7 +1276,7 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 150
+            self.state = 153
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 56) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1329,33 +1346,33 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 152
+            self.state = 155
             self.match(KotlinParser.CLASS)
-            self.state = 153
+            self.state = 156
             self.match(KotlinParser.IDENTIFIER)
-            self.state = 159
+            self.state = 162
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==21:
-                self.state = 154
+                self.state = 157
                 self.match(KotlinParser.LEFT_ROUND_BRACKET)
-                self.state = 156
+                self.state = 159
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if _la==45:
-                    self.state = 155
+                    self.state = 158
                     self.parameterList()
 
 
-                self.state = 158
+                self.state = 161
                 self.match(KotlinParser.RIGHT_ROUND_BRACKET)
 
 
-            self.state = 161
+            self.state = 164
             self.match(KotlinParser.LEFT_CURLY_BRACKET)
-            self.state = 162
+            self.state = 165
             self.classBody()
-            self.state = 163
+            self.state = 166
             self.match(KotlinParser.RIGHT_CURLY_BRACKET)
         except RecognitionException as re:
             localctx.exception = re
@@ -1408,25 +1425,25 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 169
+            self.state = 172
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==1 or _la==9:
-                self.state = 167
+                self.state = 170
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [1]:
-                    self.state = 165
+                    self.state = 168
                     self.varDeclaration()
                     pass
                 elif token in [9]:
-                    self.state = 166
+                    self.state = 169
                     self.functionDeclaration()
                     pass
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 171
+                self.state = 174
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1494,33 +1511,33 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 172
+            self.state = 175
             self.match(KotlinParser.FUN)
-            self.state = 173
-            self.match(KotlinParser.IDENTIFIER)
-            self.state = 174
-            self.match(KotlinParser.LEFT_ROUND_BRACKET)
             self.state = 176
+            self.match(KotlinParser.IDENTIFIER)
+            self.state = 177
+            self.match(KotlinParser.LEFT_ROUND_BRACKET)
+            self.state = 179
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==45:
-                self.state = 175
+                self.state = 178
                 self.parameterList()
 
 
-            self.state = 178
-            self.match(KotlinParser.RIGHT_ROUND_BRACKET)
             self.state = 181
+            self.match(KotlinParser.RIGHT_ROUND_BRACKET)
+            self.state = 184
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==19:
-                self.state = 179
+                self.state = 182
                 self.match(KotlinParser.COLON)
-                self.state = 180
+                self.state = 183
                 self.type_()
 
 
-            self.state = 183
+            self.state = 186
             self.block()
         except RecognitionException as re:
             localctx.exception = re
@@ -1565,9 +1582,9 @@ class KotlinParser ( Parser ):
         self.enterRule(localctx, 32, self.RULE_returnStatement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 185
+            self.state = 188
             self.match(KotlinParser.RETURN)
-            self.state = 186
+            self.state = 189
             self.expression(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -1619,17 +1636,17 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 188
+            self.state = 191
             self.parameter()
-            self.state = 193
+            self.state = 196
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==17:
-                self.state = 189
+                self.state = 192
                 self.match(KotlinParser.COMMA)
-                self.state = 190
+                self.state = 193
                 self.parameter()
-                self.state = 195
+                self.state = 198
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1687,19 +1704,19 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 196
+            self.state = 199
             self.match(KotlinParser.IDENTIFIER)
-            self.state = 197
+            self.state = 200
             self.match(KotlinParser.COLON)
-            self.state = 198
-            self.type_()
             self.state = 201
+            self.type_()
+            self.state = 204
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==32:
-                self.state = 199
+                self.state = 202
                 self.match(KotlinParser.EQ)
-                self.state = 200
+                self.state = 203
                 self.literal()
 
 
@@ -1746,9 +1763,59 @@ class KotlinParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 203
+            self.state = 206
             _la = self._input.LA(1)
             if not(_la==6 or _la==7):
+                self._errHandler.recoverInline(self)
+            else:
+                self._errHandler.reportMatch(self)
+                self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class CommentStatementContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def LINE_COMMENT(self):
+            return self.getToken(KotlinParser.LINE_COMMENT, 0)
+
+        def BLOCK_COMMENT(self):
+            return self.getToken(KotlinParser.BLOCK_COMMENT, 0)
+
+        def getRuleIndex(self):
+            return KotlinParser.RULE_commentStatement
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterCommentStatement" ):
+                listener.enterCommentStatement(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitCommentStatement" ):
+                listener.exitCommentStatement(self)
+
+
+
+
+    def commentStatement(self):
+
+        localctx = KotlinParser.CommentStatementContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 40, self.RULE_commentStatement)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 208
+            _la = self._input.LA(1)
+            if not(_la==48 or _la==49):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)

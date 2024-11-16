@@ -188,5 +188,14 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by KotlinParser#commentStatement.
+    def enterCommentStatement(self, ctx:KotlinParser.CommentStatementContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#commentStatement.
+    def exitCommentStatement(self, ctx:KotlinParser.CommentStatementContext):
+        pass
+
+
 
 del KotlinParser
