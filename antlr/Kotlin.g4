@@ -45,7 +45,7 @@ forStatement
 
 // Conditional 'if' statement with an optional 'else' block.
 ifStatement
-    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET block ( ELSE block )? 
+    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET (block | statement) ( ELSE (block | statement) )? 
     ;
 
 // Read statement: reads input, optionally assigning it to a variable.

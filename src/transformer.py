@@ -117,16 +117,19 @@ class KotlinToSwiftTransformer(ParseTreeVisitor):
 
     def visitIfStatement(self, ctx):
         """Converts a Kotlin if-else-if statement to Swift, with else and else-if being optional."""
-        # This checks if the 'if' statement has an 'else' block.
-        # First, it ensures that the number of children in the 'if' statement is greater than 4, which indicates the presence of an 'else' block.
-        # Then, it checks if the second-to-last child is the 'else' keyword by comparing its text value.
-        # If both conditions are true, it means an 'else' block exists, and we can process it.
         print(f"Visiting if statement: {ctx.getText()}")
         condition = self.visitExpression(ctx.expression())
-        body = self.visitBlock(ctx.block()[0]) 
-        if len(ctx.children) > 4 and ctx.children[-2].getText() == 'else':
-            else_body = self.visitBlock(ctx.block()[-1])            
+        if ctx.block(0): 
+            body = self.visitBlock(ctx.block(0))
+        else:  
+            body = self.visitStatement(ctx.statement(0))
+        if ctx.ELSE():
+            if ctx.block(1): 
+                else_body = self.visitBlock(ctx.block(1))
+            else:
+                else_body = self.visitStatement(ctx.statement(1))
             return f"if {condition} {{ {body} }} else {{ {else_body} }}"
+
         return f"if {condition} {{ {body} }}"
 
     def visitForStatement(self, ctx):
