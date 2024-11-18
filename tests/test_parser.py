@@ -94,24 +94,24 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
     
     def test_if_arithmetic_expression_statement(self):
         kotlin_code = """if (1 > 2) { println("if instruction") }"""
-        expected_swift = """if 1 > 2 { print("if instruction") }"""
+        expected_swift = """if (1 > 2) { print("if instruction") }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_if_boolean_expression_statement(self):
         kotlin_code = """if (true) { println("if instruction") }"""
-        expected_swift = """if true { print("if instruction") }"""
+        expected_swift = """if (true) { print("if instruction") }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_if_else_statement(self):
         kotlin_code = """if (1 <= 2) { println("if instruction") } else { println("else instruction") }"""
-        expected_swift = """if 1 <= 2 { print("if instruction") } else { print("else instruction") }"""
+        expected_swift = """if (1 <= 2) { print("if instruction") } else { print("else instruction") }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # for Statement
 
     def test_for_statement(self):
         kotlin_code = """for (i in 1..5) { println("for instruction") }"""
-        expected_swift = """for i in 1...5 { print("for instruction") }"""
+        expected_swift = """for (i in 1...5) { print("for instruction") }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     ### Object Oriented Programming ###
@@ -136,7 +136,7 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
   
     def test_function_with_params_and_return_declaration(self):
         kotlin_code = """fun exampleFunction(x: Int, z: Int, b: Boolean): Boolean { if (x > y) { return b } else { return false } }"""
-        expected_swift = """func exampleFunction(x: Int, z: Int, b: Bool) -> Bool { if x > y { return b } else { return false } }"""
+        expected_swift = """func exampleFunction(x: Int, z: Int, b: Bool) -> Bool { if (x > y) { return b } else { return false } }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Class Declaration
@@ -153,7 +153,7 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     def test_class_with_function_declaration(self):
         kotlin_code = """class Example() {\nvar a: Int = 10\nvar b: Int = 100\nfun isAGreaterThanB(): Boolean { if (a > b) { return true } else { return false } }\n}"""
-        expected_swift = """class Example() {\nvar a: Int = 10\nvar b: Int = 100\nfunc isAGreaterThanB() -> Bool { if a > b { return true } else { return false } }\n}"""
+        expected_swift = """class Example() {\nvar a: Int = 10\nvar b: Int = 100\nfunc isAGreaterThanB() -> Bool { if (a > b) { return true } else { return false } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_class_with_params_declaration(self):

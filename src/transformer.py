@@ -128,9 +128,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 else_body = self.visitBlock(ctx.block(1))
             else:
                 else_body = self.visitStatement(ctx.statement(1))
-            return f"if {condition} {{ {body} }} else {{ {else_body} }}"
+            return f"if ({condition}) {{ {body} }} else {{ {else_body} }}"
 
-        return f"if {condition} {{ {body} }}"
+        return f"if ({condition}) {{ {body} }}"
 
     def visitForStatement(self, ctx):
         """Converts a Kotlin for loop with a range to a Swift-compatible loop."""
@@ -139,7 +139,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         start = self.visitExpression(ctx.expression(0))  # start expression
         end = self.visitExpression(ctx.expression(1))    # end expression
         body = self.visitBlock(ctx.block())
-        return f"for {identifier} in {start}...{end} {{ {body} }}"
+        return f"for ({identifier} in {start}...{end}) {{ {body} }}"
 
     def visitPrintStatement(self, ctx):
         """Transforms a Kotlin print statement to a Swift print statement."""
