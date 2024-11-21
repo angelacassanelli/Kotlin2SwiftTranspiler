@@ -1,5 +1,1 @@
-if (true) {
-    println("ciao")
-} else {
-    println("bla bla")
-}
+val v = 15 !in 1..10

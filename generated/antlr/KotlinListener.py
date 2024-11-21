@@ -107,6 +107,96 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by KotlinParser#logicalOrExpression.
+    def enterLogicalOrExpression(self, ctx:KotlinParser.LogicalOrExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#logicalOrExpression.
+    def exitLogicalOrExpression(self, ctx:KotlinParser.LogicalOrExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#logicalAndExpression.
+    def enterLogicalAndExpression(self, ctx:KotlinParser.LogicalAndExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#logicalAndExpression.
+    def exitLogicalAndExpression(self, ctx:KotlinParser.LogicalAndExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#equalityExpression.
+    def enterEqualityExpression(self, ctx:KotlinParser.EqualityExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#equalityExpression.
+    def exitEqualityExpression(self, ctx:KotlinParser.EqualityExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#relationalExpression.
+    def enterRelationalExpression(self, ctx:KotlinParser.RelationalExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#relationalExpression.
+    def exitRelationalExpression(self, ctx:KotlinParser.RelationalExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#additiveExpression.
+    def enterAdditiveExpression(self, ctx:KotlinParser.AdditiveExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#additiveExpression.
+    def exitAdditiveExpression(self, ctx:KotlinParser.AdditiveExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#multiplicativeExpression.
+    def enterMultiplicativeExpression(self, ctx:KotlinParser.MultiplicativeExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#multiplicativeExpression.
+    def exitMultiplicativeExpression(self, ctx:KotlinParser.MultiplicativeExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#unaryExpression.
+    def enterUnaryExpression(self, ctx:KotlinParser.UnaryExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#unaryExpression.
+    def exitUnaryExpression(self, ctx:KotlinParser.UnaryExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#membershipExpression.
+    def enterMembershipExpression(self, ctx:KotlinParser.MembershipExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#membershipExpression.
+    def exitMembershipExpression(self, ctx:KotlinParser.MembershipExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#rangeExpression.
+    def enterRangeExpression(self, ctx:KotlinParser.RangeExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#rangeExpression.
+    def exitRangeExpression(self, ctx:KotlinParser.RangeExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#primaryExpression.
+    def enterPrimaryExpression(self, ctx:KotlinParser.PrimaryExpressionContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#primaryExpression.
+    def exitPrimaryExpression(self, ctx:KotlinParser.PrimaryExpressionContext):
+        pass
+
+
     # Enter a parse tree produced by KotlinParser#literal.
     def enterLiteral(self, ctx:KotlinParser.LiteralContext):
         pass

@@ -40,7 +40,7 @@ assignmentStatement
 
 // 'for' loop with a specified range.
 forStatement
-    : FOR LEFT_ROUND_BRACKET IDENTIFIER IN expression RANGE expression RIGHT_ROUND_BRACKET block
+    : FOR LEFT_ROUND_BRACKET membershipExpression RIGHT_ROUND_BRACKET block
     ;
 
 // Conditional 'if' statement with an optional 'else' block.
@@ -63,12 +63,52 @@ block
     : LEFT_CURLY_BRACKET (varDeclaration | functionDeclaration | statement)* RIGHT_CURLY_BRACKET
     ;
 
-// Expression rule: literals, identifiers, unary operators, binary operations, and parentheses.
+// Espressione di livello più alto (precedenza più bassa)
 expression
-    : literal                                        
-    | IDENTIFIER     
-    | (NOT | MINUS) expression
-    | expression (PLUS | MINUS | MULT | DIV | MOD | EQEQ | NEQ | GT | GTE | LT | LTE | AND | OR) expression
+    : logicalOrExpression
+    ;
+
+logicalOrExpression
+    : logicalAndExpression (OR logicalAndExpression)*
+    ;
+
+logicalAndExpression
+    : equalityExpression (AND equalityExpression)*
+    ;
+
+equalityExpression
+    : relationalExpression (EQEQ relationalExpression | NEQ relationalExpression)*
+    ;
+
+relationalExpression
+    : additiveExpression ((GT | GTE | LT | LTE ) additiveExpression)?
+    ;
+
+additiveExpression
+    : multiplicativeExpression ((PLUS | MINUS) multiplicativeExpression)*
+    ;
+
+multiplicativeExpression
+    : unaryExpression ((MULT | DIV | MOD) unaryExpression)*
+    ;
+
+unaryExpression
+    : NOT primaryExpression
+    | MINUS primaryExpression
+    | membershipExpression
+    ;
+
+membershipExpression
+    : primaryExpression (IN rangeExpression | NOT IN rangeExpression)?
+    ;
+
+rangeExpression
+    : additiveExpression RANGE additiveExpression
+    ;
+
+primaryExpression
+    : IDENTIFIER
+    | literal
     | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
     ;
 

@@ -135,11 +135,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visitForStatement(self, ctx):
         """Converts a Kotlin for loop with a range to a Swift-compatible loop."""
         print(f"Visiting for statement: {ctx.getText()}")
-        identifier = self.visitIdentifier(ctx.IDENTIFIER())
-        start = self.visitExpression(ctx.expression(0))  # start expression
-        end = self.visitExpression(ctx.expression(1))    # end expression
+        expression = self.visitMemebershipExpression(ctx.membershipExpression())
         body = self.visitBlock(ctx.block())
-        return f"for {identifier} in {start}...{end} {{ {body} }}"
+        return f"for {expression} {{ {body} }}"
 
     def visitPrintStatement(self, ctx):
         """Transforms a Kotlin print statement to a Swift print statement."""
@@ -221,21 +219,98 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         statements = [self.visitStatement(stmt) for stmt in ctx.statement()]
         return "\n".join(filter(None, statements))
 
-    def visitExpression(self, ctx):
-        """Evaluates expressions, including literals, identifiers, and binary operations."""
+    def visitExpression(self, ctx: KotlinParser.ExpressionContext):
         print(f"Visiting expression: {ctx.getText()}")
-        if ctx.literal():
-            return self.visitLiteral(ctx.literal())
-        elif ctx.IDENTIFIER():
-            return self.visitIdentifier(ctx.IDENTIFIER())
-        elif len(ctx.children) == 3:  # Binary operation
-            left = self.visitExpression(ctx.expression(0))
-            op = ctx.children[1].getText()  # Operator
-            right = self.visitExpression(ctx.expression(1))
-            return f"{left} {op} {right}"
+        return self.visitLogicalOrExpression(ctx.logicalOrExpression())  
+
+    def visitLogicalOrExpression(self, ctx: KotlinParser.LogicalOrExpressionContext):
+        print(f"Visiting OR expression: {ctx.getText()}")
+        left = self.visitLogicalAndExpression(ctx.logicalAndExpression(0))
+        for i in range(1, len(ctx.logicalAndExpression())):
+            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            right = self.visitLogicalAndExpression(ctx.logicalAndExpression(i))
+            left = f"{left} {operator} {right}" if right is not None else f"{left}"
+        return f"{left}"
+    
+    def visitLogicalAndExpression(self, ctx: KotlinParser.LogicalAndExpressionContext):
+        print(f"Visiting AND expression: {ctx.getText()}")
+        left = self.visitEqualityExpression(ctx.equalityExpression(0))  
+        for i in range(1, len(ctx.equalityExpression())):
+            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            right = self.visitEqualityExpression(ctx.equalityExpression(i)) 
+            left = f"{left} {operator} {right}"
+        return f"{left}"
+
+    def visitEqualityExpression(self, ctx: KotlinParser.EqualityExpressionContext):
+        print(f"Visiting equality expression: {ctx.getText()}")
+        left = self.visitRelationalExpression(ctx.relationalExpression(0))
+        for i in range(1, len(ctx.relationalExpression())):
+            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            right = self.visitRelationalExpression(ctx.relationalExpression(i))  # Visita il prossimo unary expression
+            left = f"{left} {operator} {right}"  # Combina il risultato precedente con l'operatore corrente
+        return f"{left}"
+
+    def visitRelationalExpression(self, ctx: KotlinParser.RelationalExpressionContext):
+        print(f"Visiting relational expression: {ctx.getText()}")
+        left = self.visitAdditiveExpression(ctx.additiveExpression(0))
+        if len(ctx.additiveExpression()) > 1:
+            operator = ctx.getChild(1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            right = self.visitAdditiveExpression(ctx.additiveExpression(1))
+            return f"{left} {operator} {right}" 
+        return f"{left}"
+
+    def visitAdditiveExpression(self, ctx: KotlinParser.AdditiveExpressionContext):
+        print(f"Visiting additive expression: {ctx.getText()}")
+        left = self.visitMultiplicativeExpression(ctx.multiplicativeExpression(0))
+        for i in range(1, len(ctx.multiplicativeExpression())):
+            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            right = self.visitMultiplicativeExpression(ctx.multiplicativeExpression(i))  # Visita il prossimo unary expression
+            left = f"{left} {operator} {right}"  # Combina il risultato precedente con l'operatore corrente
+        return f"{left}"  
+
+    def visitMultiplicativeExpression(self, ctx: KotlinParser.MultiplicativeExpressionContext):
+        """Handles multiplicative expressions like a * b / c % d."""
+        print(f"Visiting multiplicative expression: {ctx.getText()}")
+        left = self.visitUnaryExpression(ctx.unaryExpression(0))
+        for i in range(1, len(ctx.unaryExpression())):
+            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            right = self.visitUnaryExpression(ctx.unaryExpression(i))  # Visita il prossimo unary expression
+            left = f"{left} {operator} {right}"  # Combina il risultato precedente con l'operatore corrente
+        return f"{left}" 
+
+    def visitUnaryExpression(self, ctx: KotlinParser.UnaryExpressionContext):
+        print(f"Visiting unary expression: {ctx.getText()}")
+        if ctx.NOT(): 
+            return f"!{self.visitPrimaryExpression(ctx.primaryExpression())}"
+        elif ctx.MINUS():
+            return f"-{self.visitPrimaryExpression(ctx.primaryExpression())}"
         else:
-            print(f"Unrecognized expression format: {ctx.getText()}")
-            return ""
+            return f"{self.visitMemebershipExpression(ctx.membershipExpression())}"
+
+    def visitMemebershipExpression(self, ctx: KotlinParser.PrimaryExpressionContext):
+        print(f"Visiting membership expression: {ctx.getText()}")
+        left = self.visitPrimaryExpression(ctx.primaryExpression())
+        if ctx.rangeExpression():
+            right = self.visitRangeExpression(ctx.rangeExpression()) 
+            if ctx.NOT() and ctx.IN():
+                return f"{left} !in {right}"
+            elif ctx.IN():
+                return f"{left} in {right}"
+        return f"{left}"
+    
+    def visitRangeExpression(self, ctx: KotlinParser.PrimaryExpressionContext):
+        print(f"Visiting range expression: {ctx.getText()}")
+        left = self.visitAdditiveExpression(ctx.additiveExpression(0))
+        right = self.visitAdditiveExpression(ctx.additiveExpression(1))        
+        return f"{left} ... {right}"
+
+    def visitPrimaryExpression(self, ctx: KotlinParser.PrimaryExpressionContext):
+        print(f"Visiting primary expression: {ctx.getText()}")
+        if ctx.IDENTIFIER():
+            return ctx.IDENTIFIER().getText()  
+        if ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
+            return f"({self.visitExpression(ctx.expression())})"
+        return self.visitLiteral(ctx.literal())  
 
     def visitLiteral(self, ctx):
         """Returns the literal value as text for Swift conversion."""
