@@ -1,4 +1,5 @@
 from antlr4 import *
+import antlr4
 from generated.antlr.KotlinLexer import KotlinLexer
 from generated.antlr.KotlinParser import KotlinParser
 
@@ -17,8 +18,9 @@ def parseKotlinCode(kotlin_code):
   
     try:
         tree = parser.program()  
-        print(f"Tree generated successfully:\n{tree.toStringTree(recog=parser)}")        
+        print(f"✅ Tree generated successfully:\n{tree.toStringTree(recog=parser)}")        
         return tree
+    
     except Exception as ex:
-        print(f"Oops! An error occured while parsing code.\n{ex}")
+        print(f"❌ Oops! An error occured while parsing code.\n{ex}")
         return None
