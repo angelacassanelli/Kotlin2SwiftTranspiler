@@ -1,0 +1,8 @@
+fun add(a: Int, b: Int): Int {
+    return a + b
+}
+
+fun main() {
+    val sum = add(a = 5, b = 7)
+    println(sum)
+}

@@ -107,10 +107,20 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         expected_swift = """if 1 <= 2 { print("if instruction") } else { print("else instruction") }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
+    def test_if_statement_without_brackets(self):
+        kotlin_code = """if (1 < 2) println("if instruction")"""
+        expected_swift = """if 1 < 2 { print("if instruction") }"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+
     # for Statement
 
     def test_for_statement(self):
         kotlin_code = """for (i in 1 .. 5) { println("for instruction") }"""
+        expected_swift = """for i in 1 ... 5 { print("for instruction") }"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+        
+    def test_for_statement_without_brackets(self):
+        kotlin_code = """for (i in 1 .. 5) println("for instruction")"""
         expected_swift = """for i in 1 ... 5 { print("for instruction") }"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 

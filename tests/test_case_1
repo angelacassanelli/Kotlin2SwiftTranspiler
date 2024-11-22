@@ -1,0 +1,10 @@
+fun main() {
+    var x: Int = 10
+    val y: String = "Hello"
+    
+    if (x > 5) {
+        println("x is greater than 5")
+    } else {
+        println("x is less than or equal to 5")
+    }
+}

@@ -17,6 +17,15 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by KotlinParser#oopStatement.
+    def enterOopStatement(self, ctx:KotlinParser.OopStatementContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#oopStatement.
+    def exitOopStatement(self, ctx:KotlinParser.OopStatementContext):
+        pass
+
+
     # Enter a parse tree produced by KotlinParser#statement.
     def enterStatement(self, ctx:KotlinParser.StatementContext):
         pass
@@ -242,6 +251,15 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by KotlinParser#functionStatement.
+    def enterFunctionStatement(self, ctx:KotlinParser.FunctionStatementContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#functionStatement.
+    def exitFunctionStatement(self, ctx:KotlinParser.FunctionStatementContext):
+        pass
+
+
     # Enter a parse tree produced by KotlinParser#returnStatement.
     def enterReturnStatement(self, ctx:KotlinParser.ReturnStatementContext):
         pass
@@ -266,6 +284,24 @@ class KotlinListener(ParseTreeListener):
 
     # Exit a parse tree produced by KotlinParser#parameter.
     def exitParameter(self, ctx:KotlinParser.ParameterContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#argumentList.
+    def enterArgumentList(self, ctx:KotlinParser.ArgumentListContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#argumentList.
+    def exitArgumentList(self, ctx:KotlinParser.ArgumentListContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#argument.
+    def enterArgument(self, ctx:KotlinParser.ArgumentContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#argument.
+    def exitArgument(self, ctx:KotlinParser.ArgumentContext):
         pass
 
 

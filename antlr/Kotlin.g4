@@ -5,14 +5,18 @@ grammar Kotlin;
 
 // Entry point: the program consists of zero or more statements followed by EOF
 program
-    : statement* EOF 
+    : oopStatement* EOF 
+    ;
+
+oopStatement
+    : classDeclaration
+    | functionDeclaration
+    | statement
     ;
 
 // Statement rule: different types of statements like variable declarations, functions, etc.
 statement
-    : classDeclaration
-    | functionDeclaration    
-    | varDeclaration
+    : varDeclaration
     | valDeclaration
     | assignmentStatement
     | returnStatement
@@ -30,7 +34,7 @@ varDeclaration
 
 // Constant declarations using 'val' with an optional type and initial value.
 valDeclaration
-    : VAL IDENTIFIER (COLON type)? EQ expression    
+    : VAL IDENTIFIER (COLON type)? EQ expression
     ;
 
 // Assignment statement: variable assignment using '='.
@@ -40,7 +44,7 @@ assignmentStatement
 
 // 'for' loop with a specified range.
 forStatement
-    : FOR LEFT_ROUND_BRACKET membershipExpression RIGHT_ROUND_BRACKET block
+    : FOR LEFT_ROUND_BRACKET membershipExpression RIGHT_ROUND_BRACKET (block | statement)
     ;
 
 // Conditional 'if' statement with an optional 'else' block.
@@ -60,7 +64,7 @@ printStatement
 
 // Code block, which can contain multiple statements.
 block
-    : LEFT_CURLY_BRACKET (varDeclaration | functionDeclaration | statement)* RIGHT_CURLY_BRACKET
+    : LEFT_CURLY_BRACKET (statement)* RIGHT_CURLY_BRACKET
     ;
 
 // Espressione di livello più alto (precedenza più bassa)
@@ -108,8 +112,9 @@ rangeExpression
 
 primaryExpression
     : IDENTIFIER
+    | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET    
+    | functionStatement
     | literal
-    | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
     ;
 
 // Literal values, which can be integers, booleans, or strings.
@@ -133,12 +138,16 @@ classDeclaration
 
 // Class body, can contain variable declarations or functions.
 classBody
-    : (varDeclaration | functionDeclaration)*
+    : (varDeclaration | valDeclaration | functionDeclaration)*
     ;
 
 // Function declarations, including parameters and a block of code.
 functionDeclaration
     : FUN IDENTIFIER LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET (COLON type)? block
+    ;
+
+functionStatement
+    : IDENTIFIER LEFT_ROUND_BRACKET argumentList? RIGHT_ROUND_BRACKET
     ;
     
 // Return statement: 'return' followed by an optional expression.
@@ -153,7 +162,16 @@ parameterList
 
 // Single parameter with an identifier, type, and an optional initial value.
 parameter
-    : IDENTIFIER COLON type (EQ literal)?
+    : IDENTIFIER COLON type (EQ expression)?
+    ;
+
+argumentList
+    : argument (COMMA argument)*
+    ;
+
+// Single parameter with an identifier, type, and an optional initial value.
+argument
+    : (IDENTIFIER EQ)? expression
     ;
 
 // Boolean literals: 'true' or 'false'.
