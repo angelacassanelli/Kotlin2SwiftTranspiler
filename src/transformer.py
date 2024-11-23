@@ -29,10 +29,10 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         and joining them into a single Swift program.
         """
         print(f"Visiting program: {ctx.getText()}")
-        statements = [self.visitOopStatement(stmt) for stmt in ctx.oopStatement()]
+        statements = [self.visitTopLevelStatement(stmt) for stmt in ctx.topLevelStatement()]
         return "\n".join(filter(None, statements))
     
-    def visitOopStatement(self, ctx):
+    def visitTopLevelStatement(self, ctx):
         """Determines the type of statement and directs to the appropriate visit method."""
         print(f"Visiting statement: {ctx.getText()}")
         if ctx.classDeclaration():
@@ -204,7 +204,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     statements.append(self.visitStatement(stmt))
         return "\n".join(filter(None, statements))
 
-    def visitfunctionStatement(self, ctx):
+    def visitCallExpression(self, ctx):
         print(f"Visiting function statement: {ctx.getText()}")
         func_name = self.visitIdentifier(ctx.IDENTIFIER())
         arguments = self.visitArgumentList(ctx.argumentList()) if ctx.argumentList() else ""
@@ -345,8 +345,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return ctx.IDENTIFIER().getText()  
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
             return f"({self.visitExpression(ctx.expression())})"  
-        elif ctx.functionStatement():
-            return self.visitfunctionStatement(ctx.functionStatement())
+        elif ctx.callExpression():
+            return self.visitCallExpression(ctx.callExpression())
         elif ctx.literal():
             return self.visitLiteral(ctx.literal())
 

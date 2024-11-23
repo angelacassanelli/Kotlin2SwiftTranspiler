@@ -5,26 +5,25 @@ grammar Kotlin;
 
 // Entry point: the program consists of zero or more statements followed by EOF
 program
-    : oopStatement* EOF 
+    : topLevelStatement* EOF 
     ;
 
-oopStatement
+topLevelStatement
     : classDeclaration
-    | functionDeclaration
-    | statement
+    | commentStatement
     ;
 
 // Statement rule: different types of statements like variable declarations, functions, etc.
 statement
-    : varDeclaration
-    | valDeclaration
-    | assignmentStatement
-    | returnStatement
+    : readStatement
+    | printStatement
     | ifStatement
     | forStatement
-    | printStatement
-    | readStatement
-    | commentStatement
+    | varDeclaration
+    | valDeclaration
+    | assignmentStatement
+    | functionDeclaration
+    | returnStatement
     ;
 
 // Variable declarations using 'var' with an optional type and initial value.
@@ -113,7 +112,7 @@ rangeExpression
 primaryExpression
     : IDENTIFIER
     | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET    
-    | functionStatement
+    | callExpression
     | literal
     ;
 
@@ -146,7 +145,7 @@ functionDeclaration
     : FUN IDENTIFIER LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET (COLON type)? block
     ;
 
-functionStatement
+callExpression
     : IDENTIFIER LEFT_ROUND_BRACKET argumentList? RIGHT_ROUND_BRACKET
     ;
     

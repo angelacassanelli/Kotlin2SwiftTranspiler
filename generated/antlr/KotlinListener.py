@@ -17,12 +17,12 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#oopStatement.
-    def enterOopStatement(self, ctx:KotlinParser.OopStatementContext):
+    # Enter a parse tree produced by KotlinParser#topLevelStatement.
+    def enterTopLevelStatement(self, ctx:KotlinParser.TopLevelStatementContext):
         pass
 
-    # Exit a parse tree produced by KotlinParser#oopStatement.
-    def exitOopStatement(self, ctx:KotlinParser.OopStatementContext):
+    # Exit a parse tree produced by KotlinParser#topLevelStatement.
+    def exitTopLevelStatement(self, ctx:KotlinParser.TopLevelStatementContext):
         pass
 
 
@@ -251,12 +251,12 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#functionStatement.
-    def enterFunctionStatement(self, ctx:KotlinParser.FunctionStatementContext):
+    # Enter a parse tree produced by KotlinParser#callExpression.
+    def enterCallExpression(self, ctx:KotlinParser.CallExpressionContext):
         pass
 
-    # Exit a parse tree produced by KotlinParser#functionStatement.
-    def exitFunctionStatement(self, ctx:KotlinParser.FunctionStatementContext):
+    # Exit a parse tree produced by KotlinParser#callExpression.
+    def exitCallExpression(self, ctx:KotlinParser.CallExpressionContext):
         pass
 
 
