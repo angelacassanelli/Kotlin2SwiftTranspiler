@@ -11,7 +11,7 @@ def main():
     - Prints the generated Swift code or an error message if parsing or transformation fails.
     """
 
-    kotlin_code_file = "tests/test_case_3"
+    kotlin_code_file = "tests/test_case_0"
 
     try:
         # Open and read the contents of the file

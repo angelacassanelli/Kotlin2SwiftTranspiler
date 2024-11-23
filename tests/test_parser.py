@@ -25,103 +25,103 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
     # Input Statement
     
     def test_input_with_assignment_statement(self):
-        kotlin_code = 'line = readLine()'
-        expected_swift = 'line = readLine()'
+        kotlin_code = 'class Example() { \nfun test() { line = readLine() }\n}'
+        expected_swift = 'class Example() {\nfunc test() { line = readLine() }\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_input_with_declaration_statement(self):
-        kotlin_code = 'line = readLine()'
-        expected_swift = 'line = readLine()'
+        kotlin_code = 'class Example() {\nfun test() { line = readLine() }\n}'
+        expected_swift = 'class Example() {\nfunc test() { line = readLine() }\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Output Statement
 
     def test_output_statement(self):
-        kotlin_code = 'println("Hello, world!")'
-        expected_swift = 'print("Hello, world!")'
+        kotlin_code = 'class Example() {\nfun test() { println("Hello, world!") }\n}'
+        expected_swift = 'class Example() {\nfunc test() { print("Hello, world!") }\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Variable/Constant Assignment & Declarations + Data Types
     
     def test_string_variable_declarations(self): 
-        kotlin_code = 'var s: String = "s"'
-        expected_swift = 'var s: String = "s"'
+        kotlin_code = 'class Example() {\nvar s: String = "s"\n}'
+        expected_swift = 'class Example() {\nvar s: String = "s"\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_int_variable_declarations(self):
-        kotlin_code = 'var i: Int = 10'
-        expected_swift = 'var i: Int = 10'
+        kotlin_code = 'class Example() {\nvar i: Int = 10\n}'
+        expected_swift = 'class Example() {\nvar i: Int = 10\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_variable_boolean_variable_declarations(self):
-        kotlin_code = 'var b: Boolean = true'
-        expected_swift = 'var b: Bool = true'
+        kotlin_code = 'class Example() {\nvar b: Boolean = true\n}'
+        expected_swift = 'class Example() {\nvar b: Bool = true\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_string_constant_declarations(self):
-        kotlin_code = 'val s: String = "s"'
-        expected_swift = 'let s: String = "s"'
+        kotlin_code = 'class Example() {\nval s: String = "s"\n}'
+        expected_swift = 'class Example() {\nlet s: String = "s"\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_int_constant_declarations(self):
-        kotlin_code = 'var i: Int = 10'
-        expected_swift = 'var i: Int = 10'
+        kotlin_code = 'class Example() {\nvar i: Int = 10\n}'
+        expected_swift = 'class Example() {\nvar i: Int = 10\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_boolean_constant_declarations(self):
-        kotlin_code = 'val b: Boolean = true'
-        expected_swift = 'let b: Bool = true'
+        kotlin_code = 'class Example() {\nval b: Boolean = true\n}'
+        expected_swift = 'class Example() {\nlet b: Bool = true\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Assignment Statement
 
     def test_string_variable_assignment(self):
-        kotlin_code = 's = "string"'
-        expected_swift = 's = "string"'
+        kotlin_code = 'class Example() {\ns = "string"\n}'
+        expected_swift = 'class Example() {\ns = "string"\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_int_variable_assignment(self):
-        kotlin_code = 'i = 10'
-        expected_swift = 'i = 10'
+        kotlin_code = 'class Example() {\ni = 10\n}'
+        expected_swift = 'class Example() {\ni = 10\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_boolean_constant_assignment(self):
-        kotlin_code = 'b = true'
-        expected_swift = 'b = true'
+        kotlin_code = 'class Example() {\nb = true\n}'
+        expected_swift = 'class Example() {\nb = true\n}'
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # if Statement
     
     def test_if_arithmetic_expression_statement(self):
-        kotlin_code = """if (1 > 2) { println("if instruction") }"""
-        expected_swift = """if 1 > 2 { print("if instruction") }"""
+        kotlin_code = """class Example() {\nfun test() { if (1 > 2) { println("if instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if 1 > 2 { print("if instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_if_boolean_expression_statement(self):
-        kotlin_code = """if (true) { println("if instruction") }"""
-        expected_swift = """if true { print("if instruction") }"""
+        kotlin_code = """class Example() {\nfun test() { if (true) { println("if instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if true { print("if instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_if_else_statement(self):
-        kotlin_code = """if (1 <= 2) { println("if instruction") } else { println("else instruction") }"""
-        expected_swift = """if 1 <= 2 { print("if instruction") } else { print("else instruction") }"""
+        kotlin_code = """class Example() {\nfun test() { if (1 <= 2) { println("if instruction") } else { println("else instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if 1 <= 2 { print("if instruction") } else { print("else instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_if_statement_without_brackets(self):
-        kotlin_code = """if (1 < 2) println("if instruction")"""
-        expected_swift = """if 1 < 2 { print("if instruction") }"""
+        kotlin_code = """class Example() {\nfun test() { if (1 < 2) println("if instruction") }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if 1 < 2 { print("if instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # for Statement
 
     def test_for_statement(self):
-        kotlin_code = """for (i in 1 .. 5) { println("for instruction") }"""
-        expected_swift = """for i in 1 ... 5 { print("for instruction") }"""
+        kotlin_code = """class Example() {\nfun test() { for (i in 1 .. 5) { println("for instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { for i in 1 ... 5 { print("for instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_for_statement_without_brackets(self):
-        kotlin_code = """for (i in 1 .. 5) println("for instruction")"""
-        expected_swift = """for i in 1 ... 5 { print("for instruction") }"""
+        kotlin_code = """class Example() {\nfun test() { for (i in 1 .. 5) println("for instruction") }\n}"""
+        expected_swift = """class Example() {\nfunc test() { for i in 1 ... 5 { print("for instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     ### Object Oriented Programming ###
@@ -129,130 +129,129 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
     # Logical expressions
 
     def test_function_logical_expression_1(self):
-        kotlin_code = """val isAdult = age >= 18 && hasID"""
-        expected_swift = """let isAdult = age >= 18 && hasID"""
+        kotlin_code = """class Example() {\nval isAdult = age >= 18 && hasID\n}"""
+        expected_swift = """class Example() {\nlet isAdult = age >= 18 && hasID\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_logical_expression_2(self):
-        kotlin_code = """val canVote = isCitizen || (age >= 18 && hasPermanentResidency)"""
-        expected_swift = """let canVote = isCitizen || (age >= 18 && hasPermanentResidency)"""
+        kotlin_code = """class Example() {\nval canVote = isCitizen || (age >= 18 && hasPermanentResidency)\n}"""
+        expected_swift = """class Example() {\nlet canVote = isCitizen || (age >= 18 && hasPermanentResidency)\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_logical_expression_3(self):
-        kotlin_code = """val isValid = (input != null) && (input > 5) || isFallbackEnabled"""
-        expected_swift = """let isValid = (input != null) && (input > 5) || isFallbackEnabled"""
+        kotlin_code = """class Example() {\nval isValid = (input != null) && (input > 5) || isFallbackEnabled\n}"""
+        expected_swift = """class Example() {\nlet isValid = (input != null) && (input > 5) || isFallbackEnabled\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_logical_expression_4(self):
-        kotlin_code = """val shouldRun = !isDisabled && (isEnabled || hasPermissions)"""
-        expected_swift = """let shouldRun = !isDisabled && (isEnabled || hasPermissions)"""
+        kotlin_code = """class Example() {\nval shouldRun = !isDisabled && (isEnabled || hasPermissions)\n}"""
+        expected_swift = """class Example() {\nlet shouldRun = !isDisabled && (isEnabled || hasPermissions)\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Arithmetic expressions
 
     def test_function_arithmetic_expression_1(self):
-        kotlin_code = """val result = (10 + 20) * 3 - 4 / 2"""
-        expected_swift = """let result = (10 + 20) * 3 - 4 / 2"""
+        kotlin_code = """class Example() {\nval result = (10 + 20) * 3 - 4 / 2\n}"""
+        expected_swift = """class Example() {\nlet result = (10 + 20) * 3 - 4 / 2\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_arithmetic_expression_2(self):
-        kotlin_code = """val area = (length * width) - (border * 2)"""
-        expected_swift = """let area = (length * width) - (border * 2)"""
+        kotlin_code = """class Example() {\nval area = (length * width) - (border * 2)\n}"""
+        expected_swift = """class Example() {\nlet area = (length * width) - (border * 2)\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_arithmetic_expression_3(self):
-        kotlin_code = """val price = basePrice + (taxRate * basePrice / 100)"""
-        expected_swift = """let price = basePrice + (taxRate * basePrice / 100)"""
+        kotlin_code = """class Example() {\nval price = basePrice + (taxRate * basePrice / 100)\n}"""
+        expected_swift = """class Example() {\nlet price = basePrice + (taxRate * basePrice / 100)\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_arithmetic_expression_4(self):
-        kotlin_code = """val score = (pointsEarned / totalPoints) * 100"""
-        expected_swift = """let score = (pointsEarned / totalPoints) * 100"""
+        kotlin_code = """class Example() {\nval score = (pointsEarned / totalPoints) * 100\n}"""
+        expected_swift = """class Example() {\nlet score = (pointsEarned / totalPoints) * 100\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Relational expressions
 
     def test_function_relational_expression_1(self):
-        kotlin_code = """val isGreater = x > y && y >= z"""
-        expected_swift = """let isGreater = x > y && y >= z"""
+        kotlin_code = """class Example() {\nval isGreater = x > y && y >= z\n}"""
+        expected_swift = """class Example() {\nlet isGreater = x > y && y >= z\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_relational_expression_2(self):
-        kotlin_code = """val isEqual = (a + b) == c"""
-        expected_swift = """let isEqual = (a + b) == c"""
+        kotlin_code = """class Example() {\nval isEqual = (a + b) == c\n}"""
+        expected_swift = """class Example() {\nlet isEqual = (a + b) == c\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_relational_expression_3(self):
-        kotlin_code = """val isInRange = value >= lowerBound && value <= upperBound"""
-        expected_swift = """let isInRange = value >= lowerBound && value <= upperBound"""
+        kotlin_code = """class Example() {\nval isInRange = value >= lowerBound && value <= upperBound\n}"""
+        expected_swift = """class Example() {\nlet isInRange = value >= lowerBound && value <= upperBound\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_relational_expression_4(self):
-        kotlin_code = """val isNotMatching = (input1 != input2) || input3 == null"""
-        expected_swift = """let isNotMatching = (input1 != input2) || input3 == null"""
+        kotlin_code = """class Example() {\nval isNotMatching = (input1 != input2) || input3 == null\n}"""
+        expected_swift = """class Example() {\nlet isNotMatching = (input1 != input2) || input3 == null\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Logic - arithmetic expressions
 
     def test_function_logic_arithmetic_expression_1(self):
-        kotlin_code = """val isValidScore = ((score + bonus) > 50) && !isPenalty"""
-        expected_swift = """let isValidScore = ((score + bonus) > 50) && !isPenalty"""
+        kotlin_code = """class Example() {\nval isValidScore = ((score + bonus) > 50) && !isPenalty\n}"""
+        expected_swift = """class Example() {\nlet isValidScore = ((score + bonus) > 50) && !isPenalty\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_logic_arithmetic_expression_2(self):
-        kotlin_code = """val canPass = (examScore >= 50) && (attendanceRate > 75)"""
-        expected_swift = """let canPass = (examScore >= 50) && (attendanceRate > 75)"""
+        kotlin_code = """class Example() {\nval canPass = (examScore >= 50) && (attendanceRate > 75)\n}"""
+        expected_swift = """class Example() {\nlet canPass = (examScore >= 50) && (attendanceRate > 75)\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_logic_arithmetic_expression_3(self):
-        kotlin_code = """val isQualified = ((experience * skillLevel) >= 100) || hasCertification"""
-        expected_swift = """let isQualified = ((experience * skillLevel) >= 100) || hasCertification"""
+        kotlin_code = """class Example() {\nval isQualified = ((experience * skillLevel) >= 100) || hasCertification\n}"""
+        expected_swift = """class Example() {\nlet isQualified = ((experience * skillLevel) >= 100) || hasCertification\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_logic_arithmetic_expression_4(self):
-        kotlin_code = """val isBalanced = (income - expenses) >= 0 && !hasDebts"""
-        expected_swift = """let isBalanced = (income - expenses) >= 0 && !hasDebts"""
+        kotlin_code = """class Example() {\nval isBalanced = (income - expenses) >= 0 && !hasDebts\n}"""
+        expected_swift = """class Example() {\nlet isBalanced = (income - expenses) >= 0 && !hasDebts\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
 
     # Expressions with parenthesis
 
     def test_function_expression_with_peranthesis_1(self):
-        kotlin_code = """val result = (((10 + 2) * 5) / 3) - 1"""
-        expected_swift = """let result = (((10 + 2) * 5) / 3) - 1"""
+        kotlin_code = """class Example() {\nval result = (((10 + 2) * 5) / 3) - 1\n}"""
+        expected_swift = """class Example() {\nlet result = (((10 + 2) * 5) / 3) - 1\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_expression_with_peranthesis_2(self):
-        kotlin_code = """val isTrue = (((a && b) || c) && !d)"""
-        expected_swift = """let isTrue = (((a && b) || c) && !d)"""
+        kotlin_code = """class Example() {\nval isTrue = (((a && b) || c) && !d)\n}"""
+        expected_swift = """class Example() {\nlet isTrue = (((a && b) || c) && !d)\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_expression_with_peranthesis_3(self):
-        kotlin_code = """val complex = ((x * y) - (z / w)) > threshold"""
-        expected_swift = """let complex = ((x * y) - (z / w)) > threshold"""
+        kotlin_code = """class Example() {\nval complex = ((x * y) - (z / w)) > threshold\n}"""
+        expected_swift = """class Example() {\nlet complex = ((x * y) - (z / w)) > threshold\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Function Declaration
 
     def test_function_declaration(self):
-        kotlin_code = """fun exampleFunction() { println("Hello!") }"""
-        expected_swift = """func exampleFunction() { print("Hello!") }"""
+        kotlin_code = """class Example() {\nfun exampleFunction() { println("Hello!") }\n}"""
+        expected_swift = """class Example() {\nfunc exampleFunction() { print("Hello!") }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
-
         
     def test_function_with_params_declaration(self):
-        kotlin_code = """fun exampleFunction(x: Int, z: Int, b: Boolean) { println("Hello!") }"""
-        expected_swift = """func exampleFunction(x: Int, z: Int, b: Bool) { print("Hello!") }"""
+        kotlin_code = """class Example() {\nfun exampleFunction(x: Int, z: Int, b: Boolean) { println("Hello!") }\n}"""
+        expected_swift = """class Example() {\nfunc exampleFunction(x: Int, z: Int, b: Bool) { print("Hello!") }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     def test_function_with_return_declaration(self):
-        kotlin_code = """fun exampleFunction(): Int { return 5 }"""
-        expected_swift = """func exampleFunction() -> Int { return 5 }"""
+        kotlin_code = """class Example() {\nfun exampleFunction(): Int { return 5 }\n}"""
+        expected_swift = """class Example() {\nfunc exampleFunction() -> Int { return 5 }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
   
     def test_function_with_params_and_return_declaration(self):
-        kotlin_code = """fun exampleFunction(x: Int, z: Int, b: Boolean): Boolean { if (x > y) { return b } else { return false } }"""
-        expected_swift = """func exampleFunction(x: Int, z: Int, b: Bool) -> Bool { if x > y { return b } else { return false } }"""
+        kotlin_code = """class Example() {\nfun exampleFunction(x: Int, z: Int, b: Boolean): Boolean { if (x > y) { return b } else { return false } }\n}"""
+        expected_swift = """class Example() {\nfunc exampleFunction(x: Int, z: Int, b: Bool) -> Bool { if x > y { return b } else { return false } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Class Declaration
@@ -273,7 +272,7 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_class_with_params_declaration(self):
-        kotlin_code = """class Person(val name: String, var age: Int) { fun greet() { println("Hello!") } }"""
+        kotlin_code = """class Person(\nval name: String, var age: Int) { fun greet() { println("Hello!") }\n}"""
         expected_swift = """class Person() {\nvar name: String\nvar age: Int\ninit(name: String, age: Int) {\nself.name = name\nself.age = age\n}\nfunc greet() { print("Hello!") }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 

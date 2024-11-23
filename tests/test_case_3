@@ -1,13 +1,14 @@
 class Person(var name: String, var age: Int) {
+    fun main() {
+        val person = Person(name = "John", age = 30)
+        for (i in 1..5) {
+            greet()
+        }
+    }
+
     fun greet() {
         println("Hello, $name!")
     }
 }
 
-fun main() {
-    val person = Person(name = "John", age = 30)
-    
-    for (i in 1..5) {
-        println("Iteration $i")
-    }
-}
+

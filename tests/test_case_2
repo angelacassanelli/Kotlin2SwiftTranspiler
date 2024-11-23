@@ -1,8 +1,10 @@
-fun add(a: Int, b: Int): Int {
-    return a + b
-}
+class Math() {
+    fun main() {
+         sum = add(a = 5, b = 7)
+        println(sum)
+    }
 
-fun main() {
-    val sum = add(a = 5, b = 7)
-    println(sum)
+    fun add(a: Int, b: Int): Int {
+        return a + b
+    }
 }

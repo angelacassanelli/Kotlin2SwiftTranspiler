@@ -37,30 +37,33 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"Visiting statement: {ctx.getText()}")
         if ctx.classDeclaration():
             return self.visitClassDeclaration(ctx.classDeclaration())
-        elif ctx.functionDeclaration():
-            return self.visitFunctionDeclaration(ctx.functionDeclaration())     
+        elif ctx.commentStatement():
+            return self.visitCommentStatement(ctx.commentStatement())     
         else: 
-            return self.visitStatement(ctx.statement())     
+            print(f"Unrecognized statement: {ctx.getText()}")
+            return ""
 
     def visitStatement(self, ctx):
         """Determines the type of statement and directs to the appropriate visit method."""
         print(f"Visiting statement: {ctx.getText()}")
-        if ctx.varDeclaration(): 
-            return self.visitVarDeclaration(ctx.varDeclaration())
-        elif ctx.valDeclaration(): 
-            return self.visitValDeclaration(ctx.valDeclaration())
-        elif ctx.assignmentStatement():
-            return self.visitAssignment(ctx.assignmentStatement())
+        if ctx.readStatement():
+            return self.visitReadStatement(ctx.readStatement())
         elif ctx.printStatement():
             return self.visitPrintStatement(ctx.printStatement())
-        elif ctx.readStatement():
-            return self.visitReadStatement(ctx.readStatement())
-        elif ctx.returnStatement():
-            return self.visitReturnStatement(ctx.returnStatement())
         elif ctx.ifStatement():
             return self.visitIfStatement(ctx.ifStatement())
         elif ctx.forStatement():
             return self.visitForStatement(ctx.forStatement())
+        elif ctx.assignmentStatement():
+            return self.visitAssignment(ctx.assignmentStatement())
+        elif ctx.varDeclaration(): 
+            return self.visitVarDeclaration(ctx.varDeclaration())
+        elif ctx.valDeclaration(): 
+            return self.visitValDeclaration(ctx.valDeclaration())
+        elif ctx.functionDeclaration():
+            return self.visitFunctionDeclaration(ctx.functionDeclaration())     
+        elif ctx.returnStatement():
+            return self.visitReturnStatement(ctx.returnStatement())
         elif ctx.commentStatement():
             return self.visitComment(ctx.commentStatement())        
         else: 
@@ -198,10 +201,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             for stmt in ctx.children:
                 if isinstance(stmt, KotlinParser.VarDeclarationContext):
                     statements.append(self.visitVarDeclaration(stmt))
+                elif isinstance(stmt, KotlinParser.ValDeclarationContext):
+                    statements.append(self.visitValDeclaration(stmt))
+                elif isinstance(stmt, KotlinParser.AssignmentStatementContext):
+                    statements.append(self.visitAssignment(stmt))
                 elif isinstance(stmt, KotlinParser.FunctionDeclarationContext):
                     statements.append(self.visitFunctionDeclaration(stmt))
-                else:
-                    statements.append(self.visitStatement(stmt))
+                elif isinstance(stmt, KotlinParser.CommentStatementContext):
+                    statements.append(self.visitCommentStatement(stmt))
         return "\n".join(filter(None, statements))
 
     def visitCallExpression(self, ctx):
@@ -355,7 +362,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"Visiting literal: {ctx.getText()}")
         return ctx.getText()
     
-    def visitComment(self, ctx):
+    def visitCommentStatement(self, ctx):
         """Trannsforms inline and blockc comments."""
         print(f"Visiting comment: {ctx.getText()}")
         if ctx.LINE_COMMENT():
