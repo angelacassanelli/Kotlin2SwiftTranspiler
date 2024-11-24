@@ -60,8 +60,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return self.visitVarDeclaration(ctx.varDeclaration())
         elif ctx.valDeclaration(): 
             return self.visitValDeclaration(ctx.valDeclaration())
-        elif ctx.functionDeclaration():
-            return self.visitFunctionDeclaration(ctx.functionDeclaration())     
         elif ctx.returnStatement():
             return self.visitReturnStatement(ctx.returnStatement())
         elif ctx.commentStatement():

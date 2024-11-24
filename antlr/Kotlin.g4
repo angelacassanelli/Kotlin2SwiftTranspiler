@@ -22,7 +22,6 @@ statement
     | assignmentStatement
     | varDeclaration
     | valDeclaration
-    | functionDeclaration
     | returnStatement
     | commentStatement
     ;
