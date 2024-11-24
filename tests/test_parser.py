@@ -9,12 +9,22 @@ def generate_swift_from_kotlin(kotlin_code):
     - Transforming the parse tree into Swift code using KotlinToSwiftTransformer.
     Returns the Swift code or an error message if parsing fails.
     """
+
+    # Step 1: Parse the Kotlin code to generate the parse tree
     tree = parseKotlinCode(kotlin_code)
+    
+    # If parsing fails (i.e., the tree is None), return an error message
     if tree is None:
         return "Parsing failed"
 
+    # Step 2: Transform the parse tree into Swift code using the KotlinToSwiftVisitor
     transformer = KotlinToSwiftVisitor()
+    
+    # Generate the Swift code by visiting the parse tree
     swift_code = transformer.visitProgram(tree)
+
+    # Step 3: Return the Swift code, stripping any extra whitespace; 
+    # if no Swift code is generated, return a message indicating this.
     return swift_code.strip() if swift_code else "No Swift code generated"
 
 

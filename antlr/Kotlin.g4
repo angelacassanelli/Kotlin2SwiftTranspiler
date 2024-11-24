@@ -1,111 +1,117 @@
-// Grammar definition
+// Grammar definition for a restricted version of Kotlin
 grammar Kotlin;
 
-// Parser Rules 
+// ------------------- Parser Rules -------------------
 
-// Entry point: the program consists of zero or more statements followed by EOF
+// Entry point: a program consists of zero or more top-level statements followed by EOF
 program
     : topLevelStatement* EOF 
     ;
 
+// Top-level statements: statements that can appear directly in a program
 topLevelStatement
-    : classDeclaration
-    | commentStatement
+    : classDeclaration      // Declaration of a class
+    | commentStatement      // Inline or block comment
     ;
 
-// Statement rule: different types of statements like variable declarations, functions, etc.
+// Statements: various executable constructs within functions or blocks
 statement
-    : readStatement
-    | printStatement
-    | ifStatement
-    | forStatement
-    | assignmentStatement
-    | varDeclaration
-    | valDeclaration
-    | returnStatement
-    | commentStatement
+    : readStatement         // Reads input from the user
+    | printStatement        // Prints output to the console
+    | ifStatement           // Conditional "if" statement
+    | forStatement          // "For" loop with a range
+    | assignmentStatement   // Variable assignment
+    | varDeclaration        // Declaration of a mutable variable
+    | valDeclaration        // Declaration of an immutable variable
+    | returnStatement       // Return statement for functions
+    | commentStatement      // Inline or block comment
     ;
 
-// Code block, which can contain multiple statements.
+// Block of code: a series of statements enclosed in curly braces
 block
     : LEFT_CURLY_BRACKET (statement)* RIGHT_CURLY_BRACKET
     ;
 
-// Read statement: reads input, optionally assigning it to a variable.
+// Input statement: reads a line of input and optionally assigns it to a variable 
 readStatement
     : (VAR | VAL)? IDENTIFIER EQ READLINE LEFT_ROUND_BRACKET RIGHT_ROUND_BRACKET
     ;
 
-// Print statement that prints an expression to the output.
+// Output statement: prints an expression to the console
 printStatement
     : PRINTLN LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
     ;
 
-// Conditional 'if' statement with an optional 'else' block.
+// Conditional "if" statement, with an optional "else" block
 ifStatement
-    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET (block | statement) ( ELSE (block | statement) )? 
+    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET (block | statement) 
+      ( ELSE (block | statement) )?
     ;
 
-// 'for' loop with a specified range.
+// "For" loop: iterates over a range
 forStatement
     : FOR LEFT_ROUND_BRACKET membershipExpression RIGHT_ROUND_BRACKET (block | statement)
     ;
 
-// Assignment statement: variable assignment using '='.
+// Assignment statement: assigns a value to a variable
 assignmentStatement
     : IDENTIFIER EQ expression
     ;
 
-// Variable declarations using 'var' with an optional type and initial value.
+// Variable declaration: declares a mutable variable with an optional type and initial value
 varDeclaration        
     : VAR IDENTIFIER (COLON type)? EQ expression
     ;
 
-// Constant declarations using 'val' with an optional type and initial value.
+// Constant declaration: declares an immutable variable with an optional type and initial value
 valDeclaration
     : VAL IDENTIFIER (COLON type)? EQ expression
     ;
 
-// Function declarations, including parameters and a block of code.
+// Function declaration: defines a function with parameters, an optional return type, and a body
 functionDeclaration
-    : FUN IDENTIFIER LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET (COLON type)? block
+    : FUN IDENTIFIER LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET 
+      (COLON type)? block
     ;
 
-// Return statement: 'return' followed by an optional expression.
+// Return statement: exits a function, optionally returning an expression
 returnStatement
     : RETURN expression
     ;
 
-// Class declarations with an optional constructor and a class body.
+// Class declaration: defines a class with an optional constructor and a body
 classDeclaration
-    : CLASS IDENTIFIER (LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET)? LEFT_CURLY_BRACKET classBody RIGHT_CURLY_BRACKET
+    : CLASS IDENTIFIER 
+      (LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET)? 
+      LEFT_CURLY_BRACKET classBody RIGHT_CURLY_BRACKET
     ;
 
-// Class body, can contain variable declarations or functions.
+// Class body: contains declarations of variables, functions, or comments
 classBody
     : (varDeclaration | valDeclaration | assignmentStatement | functionDeclaration | commentStatement)*
     ;
 
-// Parameter list, used in function declarations.
+// Parameter list: used in function or class constructors
 parameterList
     : parameter (COMMA parameter)*
     ;
 
-// Single parameter with an identifier, type, and an optional initial value.
+// Parameter: a single parameter with an identifier, type, and optional initial value
 parameter
     : IDENTIFIER COLON type (EQ expression)?
     ;
 
+// Argument list: passed to functions or constructors
 argumentList
     : argument (COMMA argument)*
     ;
 
-// Single parameter with an identifier, type, and an optional initial value.
+// Argument: a single value or named value passed to a function
 argument
     : (IDENTIFIER EQ)? expression
     ;
 
-// Espressione di livello più alto (precedenza più bassa)
+// Expressions: describe computations or values
 expression
     : logicalOrExpression
     ;
@@ -119,11 +125,12 @@ logicalAndExpression
     ;
 
 equalityExpression
-    : relationalExpression (EQEQ relationalExpression | NEQ relationalExpression)*
+    : relationalExpression 
+      (EQEQ relationalExpression | NEQ relationalExpression)*
     ;
 
 relationalExpression
-    : additiveExpression ((GT | GTE | LT | LTE ) additiveExpression)?
+    : additiveExpression ((GT | GTE | LT | LTE) additiveExpression)?
     ;
 
 additiveExpression
@@ -139,9 +146,10 @@ unaryExpression
     | MINUS primaryExpression
     | membershipExpression
     ;
-    
+
 membershipExpression
-    : primaryExpression (IN rangeExpression | NOT IN rangeExpression)?
+    : primaryExpression 
+      (IN rangeExpression | NOT IN rangeExpression)?
     ;
 
 primaryExpression
@@ -150,7 +158,7 @@ primaryExpression
     | callExpression
     | literal
     ;
-    
+
 rangeExpression
     : additiveExpression RANGE additiveExpression
     ;
@@ -159,43 +167,48 @@ callExpression
     : IDENTIFIER LEFT_ROUND_BRACKET argumentList? RIGHT_ROUND_BRACKET
     ;
 
-// Literal values, which can be integers, booleans, or strings.
+// Literal values: integers, strings, or booleans
 literal
     : INT_LITERAL
     | STRING_LITERAL
     | booleanLiteral
     ;
 
-// Boolean literals: 'true' or 'false'.
+// Boolean literals: true or false
 booleanLiteral
     : BOOLEAN_TRUE 
     | BOOLEAN_FALSE
     ;
 
+// Comment statements: inline or block comments
 commentStatement
     : LINE_COMMENT 
     | BLOCK_COMMENT
     ;
 
-// Defines recognized types.
+// Type definitions: specify variable or parameter types
 type
     : TYPE_INT
     | TYPE_STRING
     | TYPE_BOOLEAN
     ;
 
-// Lexer Rules: Token definitions
+// ------------------- Lexer Rules -------------------
 
+// Variable keywords
 VAR: 'var';
 VAL: 'val';
 
+// Type keywords
 TYPE_INT: 'Int';
 TYPE_STRING: 'String';
 TYPE_BOOLEAN: 'Boolean';
 
+// Boolean values
 BOOLEAN_TRUE: 'true';
 BOOLEAN_FALSE: 'false';
 
+// Keywords for control flow and other constructs
 CLASS: 'class';
 FUN: 'fun';
 RETURN: 'return';
@@ -206,24 +219,22 @@ IN: 'in';
 PRINTLN: 'println';
 READLINE: 'readLine';
 
+// Punctuation and operators
 COMMA: ',';  
 SEMICOLON: ';';  
 COLON: ':';  
 DOT: '.';  
-
 LEFT_ROUND_BRACKET: '(';
 RIGHT_ROUND_BRACKET: ')';
 LEFT_CURLY_BRACKET: '{';
 RIGHT_CURLY_BRACKET: '}';
 LEFT_SQUARE_BRACKET: '[';
 RIGHT_SQUARE_BRACKET: ']';
-
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
 MOD: '%';
-
 EQ: '=';
 EQEQ: '==';
 NEQ: '!=';
@@ -231,42 +242,38 @@ GT: '>';
 GTE: '>=';
 LT: '<';
 LTE: '<=';
-
 AND: '&&';
 OR: '||';
 NOT: '!';
-
 RANGE: '..';
-
 QUOTE: '"';
 APEX: '\'';
 
-// Identifiers: letters or underscores followed by alphanumeric characters.
+// Identifiers: variable or function names
 IDENTIFIER
     : [a-zA-Z_] [a-zA-Z_0-9]* 
     ;
 
-// Integer literals: sequences of digits.
+// Integer literals: numeric values
 INT_LITERAL
     : [0-9]+
     ;
 
-// String literals: enclosed in double quotes, with escape characters allowed.
+// String literals: text enclosed in double quotes
 STRING_LITERAL
     : QUOTE (~["\\] | '\\' .)* QUOTE
     ;
 
-// Ignores inline comments.
+// Comments: inline or block
 LINE_COMMENT
     : '//' ~[\r\n]* 
     ;
 
-// Ignores block comments.
 BLOCK_COMMENT
     : '/*' .*? '*/' 
     ;
 
-// Skip whitespace characters (spaces, tabs, newlines).
+// Whitespace: ignored during parsing
 WS
     : [ \t\r\n]+ -> skip
     ;
