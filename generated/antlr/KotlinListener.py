@@ -143,6 +143,24 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by KotlinParser#propertyList.
+    def enterPropertyList(self, ctx:KotlinParser.PropertyListContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#propertyList.
+    def exitPropertyList(self, ctx:KotlinParser.PropertyListContext):
+        pass
+
+
+    # Enter a parse tree produced by KotlinParser#property.
+    def enterProperty(self, ctx:KotlinParser.PropertyContext):
+        pass
+
+    # Exit a parse tree produced by KotlinParser#property.
+    def exitProperty(self, ctx:KotlinParser.PropertyContext):
+        pass
+
+
     # Enter a parse tree produced by KotlinParser#parameterList.
     def enterParameterList(self, ctx:KotlinParser.ParameterListContext):
         pass

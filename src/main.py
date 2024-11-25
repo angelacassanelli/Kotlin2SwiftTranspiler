@@ -45,10 +45,10 @@ def main():
             
             # Check if the generated Swift code is empty or None, and handle that case
             if swift_code is None or swift_code.strip() == "":
-                print("No Swift code generated.")
+                print("❌ Oops! No Swift code generated.")
             else:
                 # Print the generated Swift code
-                print(f"Swift code generated:\n{swift_code}")
+                print(f"✅ Swift code generated:\n{swift_code}")
 
     except Exception as e:
         print(f"❌ Oops! Error transpiling code: {e}")

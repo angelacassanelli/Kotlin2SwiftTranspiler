@@ -60,12 +60,12 @@ assignmentStatement
 
 // Variable declaration: declares a mutable variable with an optional type and initial value
 varDeclaration        
-    : VAR IDENTIFIER (COLON type)? EQ expression
+    : VAR IDENTIFIER COLON type (EQ expression)?
     ;
 
 // Constant declaration: declares an immutable variable with an optional type and initial value
 valDeclaration
-    : VAL IDENTIFIER (COLON type)? EQ expression
+    : VAL IDENTIFIER COLON type (EQ expression)?
     ;
 
 // Function declaration: defines a function with parameters, an optional return type, and a body
@@ -82,13 +82,24 @@ returnStatement
 // Class declaration: defines a class with an optional constructor and a body
 classDeclaration
     : CLASS IDENTIFIER 
-      (LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET)? 
-      LEFT_CURLY_BRACKET classBody RIGHT_CURLY_BRACKET
+      (LEFT_ROUND_BRACKET (propertyList | parameterList)? RIGHT_ROUND_BRACKET)? 
+      LEFT_CURLY_BRACKET classBody? RIGHT_CURLY_BRACKET
     ;
 
 // Class body: contains declarations of variables, functions, or comments
 classBody
     : (varDeclaration | valDeclaration | assignmentStatement | functionDeclaration | commentStatement)*
+    ;
+
+// Parameter list: used in function or class constructors
+propertyList
+    : property (COMMA property)*
+    ;
+
+// Parameter: a single parameter with an identifier, type, and optional initial value
+property
+    : varDeclaration
+    | valDeclaration
     ;
 
 // Parameter list: used in function or class constructors

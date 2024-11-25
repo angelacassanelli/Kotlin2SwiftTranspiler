@@ -29,4 +29,5 @@ export PATH="/opt/homebrew/opt/opencv@3/bin:$PATH"
 export JAVA_HOME="/usr/libexec/java_home -v 17.0"
 
 export PYTHONPATH="$PYTHONPATH:/Users/angelacassanelli/Documents/poliba/Kotlin2SwiftTranspiler/generated"
+export PYTHONPATH="$PYTHONPATH:/Users/angelacassanelli/Documents/poliba/Kotlin2SwiftTranspiler/src"
 

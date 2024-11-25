@@ -6,7 +6,7 @@ reserved_keywords = {
     "if", "else", "for", "class", "fun", "return", "true", "false", 
     "+", "-", "*", "/", "%", "=", "==", "!=", ">", ">=", "<", "<=",
     ",", ";", ":", ".", "(", ")", "{", "}", "[", "]", "&&", "||",
-      "!", "..", "\"", "\'"
+    "!", "..", "\"", "\'"
 }
 
 class KotlinToSwiftVisitor(ParseTreeVisitor):
@@ -124,7 +124,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Converts a Kotlin 'var' declaration to Swift, including type and optional initialization.
         print(f"Visiting var declaration: {ctx.getText()}")
         var_name = self.visitIdentifier(ctx.IDENTIFIER())
-        var_type = self.visitType(ctx.type_()) if ctx.type_() else None
+        var_type = self.visitType(ctx.type_()) 
         if ctx.expression():
             var_value = self.visitExpression(ctx.expression())
         else:
@@ -141,7 +141,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Converts a Kotlin 'val' declaration to Swift, including type and optional initialization.
         print(f"Visiting val declaration: {ctx.getText()}")
         val_name = self.visitIdentifier(ctx.IDENTIFIER())
-        val_type = self.visitType(ctx.type_()) if ctx.type_() else None
+        val_type = self.visitType(ctx.type_()) 
         if ctx.expression():
             val_value = self.visitExpression(ctx.expression())
         else:
@@ -177,21 +177,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Converts a Kotlin class declaration into a Swift class declaration.
         print(f"Visiting class declaration: {ctx.getText()}")
         class_name = self.visitIdentifier(ctx.IDENTIFIER())
-        body = self.visitClassBody(ctx.classBody())
+        body = self.visitClassBody(ctx.classBody()) if ctx.classBody() else ""
         has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
-        if ctx.parameterList():
-            constructor_params = self.visitParameterList(ctx.parameterList())
-            attributes_declarations = "\n".join([
-                f"var {param.split(':')[0].strip()}: {param.split(':')[1].strip().split('=')[0]}"
-                for param in constructor_params.split(", ")
+        if ctx.propertyList():        
+            propertyList = self.visitPropertyList(ctx.propertyList())
+            properties_declarations = "\n".join([
+                f"{property['keyword']} {property['name']}: {property['type']}"
+                for property in propertyList
             ])
-            attributes_assignments = "\n".join([
-                f"self.{param.split(':')[0].strip()} = {param.split(':')[0].strip()}"
-                for param in constructor_params.split(", ")
+            properties_assignments = "\n".join([
+                f"self.{property["name"]} = {property["name"]}"
+                for property in propertyList
             ])
-            constructor = f"init({constructor_params}) {{\n{attributes_assignments}\n}}"
+            constructor_params = ", ".join([
+                f"{property['name']}: {property['type']}" +
+                (f" = {property['value']}" if property['value'] is not None else "")
+                for property in propertyList
+            ])
+            constructor = f"init({constructor_params}) {{\n{properties_assignments}\n}}"
             class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
-            return f"{class_declaration} {{\n{attributes_declarations}\n{constructor}\n{body}\n}}"
+            return f"{class_declaration} {{\n{properties_declarations}\n{constructor}\n{body}\n}}"
+        elif ctx.parameterList():
+            constructor_params = self.visitParameterList(ctx.parameterList())
+            constructor = f"init({constructor_params}) {{}}"
+            class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
+            return f"{class_declaration} {{\n{constructor}\n{body}\n}}"
         class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
         return f"{class_declaration} {{\n{body}\n}}"
     
@@ -213,6 +223,27 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     statements.append(self.visitCommentStatement(stmt))
         return "\n".join(filter(None, statements))
 
+    def visitPropertyList(self, ctx):
+        # Converts a list of Kotlin properties into Swift properties.
+        print(f"Visiting property list: {ctx.getText()}")
+        return [self.visitProperty(property) for property in ctx.property_()]
+
+    def visitProperty(self, ctx):
+        # Converts a Kotlin property into a Swift property.
+        print(f"Visiting property: {ctx.getText()}")
+        if (ctx.varDeclaration()):   
+            new_context = ctx.varDeclaration()
+            name = self.visitIdentifier(new_context.IDENTIFIER())
+            type = self.visitType(new_context.type_())
+            value = self.visitExpression(new_context.expression()) if new_context.expression() else None         
+            return {"keyword": "var", "name": name, "type": type, "value": value}
+        elif (ctx.valDeclaration()):
+            new_context = ctx.valDeclaration()
+            name = self.visitIdentifier(new_context.IDENTIFIER())
+            type = self.visitType(new_context.type_())
+            value = self.visitExpression(new_context.expression()) if new_context.expression() else None         
+            return {"keyword": "let", "name": name, "type": type, "value": value}
+        
     def visitParameterList(self, ctx):
         # Converts a list of Kotlin parameters into Swift parameters.
         print(f"Visiting parameter list: {ctx.getText()}")

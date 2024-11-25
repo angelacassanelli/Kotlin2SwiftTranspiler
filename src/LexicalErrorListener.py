@@ -1,14 +1,14 @@
 from antlr4.error.ErrorListener import ErrorListener
 
-class SyntaxErrorListener(ErrorListener):
+class LexicalErrorListener(ErrorListener):
     def __init__(self):
         super().__init__()
         self.errors = []
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        # 'offendingSymbol' contains an invalid character
+        # 'offendingSymbol' contains the invalid character
         error_message = (
-            f"❌ Oops! Syntax Error Detected:\n"
+            f"❌ Oops! Lexical Error:\n"
             f"   🔍 {msg}\n"
             f"   📍 line {line}, column {column}"
         )

@@ -2,6 +2,7 @@ from antlr4 import *
 from generated.antlr.KotlinLexer import KotlinLexer
 from generated.antlr.KotlinParser import KotlinParser
 from SyntaxErrorListener import SyntaxErrorListener
+from LexicalErrorListener import LexicalErrorListener
 
 def parseKotlinCode(kotlin_code):
     """
@@ -18,22 +19,31 @@ def parseKotlinCode(kotlin_code):
     # Instantiate the lexer to tokenize the Kotlin code
     lexer = KotlinLexer(input_stream)
 
+    # Add the lexical error listener 
+    lexical_error_listener = LexicalErrorListener()
+    lexer.removeErrorListeners()
+    lexer.addErrorListener(lexical_error_listener)
+
     # Create a token stream from the lexer
     token_stream = CommonTokenStream(lexer)
 
     # Instantiate the parser using the token stream
     parser = KotlinParser(token_stream)
 
-    error_listener = SyntaxErrorListener()
+    # Add the syntax error listener 
+    syntax_error_listener = SyntaxErrorListener()
     parser.removeErrorListeners() 
-    parser.addErrorListener(error_listener)
+    parser.addErrorListener(syntax_error_listener)
 
     try:
         # Attempt to parse the program using the 'program' rule of the Kotlin parser
         tree = parser.program()
         
-        if error_listener.has_errors():
-            raise Exception("\n".join(error_listener.get_errors()))
+        # Check errors
+        if lexical_error_listener.has_errors():
+            raise Exception("\n".join(lexical_error_listener.get_errors()))
+        if syntax_error_listener.has_errors():
+            raise Exception("\n".join(syntax_error_listener.get_errors()))
         else:
             print(f"✅ Tree generated successfully:\n{tree.toStringTree(recog=parser)}")        
             return tree  # Return the parse tree if successful
