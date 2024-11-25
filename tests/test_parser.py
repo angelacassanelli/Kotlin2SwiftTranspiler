@@ -1,6 +1,6 @@
 import unittest
 from src.parser import parseKotlinCode
-from src.transformer import KotlinToSwiftVisitor
+from KotlinToSwiftVisitor import KotlinToSwiftVisitor
 
 def generate_swift_from_kotlin(kotlin_code):
     """

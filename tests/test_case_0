@@ -1,5 +1,5 @@
-class Example() { 
-    fun test() {
-        l = readLine() 
+class Example {
+    fun greet(name: String { 
+        println("Hello, $name!")
     }
 }

@@ -1,7 +1,7 @@
 from antlr4 import *
-import antlr4
 from generated.antlr.KotlinLexer import KotlinLexer
 from generated.antlr.KotlinParser import KotlinParser
+from SyntaxErrorListener import SyntaxErrorListener
 
 def parseKotlinCode(kotlin_code):
     """
@@ -24,15 +24,21 @@ def parseKotlinCode(kotlin_code):
     # Instantiate the parser using the token stream
     parser = KotlinParser(token_stream)
 
+    error_listener = SyntaxErrorListener()
+    parser.removeErrorListeners() 
+    parser.addErrorListener(error_listener)
+
     try:
         # Attempt to parse the program using the 'program' rule of the Kotlin parser
         tree = parser.program()
         
-        # If parsing is successful, print the generated parse tree (for debugging purposes)
-        print(f"✅ Tree generated successfully:\n{tree.toStringTree(recog=parser)}")        
-        return tree  # Return the parse tree if successful
+        if error_listener.has_errors():
+            raise Exception("\n".join(error_listener.get_errors()))
+        else:
+            print(f"✅ Tree generated successfully:\n{tree.toStringTree(recog=parser)}")        
+            return tree  # Return the parse tree if successful
     
     except Exception as ex:
         # If an error occurs during parsing, print the error message
-        print(f"❌ Oops! An error occurred while parsing the code.\n{ex}")
+        print(f"❌ Oops! Error while parsing code.\n{ex}")
         return None  # Return None in case of an error
