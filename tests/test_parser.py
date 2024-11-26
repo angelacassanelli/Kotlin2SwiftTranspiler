@@ -21,7 +21,7 @@ def generate_swift_from_kotlin(kotlin_code):
     visitor = KotlinToSwiftVisitor()
     
     # Generate the Swift code by visiting the parse tree
-    swift_code = visitor.visitProgram(tree)
+    swift_code = visitor.visit_program(tree)
 
     # Step 3: Return the Swift code, stripping any extra whitespace; 
     # if no Swift code is generated, return a message indicating this.

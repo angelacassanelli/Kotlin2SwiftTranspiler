@@ -52,7 +52,7 @@ def main():
             visitor = KotlinToSwiftVisitor()
             
             # Visit the root of the parse tree to generate Swift code
-            swift_code = visitor.visitProgram(tree)
+            swift_code = visitor.visit_program(tree)
             
             # Check if the generated Swift code is empty or None, and handle that case
             if swift_code is None or swift_code.strip() == "":
