@@ -1,5 +1,5 @@
 import unittest
-from src.parser import parseKotlinCode
+from src.parser import parse_kotlin_code
 from src.KotlinToSwiftVisitor import KotlinToSwiftVisitor
 
 def generate_swift_from_kotlin(kotlin_code):
@@ -11,7 +11,7 @@ def generate_swift_from_kotlin(kotlin_code):
     """
 
     # Step 1: Parse the Kotlin code to generate the parse tree
-    tree = parseKotlinCode(kotlin_code)
+    tree = parse_kotlin_code(kotlin_code)
     
     # If parsing fails (i.e., the tree is None), return an error message
     if tree is None:

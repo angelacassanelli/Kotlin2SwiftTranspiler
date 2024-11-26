@@ -1,16 +1,27 @@
-from parser import parseKotlinCode
+from parser import parse_kotlin_code
 from KotlinToSwiftVisitor import KotlinToSwiftVisitor
 
 def main():
     """
-    Entry point of the program:
-    - Defines a sample Kotlin code snippet.
-    - Parses the Kotlin code snippet by calling the parseKotlinCode function to generate a parse tree.
-    - Instantiates the KotlinToSwiftTransformer class to traverse the parse tree.
-    - Generates the corresponding Swift code by visiting the parse tree.
-    - Prints the generated Swift code or an error message if parsing or transformation fails.
-    """
+    Entry point of the program to transpile Kotlin code to Swift.
 
+    This function performs the following steps:
+    1. Reads a sample Kotlin code file.
+    2. Parses the Kotlin code using the `parseKotlinCode` function to generate the abstract syntax tree (AST).
+    3. Initializes the `KotlinToSwiftVisitor` to traverse the parse tree and transform it into Swift code.
+    4. Generates the corresponding Swift code.
+    5. Prints the generated Swift code, or an error message if parsing or transformation fails.
+
+    Workflow:
+        - Read Kotlin code from a file.
+        - Parse the code into a parse tree.
+        - Transform the parse tree to Swift code using the visitor pattern.
+        - Handle errors during reading, parsing, and transformation.
+
+    Raises:
+        Exception: If an error occurs at any point in reading, parsing, or transpiling the code.
+    """
+    
     # Define the path to the Kotlin code file for the test case
     kotlin_code = "tests/test_case_0"
 
@@ -30,7 +41,7 @@ def main():
 
     try:
         # Parse the Kotlin code using the parseKotlinCode function to generate the abstract syntax tree (AST)
-        tree = parseKotlinCode(kotlin_code)
+        tree = parse_kotlin_code(kotlin_code)
         
         # Check if the parsing was successful (i.e., the tree is not None)
         if tree is None:
@@ -51,6 +62,7 @@ def main():
                 print(f"✅ Swift code generated:\n{swift_code}")
 
     except Exception as e:
+        # Handle any exceptions that occur during the parsing or transpiling process
         print(f"❌ Oops! Error transpiling code: {e}")
         return
 
