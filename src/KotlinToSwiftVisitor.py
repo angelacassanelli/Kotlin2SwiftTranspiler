@@ -120,7 +120,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"Visiting assignment statement: {ctx.getText()}")
         var_name = self.visit_identifier(ctx.IDENTIFIER())
 
-        symbol = self.symbol_table.lookup_symbol_in_current_scope(var_name)
+        symbol = self.symbol_table.lookup_symbol(var_name)
         if symbol is None:
             self.semantic_error_listener.semantic_error(
                 msg = f"Variable '{var_name}' is not declared yet.", 
