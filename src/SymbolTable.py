@@ -15,22 +15,7 @@ class SymbolTable:
         if len(self.scopes) > 1:
             self.scopes.pop()
         else:
-            raise ValueError("Cannot remove the global scope.")
-
-    def add_symbol(self, name, symbol):
-        """Adds a symbol to the current scope.
-
-        Args:
-            name (str): The name of the symbol to add.
-            symbol (Symbol): The symbol object containing information (e.g., type, value).
-
-        Raises:
-            ValueError: If the symbol already exists in the current scope.
-        """
-        current_scope = self.scopes[-1]
-        if name in current_scope:
-            raise ValueError(f"Symbol '{name}' already declared in the current scope.")
-        current_scope[name] = symbol
+            raise ValueError("❌ Cannot remove the global scope.")
 
     def lookup_symbol(self, name):
         """Searches for a symbol in the active scopes, starting from the current one.
@@ -57,6 +42,44 @@ class SymbolTable:
         """
         current_scope = self.scopes[-1]  # Topmost scope
         return current_scope.get(name, None)
+
+    def add_symbol(self, name, symbol):
+        """Adds a symbol to the current scope.
+
+        Args:
+            name (str): The name of the symbol to add.
+            symbol (Symbol): The symbol object containing information (e.g., type, value).
+
+        Raises:
+            ValueError: If the symbol already exists in the current scope.
+        """
+        current_scope = self.scopes[-1]
+        if name in current_scope:
+            raise ValueError(f"❌ Symbol '{name}' is already declared in the current scope.")
+        current_scope[name] = symbol
+
+    def update_symbol(self, name, new_value=None, new_type=None):
+        """
+        Updates an existing symbol in the active scopes.
+
+        Args:
+            name (str): The name of the symbol to update.
+            new_value (optional): The new value to assign to the symbol.
+            new_type (optional): The new type to assign to the symbol.
+
+        Raises:
+            ValueError: If the symbol does not exist in any active scope.
+        """
+        for scope in reversed(self.scopes):
+            if name in scope:
+                symbol = scope[name]
+                if new_value is not None:
+                    symbol.value = new_value
+                if new_type is not None:
+                    symbol.type = new_type
+                return
+        raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
+
 
     def __repr__(self):
         return f"SymbolTable(scopes={self.scopes})"

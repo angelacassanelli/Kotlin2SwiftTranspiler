@@ -1,6 +1,5 @@
 class Person() {
-    var a: String
+    var a: String = 1
     fun test() {
-        a = "ciao"
     }
 }
