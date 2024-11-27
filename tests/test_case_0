@@ -1,5 +1,3 @@
-class Person() {
-    var a: String = 1
-    fun test() {
-    }
+class Example() {
+    val s: Boolean
 }

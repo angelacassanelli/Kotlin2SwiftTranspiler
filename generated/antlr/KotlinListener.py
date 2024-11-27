@@ -98,15 +98,6 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#valDeclaration.
-    def enterValDeclaration(self, ctx:KotlinParser.ValDeclarationContext):
-        pass
-
-    # Exit a parse tree produced by KotlinParser#valDeclaration.
-    def exitValDeclaration(self, ctx:KotlinParser.ValDeclarationContext):
-        pass
-
-
     # Enter a parse tree produced by KotlinParser#functionDeclaration.
     def enterFunctionDeclaration(self, ctx:KotlinParser.FunctionDeclarationContext):
         pass

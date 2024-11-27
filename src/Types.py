@@ -8,4 +8,4 @@ class KotlinTypes(Enum):
 class SwiftTypes(Enum):
     INT = "Int"
     STRING = "String"
-    BOOLEAN = "Boolean"
+    BOOLEAN = "Bool"

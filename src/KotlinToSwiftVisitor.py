@@ -1,7 +1,7 @@
 from antlr4 import ParseTreeVisitor
 from generated.antlr.KotlinParser import KotlinParser
 from Symbol import Symbol
-from Types import KotlinTypes
+from Types import SwiftTypes, KotlinTypes
 from Utils import KOTLIN_2_SWIFT_TYPES, RESERVED_KEYWORDS
 
 
@@ -18,11 +18,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def infer_value_type(self, value):
         if value.isdigit():
-            return KotlinTypes.INT
+            return SwiftTypes.INT.value
         elif value.startswith('"') and value.endswith('"'): 
-            return KotlinTypes.STRING
+            return SwiftTypes.STRING.value
         elif value == 'true' or value == 'false':
-            return KotlinTypes.BOOLEAN
+            return SwiftTypes.BOOLEAN.value
         else:
             raise ValueError("❌ Unsupported expression type")
 
@@ -58,8 +58,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return self.visit_assignment_statement(ctx.assignmentStatement())
         elif ctx.varDeclaration(): 
             return self.visit_var_declaration(ctx.varDeclaration())
-        elif ctx.valDeclaration(): 
-            return self.visit_val_declaration(ctx.valDeclaration())
         elif ctx.returnStatement():
             return self.visit_return_statement(ctx.returnStatement())
         elif ctx.commentStatement():
@@ -150,7 +148,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         else:
             # Add the variable to the symbol table
             var_type = self.visit_type(ctx.type_()) 
-            if var_type not in KotlinTypes:
+            if var_type not in SwiftTypes:
                 self.semantic_error_listener.semantic_error(
                     f"Unsupported type '{var_type}' for variable '{var_name}'.",
                     line=ctx.start.line,
@@ -174,45 +172,18 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             else:
                 var_value = None
 
-            declaration = f"var {var_name}"
+            if (ctx.VAR()):   
+                keyword = "var"
+            elif (ctx.VAL()):
+                keyword = "let"
+
+            declaration = f"{keyword} {var_name}"
             if var_type:
                 declaration += f": {var_type}"
             if var_value:
                 declaration += f" = {var_value}"
             return declaration        
 
-    def visit_val_declaration(self, ctx):
-        # Converts a Kotlin 'val' declaration to Swift, including type and optional initialization.
-        print(f"Visiting val declaration: {ctx.getText()}")
-        val_name = self.visit_identifier(ctx.IDENTIFIER())
-        
-        # Check if the variable is already declared
-        if self.symbol_table.lookup_symbol_in_current_scope(val_name):
-            self.semantic_error_listener.semantic_error(
-                msg = f"Variable '{val_name}' is already declared in the current scope.", 
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
-            return
-        else:
-            # Add the variable to the symbol table
-            val_type = self.visit_type(ctx.type_()) 
-
-            symbol = Symbol(val_name, val_type)
-            self.symbol_table.add_symbol(val_name, symbol)
-
-            if ctx.expression():
-                val_value = self.visit_expression(ctx.expression())
-            else:
-                val_value = None  
-            
-            declaration = f"let {val_name}"
-            if val_type:
-                declaration += f": {val_type}"
-            if val_value:
-                declaration += f" = {val_value}"
-            return declaration
-    
     def visit_function_declaration(self, ctx):
         # Transforms a Kotlin function declaration into a Swift function declaration.
         print(f"Visiting function declaration: {ctx.getText()}")
@@ -280,8 +251,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             for stmt in ctx.children:
                 if isinstance(stmt, KotlinParser.VarDeclarationContext):
                     statements.append(self.visit_var_declaration(stmt))
-                elif isinstance(stmt, KotlinParser.ValDeclarationContext):
-                    statements.append(self.visit_val_declaration(stmt))
                 elif isinstance(stmt, KotlinParser.AssignmentStatementContext):
                     statements.append(self.visit_assignment_statement(stmt))
                 elif isinstance(stmt, KotlinParser.FunctionDeclarationContext):
@@ -298,18 +267,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_property(self, ctx):
         # Converts a Kotlin property into a Swift property.
         print(f"Visiting property: {ctx.getText()}")
-        if (ctx.varDeclaration()):   
-            new_context = ctx.varDeclaration()
-            name = self.visit_identifier(new_context.IDENTIFIER())
-            type = self.visit_type(new_context.type_())
-            value = self.visit_expression(new_context.expression()) if new_context.expression() else None         
-            return {"keyword": "var", "name": name, "type": type, "value": value}
-        elif (ctx.valDeclaration()):
-            new_context = ctx.valDeclaration()
-            name = self.visit_identifier(new_context.IDENTIFIER())
-            type = self.visit_type(new_context.type_())
-            value = self.visit_expression(new_context.expression()) if new_context.expression() else None         
-            return {"keyword": "let", "name": name, "type": type, "value": value}
+        return self.visit_var_declaration(ctx.varDeclaration())
+    
+    # def visit_property(self, ctx):
+    #     # Converts a Kotlin property into a Swift property.
+    #     print(f"Visiting property: {ctx.getText()}")
+    #     new_context = ctx.varDeclaration()
+    #     name = self.visit_identifier(new_context.IDENTIFIER())
+    #     type = self.visit_type(new_context.type_())
+    #     value = self.visit_expression(new_context.expression()) if new_context.expression() else None         
+    #     if (new_context.VAR()):   
+    #         keyword = "var"
+    #     elif (new_context.VAL()):
+    #         keyword = "let"
+    #     return {"keyword": keyword, "name": name, "type": type, "value": value}
         
     def visit_parameter_list(self, ctx):
         # Converts a list of Kotlin parameters into Swift parameters.
@@ -484,8 +455,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Converts Kotlin types to Swift types.
         print(f"Visiting type: {ctx.getText()}")
         kotlin_type = ctx.getText()  
-        swift_type = self.kotlin_2_swift_types.get(kotlin_type, kotlin_type)  
-        return swift_type
+        swift_type = self.kotlin_2_swift_types.get(KotlinTypes[kotlin_type.upper()], kotlin_type)  
+        return swift_type.value
 
     def visit_identifier(self, ctx):
         # Handles identifiers, checking if they are reserved keywords.

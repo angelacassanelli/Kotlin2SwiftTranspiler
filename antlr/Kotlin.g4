@@ -21,8 +21,7 @@ statement
     | ifStatement           // Conditional "if" statement
     | forStatement          // "For" loop with a range
     | assignmentStatement   // Variable assignment
-    | varDeclaration        // Declaration of a mutable variable
-    | valDeclaration        // Declaration of an immutable variable
+    | varDeclaration        // Declaration of a variable
     | returnStatement       // Return statement for functions
     | commentStatement      // Inline or block comment
     ;
@@ -58,14 +57,9 @@ assignmentStatement
     : IDENTIFIER EQ expression
     ;
 
-// Variable declaration: declares a mutable variable with an optional type and initial value
+// Variable declaration: declares a mutable or immutable variable with an optional type and initial value
 varDeclaration        
-    : VAR IDENTIFIER COLON type (EQ expression)?
-    ;
-
-// Constant declaration: declares an immutable variable with an optional type and initial value
-valDeclaration
-    : VAL IDENTIFIER COLON type (EQ expression)?
+    : (VAR | VAL) IDENTIFIER COLON type (EQ expression)?
     ;
 
 // Function declaration: defines a function with parameters, an optional return type, and a body
@@ -88,7 +82,7 @@ classDeclaration
 
 // Class body: contains declarations of variables, functions, or comments
 classBody
-    : (varDeclaration | valDeclaration | assignmentStatement | functionDeclaration | commentStatement)*
+    : (varDeclaration | assignmentStatement | functionDeclaration | commentStatement)*
     ;
 
 // Parameter list: used in function or class constructors
@@ -99,7 +93,6 @@ propertyList
 // Parameter: a single parameter with an identifier, type, and optional initial value
 property
     : varDeclaration
-    | valDeclaration
     ;
 
 // Parameter list: used in function or class constructors
