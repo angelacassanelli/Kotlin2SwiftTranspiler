@@ -1,5 +1,7 @@
 from parser import parse_kotlin_code
 from KotlinToSwiftVisitor import KotlinToSwiftVisitor
+from SemanticErrorListener import SemanticErrorListener
+from SymbolTable import SymbolTable
 
 def main():
     """
@@ -48,14 +50,24 @@ def main():
             print("❌ Oops! Failed to parse Kotlin code.")
             return
         else:
+            # Create a new symbol table
+            symbol_table = SymbolTable()  
+            # Create a listener for semantic errors
+            semantic_error_listener = SemanticErrorListener()  
             # Instantiate the KotlinToSwiftVisitor class, which will visit the parse tree and transform it to Swift
-            visitor = KotlinToSwiftVisitor()
+            visitor = KotlinToSwiftVisitor(
+                symbol_table=symbol_table, 
+                semantic_error_listener = semantic_error_listener
+            )
             
             # Visit the root of the parse tree to generate Swift code
             swift_code = visitor.visit_program(tree)
             
+            # Check for semantic errors            
+            if semantic_error_listener.has_errors():
+                raise Exception("\n".join(semantic_error_listener.get_errors())) # Raise if semantic errors are found
             # Check if the generated Swift code is empty or None, and handle that case
-            if swift_code is None or swift_code.strip() == "":
+            elif swift_code is None or swift_code.strip() == "":
                 print("❌ Oops! No Swift code generated.")
             else:
                 # Print the generated Swift code
@@ -63,7 +75,7 @@ def main():
 
     except Exception as e:
         # Handle any exceptions that occur during the parsing or transpiling process
-        print(f"❌ Oops! Error transpiling code: {e}")
+        print(f"❌ Oops! Error transpiling code.\n{e}")
         return
 
 

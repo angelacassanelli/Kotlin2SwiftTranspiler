@@ -1,6 +1,8 @@
 import unittest
 from src.parser import parse_kotlin_code
 from src.KotlinToSwiftVisitor import KotlinToSwiftVisitor
+from src.SemanticErrorListener import SemanticErrorListener
+from src.SymbolTable import SymbolTable
 
 def generate_swift_from_kotlin(kotlin_code):
     """
@@ -18,15 +20,27 @@ def generate_swift_from_kotlin(kotlin_code):
         return "Parsing failed"
 
     # Step 2: Transform the parse tree into Swift code using the KotlinToSwiftVisitor
-    visitor = KotlinToSwiftVisitor()
+    
+    symbol_table = SymbolTable()  
+    semantic_error_listener = SemanticErrorListener()  
+    visitor = KotlinToSwiftVisitor(
+        symbol_table=symbol_table, 
+        semantic_error_listener = semantic_error_listener
+    )
     
     # Generate the Swift code by visiting the parse tree
     swift_code = visitor.visit_program(tree)
 
-    # Step 3: Return the Swift code, stripping any extra whitespace; 
+    # Step 3: Return the Swift code; 
     # if no Swift code is generated, return a message indicating this.
-    return swift_code.strip() if swift_code else "No Swift code generated"
-
+    if semantic_error_listener.has_errors():
+        raise Exception("\n".join(semantic_error_listener.get_errors())) 
+    elif swift_code is None or swift_code.strip() == "":
+        print("❌ Oops! No Swift code generated.")
+        return None
+    else:
+        print(f"✅ Swift code generated succesfully.")
+        return swift_code
 
 class TestKotlinToSwiftTransformer(unittest.TestCase):
     

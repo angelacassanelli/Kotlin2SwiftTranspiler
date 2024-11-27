@@ -45,6 +45,18 @@ class SymbolTable:
             if name in scope:
                 return scope[name]
         return None  # Not found
+    
+    def lookup_symbol_in_current_scope(self, name):
+        """Searches for a symbol in the current (topmost) scope.
+
+        Args:
+            name (str): The name of the symbol to search for.
+
+        Returns:
+            Symbol: The symbol if found, otherwise None.
+        """
+        current_scope = self.scopes[-1]  # Topmost scope
+        return current_scope.get(name, None)
 
     def __repr__(self):
         return f"SymbolTable(scopes={self.scopes})"

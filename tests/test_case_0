@@ -1,3 +1,6 @@
-class Person(val name: String, var age: Int) {
-    fun greet() { println("Hello!") }
+class Person() {
+    var a: String
+    fun test() {
+        var a: String
+    }
 }
