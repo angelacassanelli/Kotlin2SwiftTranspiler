@@ -138,7 +138,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"Visiting var declaration: {ctx.getText()}")
                 
         var_name = self.visit_identifier(ctx.IDENTIFIER())
-        var_value = self.visit_expression(ctx.expression()) if ctx.expression() else None
         
         if ctx.VAR(): 
             mutable = True
@@ -167,15 +166,19 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return
 
             # Mismatch type check, if variable is assigned
-            if var_value:                
-                value_type = self.infer_value_type(var_value)
-                if kotlin_type != value_type:
-                    self.semantic_error_listener.semantic_error(
-                        f"Type mismatch: Variable '{var_name}' is declared as type '{kotlin_type}' but is assigned a value of type '{value_type}'.",
-                        line=ctx.start.line,
-                        column=ctx.start.column
-                    )
-                    return
+            if ctx.expression():
+                var_value = self.visit_expression(ctx.expression())
+                if var_value:                
+                    value_type = self.infer_value_type(var_value)
+                    if kotlin_type != value_type:
+                        self.semantic_error_listener.semantic_error(
+                            f"Type mismatch: Variable '{var_name}' is declared as type '{kotlin_type}' but is assigned a value of type '{value_type}'.",
+                            line=ctx.start.line,
+                            column=ctx.start.column
+                        )
+                        return
+            else:
+                var_value = None
             
             # Add the variable to the symbol table
             symbol = Symbol(name=var_name, type=kotlin_type, mutable=mutable)
