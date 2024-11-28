@@ -1,4 +1,4 @@
 class Example() {
-    var s: Int = 1
-    s = "ciao"
+    val s: Int = 1
+    s = 2
 }

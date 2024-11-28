@@ -2,6 +2,9 @@ class SymbolTable:
     def __init__(self):
         self.scopes = [{}]  # Stack: each level is a dictionary representing a scope.
 
+    def __repr__(self):
+        return f"SymbolTable(scopes={self.scopes})"
+    
     def add_scope(self):
         """Adds a new scope by appending an empty dictionary to the stack."""
         self.scopes.append({})
@@ -80,6 +83,18 @@ class SymbolTable:
                 return
         raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
 
+    def get_symbol_info(self, name):
+        """
+        Retrieves the type and mutability of a symbol by its name.
 
-    def __repr__(self):
-        return f"SymbolTable(scopes={self.scopes})"
+        Args:
+            name (str): The name of the symbol.
+
+        Returns:
+            tuple: A tuple (type, mutable) if the symbol exists, otherwise None.
+        """
+        symbol = self.lookup_symbol(name)
+        if symbol:
+            return symbol.type, symbol.mutable
+        return None
+

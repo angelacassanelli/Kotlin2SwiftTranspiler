@@ -120,10 +120,21 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Check if variable is declared
         if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
             return
-        
-        var_value = self.visit_expression(ctx.expression())
-        self.symbol_table.update_symbol(name=var_name, new_value=var_value)
+        else:
+            var_value = self.visit_expression(ctx.expression())
+            info = self.symbol_table.get_symbol_info(var_name)
+            if info:
+                var_type, is_mutable = info
 
+            # Check mutability
+            if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
+                return
+            
+            # Check type mismatch            
+            if not self.validate_value(ctx=ctx, value=var_value, type=var_type):
+                return
+        
+        self.symbol_table.update_symbol(name=var_name, new_value=var_value) 
         return f"{var_name} = {var_value}"
         
 
@@ -517,12 +528,23 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def validate_value(self, ctx, value, type):
         """Validates the value assigned to the variable and checks for type mismatch."""        
-        value_type = self.infer_value_type(ctx = ctx, value = value)
+        value_type = self.infer_value_type(ctx=ctx, value=value)
         if type != value_type:
             self.semantic_error_listener.semantic_error(
                 f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
                 line=ctx.start.line,
                 column=ctx.start.column
+            )
+            return False
+        return True
+    
+    def check_mutability(self, ctx, var_name, is_mutable):
+        """Checks if the variable being assigned is mutable."""
+        if not is_mutable:               
+            self.semantic_error_listener.semantic_error(
+                msg = f"Trying to update immutable variable '{var_name}'.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
             )
             return False
         return True
