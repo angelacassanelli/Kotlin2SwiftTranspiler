@@ -204,9 +204,14 @@ VAR: 'var';
 VAL: 'val';
 
 // Type keywords
-TYPE_INT: 'Int';
-TYPE_STRING: 'String';
 TYPE_BOOLEAN: 'Boolean';
+TYPE_CHAR: 'Char';
+TYPE_STRING: 'String';
+TYPE_SHORT: 'Short';
+TYPE_INT: 'Int';
+TYPE_LONG: 'Long';
+TYPE_FLOAT: 'Float';
+TYPE_DOUBLE: 'Double';
 
 // Boolean values
 BOOLEAN_TRUE: 'true';
