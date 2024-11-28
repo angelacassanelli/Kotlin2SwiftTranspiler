@@ -118,19 +118,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         var_name = self.visit_identifier(ctx.IDENTIFIER())
 
         # Check if variable is declared
-        symbol = self.symbol_table.lookup_symbol(var_name)
-        if symbol is None:
-            self.semantic_error_listener.semantic_error(
-                msg = f"Variable '{var_name}' is not declared in any scope.", 
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
+        if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
             return
-        else:
-            var_value = self.visit_expression(ctx.expression())
-            self.symbol_table.update_symbol(name=var_name, new_value=var_value)
+        
+        var_value = self.visit_expression(ctx.expression())
+        self.symbol_table.update_symbol(name=var_name, new_value=var_value)
 
-            return f"{var_name} = {var_value}"
+        return f"{var_name} = {var_value}"
         
 
     def visit_var_declaration(self, ctx):
@@ -141,18 +135,21 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         mutable, keyword = (False, "let") if ctx.VAL() else (True, "var")
 
         # Check if the variable is already declared
-        if self.check_variable_already_declared(ctx = ctx, var_name = var_name):
+        if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = var_name):
             return
         else:
-            # Unsupported type check
+            # Check unsupported type
             kotlin_type = ctx.type_().getText()
             if not self.check_supported_type(ctx = ctx, type=kotlin_type):
                 return
 
-            # Mismatch type check, if variable is assigned            
-            var_value = self.visit_expression(ctx.expression()) if ctx.expression() else None            
-            if not self.validate_value(ctx=ctx, value=var_value, type=kotlin_type):
-                return
+            # Check type mismatch, if variable is assigned            
+            if ctx.expression():
+                var_value = self.visit_expression(ctx.expression())
+                if not self.validate_value(ctx=ctx, value=var_value, type=kotlin_type):
+                    return
+            else:
+                var_value = None
             
             # Add the variable to the symbol table
             self.add_variable_to_symbol_table(var_name=var_name, type=kotlin_type, mutable=mutable)
@@ -469,7 +466,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         self.symbol_table.add_symbol(var_name, symbol)
 
 
-    def infer_value_type(self, value):
+    def infer_value_type(self, ctx, value):
         if value.isdigit():
             return KotlinTypes.INT.value
         elif value.startswith('"') and value.endswith('"'): 
@@ -477,10 +474,26 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         elif value == 'true' or value == 'false':
             return KotlinTypes.BOOLEAN.value
         else:
-            raise ValueError("❌ Unsupported expression type")
+            self.semantic_error_listener.semantic_error(
+                msg = f"Unsupported expression type '{value}'.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return
         
         
     def check_variable_already_declared(self, ctx, var_name):
+        """Checks if the variable is already declared in any scope."""
+        if not self.symbol_table.lookup_symbol(var_name):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Variable '{var_name}' is not declared in any scope.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return False
+        return True
+
+    def check_variable_already_declared_in_current_scope(self, ctx, var_name):
         """Checks if the variable is already declared in the current scope."""
         if self.symbol_table.lookup_symbol_in_current_scope(var_name):
             self.semantic_error_listener.semantic_error(
@@ -504,7 +517,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def validate_value(self, ctx, value, type):
         """Validates the value assigned to the variable and checks for type mismatch."""        
-        value_type = self.infer_value_type(value)
+        value_type = self.infer_value_type(ctx = ctx, value = value)
         if type != value_type:
             self.semantic_error_listener.semantic_error(
                 f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",

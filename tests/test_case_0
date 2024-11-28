@@ -1,3 +1,4 @@
 class Example() {
-    val s: Float  
+    var s: Int = 1
+    s = "ciao"
 }
