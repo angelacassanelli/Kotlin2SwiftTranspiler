@@ -136,7 +136,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_var_declaration(self, ctx):
         # Converts a Kotlin 'var' declaration to Swift, including type and optional initialization.
         print(f"Visiting var declaration: {ctx.getText()}")
-                
         var_name = self.visit_identifier(ctx.IDENTIFIER())
         
         if ctx.VAR(): 
