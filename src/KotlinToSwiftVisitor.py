@@ -18,11 +18,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def infer_value_type(self, value):
         if value.isdigit():
-            return SwiftTypes.INT.value
+            return KotlinTypes.INT.value
         elif value.startswith('"') and value.endswith('"'): 
-            return SwiftTypes.STRING.value
+            return KotlinTypes.STRING.value
         elif value == 'true' or value == 'false':
-            return SwiftTypes.BOOLEAN.value
+            return KotlinTypes.BOOLEAN.value
         else:
             raise ValueError("❌ Unsupported expression type")
 
