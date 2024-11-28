@@ -118,6 +118,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"Visiting assignment statement: {ctx.getText()}")
         var_name = self.visit_identifier(ctx.IDENTIFIER())
 
+        # Check if variable is declared
         symbol = self.symbol_table.lookup_symbol(var_name)
         if symbol is None:
             self.semantic_error_listener.semantic_error(
@@ -128,14 +129,23 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return
         else:
             var_value = self.visit_expression(ctx.expression())
-            self.symbol_table.update_symbol(var_name, new_value=var_value)
+            self.symbol_table.update_symbol(name=var_name, new_value=var_value)
 
             return f"{var_name} = {var_value}"
 
     def visit_var_declaration(self, ctx):
         # Converts a Kotlin 'var' declaration to Swift, including type and optional initialization.
         print(f"Visiting var declaration: {ctx.getText()}")
+                
         var_name = self.visit_identifier(ctx.IDENTIFIER())
+        var_value = self.visit_expression(ctx.expression()) if ctx.expression() else None
+        
+        if ctx.VAR(): 
+            mutable = True
+            keyword = "var"
+        elif ctx.VAL():
+            mutable = False
+            keyword = "let"
 
         # Check if the variable is already declared
         if self.symbol_table.lookup_symbol_in_current_scope(var_name):
@@ -146,43 +156,36 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             )
             return
         else:
-            # Add the variable to the symbol table
-            var_type = self.visit_type(ctx.type_()) 
-            if var_type not in SwiftTypes:
+            # Unsupported type check
+            kotlin_type = ctx.type_().getText()
+            if kotlin_type not in KotlinTypes:
                 self.semantic_error_listener.semantic_error(
-                    f"Unsupported type '{var_type}' for variable '{var_name}'.",
+                    f"Unsupported type '{kotlin_type}' for variable '{var_name}'.",
                     line=ctx.start.line,
                     column=ctx.start.column
                 ) 
                 return
 
-            symbol = Symbol(var_name, var_type)
-            self.symbol_table.add_symbol(var_name, symbol)
-
-            if ctx.expression():
-                var_value = self.visit_expression(ctx.expression())    
+            # Mismatch type check, if variable is assigned
+            if var_value:                
                 value_type = self.infer_value_type(var_value)
-                if var_type != value_type:
+                if kotlin_type != value_type:
                     self.semantic_error_listener.semantic_error(
-                        f"Type mismatch: Variable '{var_name}' is declared as type '{var_type}' but is assigned a value of type '{value_type}'.",
+                        f"Type mismatch: Variable '{var_name}' is declared as type '{kotlin_type}' but is assigned a value of type '{value_type}'.",
                         line=ctx.start.line,
                         column=ctx.start.column
                     )
                     return
-            else:
-                var_value = None
+            
+            # Add the variable to the symbol table
+            symbol = Symbol(name=var_name, type=kotlin_type, mutable=mutable)
+            self.symbol_table.add_symbol(var_name, symbol)
 
-            if (ctx.VAR()):   
-                keyword = "var"
-            elif (ctx.VAL()):
-                keyword = "let"
-
-            declaration = f"{keyword} {var_name}"
-            if var_type:
-                declaration += f": {var_type}"
+            swift_type = self.visit_type(ctx.type_()) 
+            swift_var_declaration = f"{keyword} {var_name}: {swift_type}"
             if var_value:
-                declaration += f" = {var_value}"
-            return declaration        
+                swift_var_declaration += f" = {var_value}"
+            return swift_var_declaration        
 
     def visit_function_declaration(self, ctx):
         # Transforms a Kotlin function declaration into a Swift function declaration.

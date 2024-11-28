@@ -1,5 +1,5 @@
 class Symbol:
-    def __init__(self, name, type, value=None):
+    def __init__(self, name, type, mutable, value=None):
         """
         Represents a symbol in the symbol table, such as a variable or a function.
 
@@ -10,6 +10,7 @@ class Symbol:
         """
         self.name = name
         self.type = type
+        self.mutable = mutable
         self.value = value
 
     def __repr__(self):
