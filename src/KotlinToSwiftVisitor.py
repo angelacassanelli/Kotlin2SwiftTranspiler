@@ -504,6 +504,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return False
         return True
 
+
     def check_variable_already_declared_in_current_scope(self, ctx, var_name):
         """Checks if the variable is already declared in the current scope."""
         if self.symbol_table.lookup_symbol_in_current_scope(var_name):
@@ -514,6 +515,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             )
             return True
         return False
+    
     
     def check_supported_type(self, ctx, type):
         """Checks if the Kotlin type is supported."""
@@ -526,6 +528,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return False
         return True
 
+
     def validate_value(self, ctx, value, type):
         """Validates the value assigned to the variable and checks for type mismatch."""        
         value_type = self.infer_value_type(ctx=ctx, value=value)
@@ -537,6 +540,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             )
             return False
         return True
+    
     
     def check_mutability(self, ctx, var_name, is_mutable):
         """Checks if the variable being assigned is mutable."""
