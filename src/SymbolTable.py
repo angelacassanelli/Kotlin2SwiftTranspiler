@@ -67,7 +67,7 @@ class SymbolTable:
         current_scope[name] = symbol
 
 
-    def update_symbol(self, name, new_value=None):
+    def update_symbol(self, name, new_value):
         """
         Updates an existing symbol in the active scopes.
 
@@ -82,8 +82,7 @@ class SymbolTable:
         for scope in reversed(self.scopes):
             if name in scope:
                 symbol = scope[name]
-                if new_value is not None:
-                    symbol.value = new_value
+                symbol.value = new_value
                 return
         raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
 

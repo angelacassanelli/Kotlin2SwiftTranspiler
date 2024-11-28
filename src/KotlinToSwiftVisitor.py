@@ -121,7 +121,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
             return
         else:
-            var_value = self.visit_expression(ctx.expression())
             info = self.symbol_table.get_symbol_info(var_name)
             if info:
                 var_type, is_mutable = info
@@ -131,11 +130,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return
             
             # Check type mismatch            
-            if not self.validate_value(ctx=ctx, value=var_value, type=var_type):
+            if not self.validate_value(ctx=ctx, value=ctx.expression(), type=var_type):
                 return
         
-        self.symbol_table.update_symbol(name=var_name, new_value=var_value) 
-        return f"{var_name} = {var_value}"
+            var_value = self.visit_expression(ctx.expression())
+            self.symbol_table.update_symbol(name=var_name, new_value=var_value) 
+            return f"{var_name} = {var_value}"
         
 
     def visit_var_declaration(self, ctx):
@@ -156,16 +156,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
             # Check type mismatch, if variable is assigned            
             if ctx.expression():
-                var_value = self.visit_expression(ctx.expression())
-                if not self.validate_value(ctx=ctx, value=var_value, type=kotlin_type):
+                if not self.validate_value(ctx=ctx, value=ctx.expression(), type=kotlin_type):
                     return
+                var_value = self.visit_expression(ctx.expression()) 
             else:
                 var_value = None
             
             # Add the variable to the symbol table
-            self.add_variable_to_symbol_table(var_name=var_name, type=kotlin_type, mutable=mutable)
+            self.add_variable_to_symbol_table(var_name=var_name, type=kotlin_type, mutable=mutable, value=var_value)
             
-            swift_type = self.visit_type(ctx.type_()) 
+            swift_type = self.visit_type(ctx.type_())
             swift_var_declaration = f"{keyword} {var_name}: {swift_type}"
             if var_value:
                 swift_var_declaration += f" = {var_value}"
@@ -471,28 +471,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     ##### SEMANTIC CHECKS #####
 
-    def add_variable_to_symbol_table(self, var_name, type, mutable):
+    def add_variable_to_symbol_table(self, var_name, type, mutable, value = None):
         """Adds a variable to the symbol table."""
-        symbol = Symbol(name=var_name, type=type, mutable=mutable)
+        symbol = Symbol(name=var_name, type=type, mutable=mutable, value = value)
         self.symbol_table.add_symbol(var_name, symbol)
 
 
-    def infer_value_type(self, ctx, value):
-        if value.isdigit():
-            return KotlinTypes.INT.value
-        elif value.startswith('"') and value.endswith('"'): 
-            return KotlinTypes.STRING.value
-        elif value == 'true' or value == 'false':
-            return KotlinTypes.BOOLEAN.value
-        else:
-            self.semantic_error_listener.semantic_error(
-                msg = f"Unsupported expression type '{value}'.", 
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
-            return
-        
-        
     def check_variable_already_declared(self, ctx, var_name):
         """Checks if the variable is already declared in any scope."""
         if not self.symbol_table.lookup_symbol(var_name):
@@ -531,8 +515,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def validate_value(self, ctx, value, type):
         """Validates the value assigned to the variable and checks for type mismatch."""        
-        value_type = self.infer_value_type(ctx=ctx, value=value)
-        if type != value_type:
+        value_type = self.check_expression_type(value)
+        if value_type and type != value_type:
             self.semantic_error_listener.semantic_error(
                 f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
                 line=ctx.start.line,
@@ -553,3 +537,172 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return False
         return True
     
+
+    def check_expression_type(self, ctx):
+        return self.check_logical_or_expression_type(ctx.logicalOrExpression())
+    
+
+    def check_logical_or_expression_type(self, ctx):
+        left_type = self.check_logical_and_expression_type(ctx.logicalAndExpression(0))
+
+        for i in range(1, len(ctx.logicalAndExpression())):
+            right_type = self.check_logical_and_expression_type(ctx.logicalAndExpression(i))
+            if right_type != left_type:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply logical or operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return               
+        return left_type
+    
+
+    def check_logical_and_expression_type(self, ctx):
+        left_type = self.check_equality_expression_type(ctx.equalityExpression(0))
+
+        for i in range(1, len(ctx.equalityExpression())):
+            right_type = self.check_equality_expression_type(ctx.equalityExpression(i))
+            if right_type != left_type:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply logical and operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return               
+        return left_type
+    
+    
+    def check_equality_expression_type(self, ctx):
+        left_type = self.check_relational_expression_type(ctx.relationalExpression(0))
+        for i in range(1, len(ctx.relationalExpression())):
+            right_type = self.check_relational_expression_type(ctx.relationalExpression(i))
+            if right_type != left_type:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply equality operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return 
+        return left_type
+    
+
+    def check_relational_expression_type(self, ctx):
+        left_type = self.check_additive_expression_type(ctx.additiveExpression(0))  
+                
+        if len(ctx.additiveExpression()) > 1:
+            right_type = self.check_additive_expression_type(ctx.additiveExpression(1)) 
+            if right_type != left_type:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply relational operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return               
+        return left_type
+
+
+    def check_additive_expression_type(self, ctx):
+        left_type = self.check_multiplicative_expression_type(ctx.multiplicativeExpression(0))
+        
+        for i in range(1, len(ctx.multiplicativeExpression())):
+            right_type = self.check_multiplicative_expression_type(ctx.multiplicativeExpression(i))
+            if right_type != left_type:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply additive operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return          
+        return left_type
+
+    
+    def check_multiplicative_expression_type(self, ctx):
+        left_type = self.check_unary_expression_type(ctx.unaryExpression(0))
+        
+        for i in range(1, len(ctx.unaryExpression())):
+            right_type = self.check_unary_expression_type(ctx.unaryExpression(i))
+            if right_type != left_type:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply multiplicative operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return        
+        return left_type
+
+
+
+
+    def check_unary_expression_type(self, ctx):
+        if ctx.NOT(): 
+            expr_type = self.check_primary_expression_type(ctx.primaryExpression())  
+            if expr_type != KotlinTypes.BOOLEAN.value:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply operator '{ctx.NOT().getText()}' to operands of type '{expr_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return
+            return expr_type
+        elif ctx.MINUS():  
+            expr_type = self.check_primary_expression_type(ctx.primaryExpression())  
+            if expr_type != KotlinTypes.INT.value:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Cannot apply operator '{ctx.MINUS().getText()}' to operands of type '{expr_type}' in expression '{ctx.getText()}'", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return
+            return expr_type
+        else:
+            return self.check_membership_expression_type(ctx.membershipExpression())
+
+
+    def check_membership_expression_type(self, ctx):
+        left_type = self.check_primary_expression_type(ctx.primaryExpression())
+        if ctx.rangeExpression():
+            self.semantic_error_listener.semantic_error(
+                msg = f"Membership expression '{ctx.getText()}' is not allowed in this context.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return
+        return left_type
+
+
+    def check_primary_expression_type(self, ctx):
+        if ctx.IDENTIFIER():
+            identifier = self.visit_identifier(ctx.IDENTIFIER())
+            info = self.symbol_table.get_symbol_info(identifier)
+            if info:
+                var_type, _ = info
+            return var_type
+        elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
+            return self.check_expression_type(self, ctx)
+        elif ctx.literal():
+            return self.check_literal_type(ctx)
+        else:
+            self.semantic_error_listener.semantic_error(
+                msg = f"Unsupported expression type for expression '{ctx.getText()}'.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return
+
+
+    def check_literal_type(self, ctx):
+        literal = ctx.getText()
+        if literal.isdigit():
+            return KotlinTypes.INT.value
+        elif literal.startswith('"') and literal.endswith('"'): 
+            return KotlinTypes.STRING.value
+        elif literal == 'true' or literal == 'false':
+            return KotlinTypes.BOOLEAN.value
+        else:
+            self.semantic_error_listener.semantic_error(
+                msg = f"Unsupported expression type for variable '{literal}'.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return
+

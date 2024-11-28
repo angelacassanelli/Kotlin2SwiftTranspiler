@@ -1,7 +1,6 @@
 class Example() {
-    var a: Int = 1
-    a = "ciao" 
-    fun test() {
-        a = "ciao" 
-    }
+    var c: Boolean = true
+    var d: Boolean 
+    d = !c
+    c = false
 }
