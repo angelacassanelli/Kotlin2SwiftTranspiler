@@ -481,7 +481,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """Checks if the variable is already declared in any scope."""
         if not self.symbol_table.lookup_symbol(var_name):
             self.semantic_error_listener.semantic_error(
-                msg = f"Variable '{var_name}' is not declared in any scope.", 
+                msg = f"Trying to assign variable '{var_name}' before its declaration.", 
                 line = ctx.start.line, 
                 column = ctx.start.column
             )

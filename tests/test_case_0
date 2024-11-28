@@ -1,6 +1,11 @@
 class Example() {
     var c: Boolean = true
     var d: Boolean 
-    d = !c
-    c = false
+    fun test() {
+        d = !c
+        c = false
+        if (c) {
+            println("ciao")
+        }
+    }
 }
