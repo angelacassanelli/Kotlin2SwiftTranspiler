@@ -1,10 +1,11 @@
 class Example() {
     var c: Boolean = true
     var d: Boolean 
+    var n: Int = 11
     fun test() {
         d = !c
         c = false
-        if (c) {
+        if (n) {
             println("ciao")
         }
     }

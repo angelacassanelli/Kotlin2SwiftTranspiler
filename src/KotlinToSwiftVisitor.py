@@ -87,6 +87,10 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Converts a Kotlin if-else statement to Swift. The else block is optional.
         print(f"Visiting if statement: {ctx.getText()}")
         condition = self.visit_expression(ctx.expression())
+        
+        if not self.validate_if_condition(ctx):
+            return
+
         if ctx.block(0): 
             body = self.visit_block(ctx.block(0))
         else:  
@@ -130,10 +134,10 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return
             
             # Check type mismatch            
-            if not self.validate_value(ctx=ctx, value=ctx.expression(), type=var_type):
+            if not self.validate_value(ctx=ctx, type=var_type):
                 return
         
-            var_value = self.visit_expression(ctx.expression())
+            var_value = self.visit_expression(ctx=ctx.expression())
             self.symbol_table.update_symbol(name=var_name, new_value=var_value) 
             return f"{var_name} = {var_value}"
         
@@ -156,7 +160,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
             # Check type mismatch, if variable is assigned            
             if ctx.expression():
-                if not self.validate_value(ctx=ctx, value=ctx.expression(), type=kotlin_type):
+                if not self.validate_value(ctx=ctx, type=kotlin_type):
                     return
                 var_value = self.visit_expression(ctx.expression()) 
             else:
@@ -513,9 +517,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return True
 
 
-    def validate_value(self, ctx, value, type):
+    def validate_value(self, ctx, type):
         """Validates the value assigned to the variable and checks for type mismatch."""        
-        value_type = self.check_expression_type(value)
+        value_type = self.check_expression_type(ctx.expression())
         if value_type and type != value_type:
             self.semantic_error_listener.semantic_error(
                 f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
@@ -537,6 +541,18 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return False
         return True
     
+
+    def validate_if_condition(self, ctx):
+        condition_type = self.check_expression_type(ctx=ctx.expression())
+        if condition_type != KotlinTypes.BOOLEAN.value:
+            self.semantic_error_listener.semantic_error(
+                msg = f"Invalid expression type in 'if' condition: expected Boolean, found '{condition_type}'.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return False
+        return True
+
 
     def check_expression_type(self, ctx):
         return self.check_logical_or_expression_type(ctx.logicalOrExpression())
@@ -631,8 +647,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return left_type
 
 
-
-
     def check_unary_expression_type(self, ctx):
         if ctx.NOT(): 
             expr_type = self.check_primary_expression_type(ctx.primaryExpression())  
@@ -678,9 +692,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 var_type, _ = info
             return var_type
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
-            return self.check_expression_type(self, ctx)
+            return self.check_expression_type(ctx=ctx)
         elif ctx.literal():
-            return self.check_literal_type(ctx)
+            return self.check_literal_type(ctx=ctx)
         else:
             self.semantic_error_listener.semantic_error(
                 msg = f"Unsupported expression type for expression '{ctx.getText()}'.", 
