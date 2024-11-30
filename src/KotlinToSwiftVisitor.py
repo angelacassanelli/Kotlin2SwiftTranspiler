@@ -126,7 +126,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
             return
         else:
-            info = self.symbol_table.get_symbol_info(var_name)
+            info = self.symbol_table.get_variable_info(var_name)
             if info:
                 var_type, is_mutable = info
 
@@ -139,7 +139,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return
         
             var_value = self.visit_expression(ctx=ctx.expression())
-            self.symbol_table.update_symbol(name=var_name, new_value=var_value) 
+            self.symbol_table.update_variable(name=var_name, new_value=var_value) 
             return f"{var_name} = {var_value}"
         
 
@@ -479,12 +479,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def add_variable_to_symbol_table(self, var_name, type, mutable, value = None):
         """Adds a variable to the symbol table."""
         symbol = Symbol(name=var_name, type=type, mutable=mutable, value = value)
-        self.symbol_table.add_symbol(var_name, symbol)
+        self.symbol_table.add_variable(var_name, symbol)
 
 
     def check_variable_already_declared(self, ctx, var_name):
         """Checks if the variable is already declared in any scope."""
-        if not self.symbol_table.lookup_symbol(var_name):
+        if not self.symbol_table.lookup_variable(var_name):
             self.semantic_error_listener.semantic_error(
                 msg = f"Trying to assign variable '{var_name}' before its declaration.", 
                 line = ctx.start.line, 
@@ -496,7 +496,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_variable_already_declared_in_current_scope(self, ctx, var_name):
         """Checks if the variable is already declared in the current scope."""
-        if self.symbol_table.lookup_symbol_in_current_scope(var_name):
+        if self.symbol_table.lookup_variable_in_current_scope(var_name):
             self.semantic_error_listener.semantic_error(
                 msg=f"Variable '{var_name}' is already declared in the current scope.",
                 line=ctx.start.line,
@@ -704,7 +704,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_primary_expression_type(self, ctx):
         if ctx.IDENTIFIER():
             identifier = self.visit_identifier(ctx.IDENTIFIER())
-            info = self.symbol_table.get_symbol_info(identifier)
+            info = self.symbol_table.get_variable_info(identifier)
             if info:
                 var_type, _ = info
             return var_type
