@@ -108,6 +108,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_for_statement(self, ctx):
         # Converts a Kotlin for loop with a range to a Swift-compatible loop.
         print(f"Visiting for statement: {ctx.getText()}")
+        self.check_membership_expression_type(ctx.membershipExpression())
         expression = self.visit_memebership_expression(ctx.membershipExpression())
         if ctx.block(): 
             body = self.visit_block(ctx.block())
@@ -675,13 +676,29 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_membership_expression_type(self, ctx):
         left_type = self.check_primary_expression_type(ctx.primaryExpression())
         if ctx.rangeExpression():
+            if left_type != KotlinTypes.INT.value:
+                self.semantic_error_listener.semantic_error(
+                    msg = f"The left-hand side of the 'in' operator must be Int, found {left_type} instead.", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return 
+            else:
+                self.check_range_expression(ctx.rangeExpression())
+                return
+        return left_type
+    
+
+    def check_range_expression(self, ctx):
+        left_type = self.check_additive_expression_type(ctx.additiveExpression(0))
+        right_type = self.check_additive_expression_type(ctx.additiveExpression(1))
+        if left_type != KotlinTypes.INT.value or right_type != KotlinTypes.INT.value:
             self.semantic_error_listener.semantic_error(
-                msg = f"Membership expression '{ctx.getText()}' is not allowed in this context.", 
+                msg = f"The range operator '..' is only supported for Int types, found {left_type} and {right_type} instead.", 
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
-            return
-        return left_type
+        return
 
 
     def check_primary_expression_type(self, ctx):

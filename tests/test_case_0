@@ -5,7 +5,7 @@ class Example() {
     fun test() {
         d = !c
         c = false
-        if (n) {
+        for (n in c..d) {
             println("ciao")
         }
     }
