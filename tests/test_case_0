@@ -1,12 +1,4 @@
 class Example() {
-    var c: Boolean = true
-    var d: Boolean 
-    var n: Int = 11
-    fun test() {
-        d = !c
-        c = false
-        for (n in c..d) {
-            println("ciao")
-        }
-    }
+    fun test(a: String): Boolean {}
+    fun test(a: String): Boolean {}
 }

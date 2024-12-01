@@ -180,17 +180,37 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_function_declaration(self, ctx):
         # Transforms a Kotlin function declaration into a Swift function declaration.
         print(f"Visiting function declaration: {ctx.getText()}")
-        self.symbol_table.add_scope()
 
-        func_name = self.visit_identifier(ctx.IDENTIFIER())
-        parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
-        body = self.visit_block(ctx.block())
-        if ctx.type_():
-            return_type = self.visit_type(ctx.type_()) 
-            return f"func {func_name}({parameters}) -> {return_type} {{ {body} }}"
-        
-        self.symbol_table.remove_scope()
-        return f"func {func_name}({parameters}) {{ {body} }}"
+        fun_name = self.visit_identifier(ctx.IDENTIFIER())        
+        kotlin_param_types = self.check_parameter_list(ctx.parameterList()) if ctx.parameterList() else None
+
+        # Check if the variable is already declared
+        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):
+            return
+        else:
+            # Check unsupported return type
+            if ctx.type_():
+                kotlin_return_type = ctx.type_().getText()
+                if not self.check_supported_type(ctx = ctx, type=kotlin_return_type):
+                    return
+            else:
+                kotlin_return_type = None
+                        
+            self.symbol_table.add_function(fun_name, kotlin_param_types, kotlin_return_type)
+
+            parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
+            
+            self.symbol_table.add_scope()
+            body = self.visit_block(ctx.block())
+            self.symbol_table.remove_scope()
+
+            if ctx.type_():
+                return_type = self.visit_type(ctx.type_()) 
+                swift_function = f"func {fun_name}({parameters}) -> {return_type} {{ {body} }}"
+            else:
+                swift_function = f"func {fun_name}({parameters}) {{ {body} }}"
+
+            return swift_function
 
 
     def visit_return_statement(self, ctx):
@@ -205,10 +225,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_class_declaration(self, ctx):
         # Converts a Kotlin class declaration into a Swift class declaration.
         print(f"Visiting class declaration: {ctx.getText()}")
-        self.symbol_table.add_scope()
 
         class_name = self.visit_identifier(ctx.IDENTIFIER())
+
+        self.symbol_table.add_scope()
         body = self.visit_class_body(ctx.classBody()) if ctx.classBody() else ""
+        self.symbol_table.remove_scope()
+
         has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
         if ctx.propertyList():        
             propertyList = self.visit_property_list(ctx.propertyList())
@@ -235,7 +258,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return f"{class_declaration} {{\n{constructor}\n{body}\n}}"
         class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
         
-        self.symbol_table.remove_scope()
         return f"{class_declaration} {{\n{body}\n}}"
     
 
@@ -272,7 +294,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Converts a list of Kotlin parameters into Swift parameters.
         print(f"Visiting parameter list: {ctx.getText()}")
         return ", ".join([self.visit_parameter(param) for param in ctx.parameter()])
-    
+
 
     def visit_parameter(self, ctx):
         # Converts a Kotlin parameter into a Swift parameter.
@@ -510,7 +532,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """Checks if the Kotlin type is supported."""
         if type not in KotlinTypes:
             self.semantic_error_listener.semantic_error(
-                f"Unsupported type '{type}' for variable.",
+                f"Unsupported type '{type}'.",
                 line=ctx.start.line,
                 column=ctx.start.column
             )
@@ -737,3 +759,25 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             )
             return
 
+
+    def check_parameter_list(self, ctx):
+        return ", ".join([self.check_parameter(param) for param in ctx.parameter()])
+
+
+    def check_parameter(self, ctx):        
+        kotlin_param_type = ctx.type_().getText()
+        if not self.check_supported_type(ctx=ctx, type=kotlin_param_type):
+            return
+        return kotlin_param_type
+    
+
+    def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
+        if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Function '{fun_name}' with signature '{kotlin_param_types}' is already declared.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return True
+        return False
+        

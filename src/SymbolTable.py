@@ -1,6 +1,7 @@
 class SymbolTable:
     def __init__(self):
         self.scopes = [{"variables": {}, "functions": {}}]  # Stack: each level is a dictionary representing a scope.
+        print(f"Current scopes: {self.scopes}")
 
 
     def __repr__(self):
@@ -10,6 +11,7 @@ class SymbolTable:
     def add_scope(self):
         """Adds a new scope by appending an empty dictionary to the stack."""
         self.scopes.append({"variables": {}, "functions": {}})
+        print(f"Current scopes: {self.scopes}")
 
 
     def remove_scope(self):
@@ -20,6 +22,7 @@ class SymbolTable:
         """
         if len(self.scopes) > 1:
             self.scopes.pop()
+            print(f"Current scopes: {self.scopes}")
         else:
             raise ValueError("❌ Cannot remove the global scope.")
 
@@ -51,8 +54,8 @@ class SymbolTable:
         Returns:
             variable: The variable if found, otherwise None.
         """
-        current_scope = self.scopes[-1]  # Topmost scope
-        return current_scope["variables"].get(name, None)
+        current_scope = self.scopes[-1]["variables"]  # Topmost scope
+        return current_scope.get(name, None)
 
 
     def add_variable(self, name, variable):
@@ -128,24 +131,22 @@ class SymbolTable:
     ##### Functions #####
 
 
-    def lookup_function_in_current_scope(self, name, param_types):
-        """
-        Searches for a function in the current (topmost) scope.
+    def lookup_function(self, name, param_types):
+        """Searches for a function in the active scopes, starting from the current one.
 
         Args:
             name (str): The name of the function to search for.
-            param_types (list of str): A list of parameter types to match the function signature.
 
         Returns:
-            dict: The function's metadata (e.g., param_types, return_type) if found, otherwise None.
+            function: The function if found, otherwise None.
         """
-        current_scope = self.scopes[-1] 
-        functions = current_scope["functions"].get(name, None)
-        if functions:
-            for func in functions:
-                if func["param_types"] == param_types:
-                    return func
-        return None 
+        for scope in reversed(self.scopes):
+            if name in scope["functions"]:
+                functions = scope["functions"][name]
+                for func in functions:
+                    if func["param_types"] == param_types:
+                        return func
+        return None
 
 
     def add_function(self, name, param_types, return_type):
@@ -159,9 +160,11 @@ class SymbolTable:
             ValueError: If the function already exists in the current scope.
         """
         current_scope = self.scopes[-1]["functions"]
+        
         if name not in current_scope:
             current_scope[name] = []
+
         for func in current_scope[name]:
             if func["param_types"] == param_types:
-                raise ValueError(f"❌ Function '{name}' with parameters {param_types} is already declared.")
-        current_scope[name].appelookup_variable_in_current_scopend({"param_types": param_types, "return_type": return_type})
+                raise ValueError(f"❌ Function '{name}' with signature '{param_types}' is already declared in current scope.")
+        current_scope[name].append({"param_types": param_types, "return_type": return_type})
