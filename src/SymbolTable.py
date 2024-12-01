@@ -142,10 +142,9 @@ class SymbolTable:
         """
         for scope in reversed(self.scopes):
             if name in scope["functions"]:
-                functions = scope["functions"][name]
-                for func in functions:
-                    if func["param_types"] == param_types:
-                        return func
+                for fun in scope["functions"][name]:
+                    if fun["param_types"] == param_types:
+                        return fun
         return None
 
 
@@ -164,7 +163,29 @@ class SymbolTable:
         if name not in current_scope:
             current_scope[name] = []
 
-        for func in current_scope[name]:
-            if func["param_types"] == param_types:
-                raise ValueError(f"❌ Function '{name}' with signature '{param_types}' is already declared in current scope.")
+        for fun in current_scope[name]:
+            if fun["param_types"] == param_types:
+                raise ValueError(f"❌ function '{name}' with signature '{param_types}' is already declared in current scope.")
         current_scope[name].append({"param_types": param_types, "return_type": return_type})
+
+
+    def get_function_return_type(self, name, param_types):
+        """
+        Retrieves the return type of a function by its name and parameter types.
+
+        Args:
+            name (str): The name of the function.
+            param_types (list): The list of parameter types of the function.
+
+        Returns:
+            str: The return type of the function.
+
+        Raises:
+            ValueError: If the function is not found in any scope.
+        """
+        for scope in reversed(self.scopes):
+            if name in scope["functions"]:
+                for fun in scope["functions"][name]:
+                    if fun["param_types"] == param_types:
+                        return fun["return_type"]
+        raise ValueError(f"❌ Function '{name}' with parameters {param_types} is not declared in any scope.")

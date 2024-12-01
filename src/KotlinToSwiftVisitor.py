@@ -443,9 +443,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_call_expression(self, ctx):
         # Handles function call expressions in Kotlin.
         print(f"Visiting call expression: {ctx.getText()}")
-        func_name = self.visit_identifier(ctx.IDENTIFIER())
+        fun_name = self.visit_identifier(ctx.IDENTIFIER())
         arguments = self.visit_argument_list(ctx.argumentList()) if ctx.argumentList() else ""
-        return f"{func_name}({arguments})"
+        return f"{fun_name}({arguments})"
 
 
     def visit_literal(self, ctx):
@@ -734,6 +734,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return self.check_expression_type(ctx=ctx)
         elif ctx.literal():
             return self.check_literal_type(ctx=ctx)
+        elif ctx.callExpression():
+            return self.check_call_expression(ctx.callExpression())
         else:
             self.semantic_error_listener.semantic_error(
                 msg = f"Unsupported expression type for expression '{ctx.getText()}'.", 
@@ -774,10 +776,43 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
             self.semantic_error_listener.semantic_error(
-                msg = f"Function '{fun_name}' with signature '{kotlin_param_types}' is already declared.", 
+                msg = f"Function '{fun_name}' with signature '{kotlin_param_types}' is already declared." if kotlin_param_types
+                        else f"Function '{fun_name}' is already declared.", 
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
             return True
         return False
         
+
+    def check_call_expression(self, ctx):
+        fun_name = ctx.IDENTIFIER().getText()
+        arguments = self.check_argument_list(ctx.argumentList()) if ctx.argumentList() else None #TODO
+        kotlin_param_types = None  #TODO
+        if not self.symbol_table.lookup_function(fun_name, kotlin_param_types):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Trying to call function '{fun_name}' with signature '{kotlin_param_types}' before its declaration." if kotlin_param_types 
+                        else f"Trying to call function '{fun_name}' before its declaration.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return
+        return_type = self.symbol_table.get_function_return_type(fun_name, kotlin_param_types)        
+        if not return_type:
+            self.semantic_error_listener.semantic_error(
+                msg = f"Trying to assign the result of function '{fun_name}', which does not return any value.",
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return
+        return return_type
+    
+    
+    def check_argument_list(self, ctx):
+        return ", ".join([self.check_argument(argument) for argument in ctx.argument()])       
+    
+
+    def check_argument(self, ctx):
+        if (ctx.IDENTIFIER()):
+            argument_name = ctx.IDENTIFIER().getText()
+        pass #TODO
