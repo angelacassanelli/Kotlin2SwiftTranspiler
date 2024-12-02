@@ -17,8 +17,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         self.reserved_keywords = RESERVED_KEYWORDS
 
 
-    def visit_program(self, ctx):
+    def visit_program(self, ctx):        
         # Visits the program node, iterating over top-level statements and joining them into a single Swift program.
+        print("🚀 Visiting Kotlin code...")
         print(f"Visiting program: {ctx.getText()}")
         statements = [self.visit_top_level_statement(stmt) for stmt in ctx.topLevelStatement()]
         return "\n".join(filter(None, statements))

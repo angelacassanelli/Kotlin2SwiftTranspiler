@@ -27,10 +27,9 @@ build:
 test:
 	$(PYTHON) -m unittest discover -s $(TEST_DIR)
 
-# Esegui il transpiler su un esempio specifico
-# $(PYTHON) $(SRC_DIR)/main.py examples/example.kt
+# Esegui il transpiler
 run:
-	$(PYTHON) $(SRC_DIR)/main.py 
+	$(PYTHON) $(SRC_DIR)/transpiler.py 
 
 # Pulisci i file generati e di output
 clean:
