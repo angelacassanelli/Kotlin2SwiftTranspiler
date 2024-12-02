@@ -1,5 +1,15 @@
 class Example() {
-    fun test(a: String, aaa: String, a: Int, b: Int, b: Boolean): String {
-        return "ciao"
+    var a: Int = 1
+    var b: Int = 2
+
+    fun test(a: Int, b: String): Int {
+        return a + b
     }
+
+    fun test(a: Int, b: Int): Int {
+        return a + b
+    }
+    
+    var c: Int = test(a = 1, b = true)
+
 }

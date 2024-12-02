@@ -456,6 +456,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Handles function call expressions in Kotlin.
         print(f"    🔍 Visiting call expression: {ctx.getText()}")
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
+
+        if ctx.argumentList():        
+            self.check_argument_types(ctx, fun_name) # TODO: TEST type match
+            # self.check_argument_names(ctx, fun_name) # TODO: check that arg-names match param_names                
+        
         arguments = self.visit_argument_list(ctx.argumentList()) if ctx.argumentList() else ""
         return f"{fun_name}({arguments})"
 
@@ -816,7 +821,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return param_name
     
 
-
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
             self.semantic_error_listener.semantic_error(
@@ -831,7 +835,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_call_expression(self, ctx):
         fun_name = ctx.IDENTIFIER().getText()
-        argument_types = self.check_argument_list(ctx.argumentList()) if ctx.argumentList() else None
+        argument_types = self.check_argument_type_list(ctx.argumentList()) if ctx.argumentList() else None
         
         if not self.symbol_table.lookup_function(fun_name, argument_types):
             self.semantic_error_listener.semantic_error(
@@ -854,12 +858,21 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return return_type
     
     
-    def check_argument_list(self, ctx):
-        return ", ".join([self.check_argument(argument) for argument in ctx.argument()])       
+    def check_argument_type_list(self, ctx):
+        return ", ".join([self.check_argument_type(argument) for argument in ctx.argument()])       
     
 
-    def check_argument(self, ctx):
+    def check_argument_type(self, ctx):
         return self.check_expression_type(ctx.expression())
+
+
+    def check_argument_name_list(self, ctx):
+        return ", ".join([self.check_argument_name(argument) for argument in ctx.argument()])       
+    
+
+    def check_argument_name(self, ctx):
+        argument_name = self.visit_identifier(ctx.IDENTIFIER()) if (ctx.IDENTIFIER()) else None
+        return argument_name
 
 
     def check_return_statement(self, ctx, fun_name, fun_return_type):
@@ -910,7 +923,95 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         column = ctx.start.column
                     )
                     return False
-        return True
+        return True    
+
+
+    def check_argument_types(self, ctx, fun_name):
+        argument_types = self.check_argument_type_list(ctx.argumentList()) 
+        function_versions = self.symbol_table.get_function_params(fun_name)
+        if not function_versions:
+            self.semantic_error_listener.semantic_error(
+                msg=f"Function '{fun_name}' with argument types {argument_types} is not declared in any scope.",
+                line=ctx.start.line,
+                column=ctx.start.column,
+            )
+            return False            
+        
+        # Check if there is a version of the function that matches the provided arguments
+        for fun in function_versions:
+            param_types = fun["param_types"]
+            
+            # Check if the number of parameters matches
+            if len(param_types) != len(argument_types):
+                continue  # They don't match, try the next version of the function
+
+            # Check if the parameter types match
+            match = True
+            for param_type, arg_type in zip(param_types, argument_types):
+                if param_type != arg_type:
+                    match = False
+                    break
+            
+            if match:
+                return True  # Found a match
+
+        # If no matches are found
+        self.semantic_error_listener.semantic_error(
+            msg=f"Function '{fun_name}' with argument types {argument_types} does not match any signature in the current scope.",
+            line=ctx.start.line,
+            column=ctx.start.column,
+        )
+        return False 
+ 
+
+    def check_argument_names(self, ctx, fun_name):
+        argument_names = self.check_argument_type_list(ctx.argumentList())         
+        function_versions = None # TODO get params names -> modifica la tabella dei simboli in modo da aggiungere anche i nomi dei parametri
+        
+        if not function_versions:
+            self.semantic_error_listener.semantic_error(
+                msg=f"Function '{fun_name}' with argument names {argument_names} is not declared in any scope.",
+                line=ctx.start.line,
+                column=ctx.start.column,
+            )
+            return False            
+        
+        # Check if there is a version of the function that matches the provided argument names
+        for fun in function_versions:
+            param_names = fun["param_names"]  # Assuming you have stored parameter names in the function definitions
+            
+            # Check if the number of parameters matches
+            if len(param_names) != len(argument_names):
+                continue  # They don't match, try the next version of the function
+            
+            # Check if the parameter names match
+            match = True
+            for param_name, arg_name in zip(param_names, argument_names):
+                if arg_name is not None and param_name != arg_name:
+                    match = False
+                    break
+            
+            if match:
+                return True  # Found a match
+
+        # If no matches are found
+        self.semantic_error_listener.semantic_error(
+            msg=f"Function '{fun_name}' with argument names {argument_names} does not match any signature in the current scope.",
+            line=ctx.start.line,
+            column=ctx.start.column,
+        )
+        return False
+
+
+    def check_argument_names_for_none(self, argument_names):
+        # Split the string by commas to get the list of argument names
+        arg_names_list = argument_names.split(",")
+        
+        # Check if any element in the list is 'None'
+        if any(arg_name == "None" for arg_name in arg_names_list):
+            return True  # At least one argument name is 'None'
+        
+        return False  # No 'None' in the argument names list
 
 
     def check_class_already_declared_in_current_scope(self, ctx, class_name):

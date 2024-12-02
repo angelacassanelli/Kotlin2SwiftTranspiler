@@ -167,6 +167,7 @@ class SymbolTable:
         for fun in current_scope[name]:
             if fun["param_types"] == param_types:
                 raise ValueError(f"❌ function '{name}' with signature '{param_types}' is already declared in current scope.")
+        
         current_scope[name].append({"param_types": param_types, "return_type": return_type})
         print(f"    📍 Function '{name}' added to the current scope.")
 
@@ -191,6 +192,25 @@ class SymbolTable:
                     if fun["param_types"] == param_types:
                         return fun["return_type"]
         raise ValueError(f"❌ Function '{name}' with parameters {param_types} is not declared in any scope.")
+    
+
+    def get_function_params(self, name):
+        """
+        Retrieves all the overloaded versions of a function by its name.
+
+        Args:
+            name (str): The name of the function.
+
+        Returns:
+            list: A list of dictionaries containing the parameter types and return type for each overloaded version of the function.
+
+        Raises:
+            ValueError: If the function is not found in any scope.
+        """
+        for scope in reversed(self.scopes):
+            if name in scope["functions"]:
+                return scope["functions"][name]  # Return all the overloaded versions of the function
+        raise ValueError(f"❌ Function '{name}' is not declared in any scope.")
 
 
     ##### Classes #####
