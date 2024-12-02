@@ -1,4 +1,3 @@
 class Example() {
-func test(a: String) -> Int { return 1 }
-var t: Int = test(a: "ciao")
+func test(a: String, aaa: String) -> String { return "ciao" }
 }

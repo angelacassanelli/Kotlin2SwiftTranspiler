@@ -1,7 +1,5 @@
 class Example() {
-    fun test(a: String): Int {
-        return ""
+    fun test(a: String, aaa: String, a: Int, b: Int, b: Boolean): String {
+        return "ciao"
     }
-    var t: Int = test(a = "ciao")    
-
 }

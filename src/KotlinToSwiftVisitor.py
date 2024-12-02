@@ -183,7 +183,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting function declaration: {ctx.getText()}")
 
         fun_name = self.visit_identifier(ctx.IDENTIFIER())        
-        kotlin_param_types = self.check_parameter_list(ctx.parameterList()) if ctx.parameterList() else None
+        kotlin_param_types = self.check_parameter_type_list(ctx.parameterList()) if ctx.parameterList() else None
 
         # Check if the variable is already declared
         if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):
@@ -199,6 +199,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
             # Check if the function body contains a return statement and that the return value matches the return type
             self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
+
+            # Check if the function declaration contains duplicated parameters
+            self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name)
                         
             self.symbol_table.add_function(fun_name, kotlin_param_types, kotlin_return_type)
 
@@ -771,16 +774,48 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return
 
 
-    def check_parameter_list(self, ctx):
-        return ", ".join([self.check_parameter(param) for param in ctx.parameter()])
+    def check_parameter_type_list(self, ctx):
+        return ", ".join([self.check_parameter_type(param) for param in ctx.parameter()])
 
 
-    def check_parameter(self, ctx):        
+    def check_parameter_type(self, ctx):        
         kotlin_param_type = ctx.type_().getText()
         if not self.check_supported_type(ctx=ctx, type=kotlin_param_type):
             return
         return kotlin_param_type
     
+    
+    def check_duplicate_parameters(self, ctx, fun_name):
+        parameter_list = [param.strip() for param in self.check_parameter_list(ctx).split(",")]
+        params_seen = set() # non-duplicated params
+        duplicate_params = []
+
+        for param in parameter_list:
+            if param in params_seen:
+                duplicate_params.append(param)
+            else:
+                params_seen.add(param)
+        if duplicate_params:
+            duplicates = ", ".join(duplicate_params)
+            self.semantic_error_listener.semantic_error(
+                msg=f"Function '{fun_name}' has duplicate parameters: {duplicates}.",
+                line=ctx.start.line,
+                column=ctx.start.column,
+            )
+            return False
+
+        return True
+
+
+    def check_parameter_list(self, ctx):
+        return ", ".join([self.check_parameter(param) for param in ctx.parameter()])
+
+
+    def check_parameter(self, ctx):    
+        param_name = self.visit_identifier(ctx.IDENTIFIER())
+        return param_name
+    
+
 
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
