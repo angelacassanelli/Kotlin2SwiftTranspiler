@@ -787,17 +787,18 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_call_expression(self, ctx):
         fun_name = ctx.IDENTIFIER().getText()
-        arguments = self.check_argument_list(ctx.argumentList()) if ctx.argumentList() else None #TODO
-        kotlin_param_types = None  #TODO
-        if not self.symbol_table.lookup_function(fun_name, kotlin_param_types):
+        argument_types = self.check_argument_list(ctx.argumentList()) if ctx.argumentList() else None
+        
+        if not self.symbol_table.lookup_function(fun_name, argument_types):
             self.semantic_error_listener.semantic_error(
-                msg = f"Trying to call function '{fun_name}' with signature '{kotlin_param_types}' before its declaration." if kotlin_param_types 
+                msg = f"Trying to call function '{fun_name}' with signature '{argument_types}' before its declaration." if argument_types 
                         else f"Trying to call function '{fun_name}' before its declaration.", 
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
             return
-        return_type = self.symbol_table.get_function_return_type(fun_name, kotlin_param_types)        
+        
+        return_type = self.symbol_table.get_function_return_type(fun_name, argument_types)        
         if not return_type:
             self.semantic_error_listener.semantic_error(
                 msg = f"Trying to assign the result of function '{fun_name}', which does not return any value.",
@@ -805,6 +806,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 column = ctx.start.column
             )
             return
+        
         return return_type
     
     
@@ -813,6 +815,4 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_argument(self, ctx):
-        if (ctx.IDENTIFIER()):
-            argument_name = ctx.IDENTIFIER().getText()
-        pass #TODO
+        return self.check_expression_type(ctx.expression())
