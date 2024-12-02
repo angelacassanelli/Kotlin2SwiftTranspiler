@@ -70,7 +70,7 @@ functionDeclaration
 
 // Return statement: exits a function, optionally returning an expression
 returnStatement
-    : RETURN expression
+    : RETURN expression?
     ;
 
 // Class declaration: defines a class with an optional constructor and a body

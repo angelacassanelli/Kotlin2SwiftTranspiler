@@ -189,13 +189,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):
             return
         else:
-            # Check unsupported return type
             if ctx.type_():
                 kotlin_return_type = ctx.type_().getText()
+                # Check unsupported return type
                 if not self.check_supported_type(ctx = ctx, type=kotlin_return_type):
                     return
             else:
                 kotlin_return_type = None
+
+            # Check if the function body contains a return statement and that the return value matches the return type
+            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
                         
             self.symbol_table.add_function(fun_name, kotlin_param_types, kotlin_return_type)
 
@@ -822,6 +825,57 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument(self, ctx):
         return self.check_expression_type(ctx.expression())
+
+
+    def check_return_statement(self, ctx, fun_name, fun_return_type):
+        # Iterate over all statements in the function body and check for return statements
+        if fun_return_type:
+            if not ctx.statement():
+                # If no return statement is found and a return type is expected
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Function '{fun_name}' must have a return statement.", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return False
+            else:
+                for stmt in ctx.statement():
+                    return_stmt = stmt.returnStatement()
+                    if return_stmt:
+                        return_expression = return_stmt.expression()
+                        if return_expression:
+                            if not self.validate_value(ctx=return_stmt, type=fun_return_type):
+                                actual_return_type = self.check_expression_type(return_expression)
+                                self.semantic_error_listener.semantic_error(
+                                    msg = f"Return type mismatch: Function '{fun_name}' is declared to return type '{fun_return_type}', but the actual return type is '{actual_return_type}'.", 
+                                    line = ctx.start.line, 
+                                    column = ctx.start.column
+                                )
+                                return False
+                        else:
+                            self.semantic_error_listener.semantic_error(
+                                msg = f"Function '{fun_name}' must have a return statement of type {fun_return_type}.", 
+                                line = ctx.start.line, 
+                                column = ctx.start.column
+                            )
+                            return False
+                    else:
+                        self.semantic_error_listener.semantic_error(
+                            msg = f"Function '{fun_name}' must have a return statement.", 
+                            line = ctx.start.line, 
+                            column = ctx.start.column
+                        )
+                        return False
+        else:
+            for stmt in ctx.statement():
+                if stmt.returnStatement():
+                    self.semantic_error_listener.semantic_error(
+                        msg = f"Function '{fun_name}' has no return type, but includes a return statement.", 
+                        line = ctx.start.line,  
+                        column = ctx.start.column
+                    )
+                    return False
+        return True
 
 
     def check_class_already_declared_in_current_scope(self, ctx, class_name):

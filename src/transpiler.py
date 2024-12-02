@@ -47,7 +47,7 @@ def transpiler():
 
     except Exception as ex:
         # Handle any exceptions that occur during the parsing or transpiling process
-        print(f"❌ Oops! Transpiling failed: no swift code generated: {ex}")
+        print(f"❌ Oops! Transpiling failed: no swift code generated.\n{ex}")
         return
 
 
@@ -77,8 +77,8 @@ def transpile_kotlin_to_swift(kotlin_code):
             
     # Check for semantic errors            
     if semantic_error_listener.has_errors():
-        errors = "\n".join(semantic_error_listener.get_errors())
-        raise Exception(f"❌ Oops! Semantic errors found:\n{errors}") # Raise if semantic errors are found            
+        raise Exception("\n".join(semantic_error_listener.get_errors())) # Raise if semantic errors are found        
+    
         
     return swift_code
 
@@ -143,7 +143,7 @@ def parse_kotlin_code(kotlin_code):
     
     except Exception as ex:
         # If an error occurs during parsing, print the error message
-        print(f"❌ Oops! Parsing failed: {ex}")
+        print(f"❌ Oops! Parsing failed.\n{ex}")
         return None  # Return None in case of an error
 
 
@@ -160,7 +160,7 @@ def write_swift_code(swift_code):
         print(f"✅ Swift code generated and saved to {swift_output_file}:\n\n{swift_code}")
         return
     except Exception as ex:
-        print(f"❌ Oops! Error writing Swift code to file {swift_output_file}: {ex}")
+        print(f"❌ Oops! Error writing Swift code to file {swift_output_file}.\n{ex}")
         return
 
 def read_kotlin_code(file_path):
@@ -177,7 +177,7 @@ def read_kotlin_code(file_path):
         return
     except Exception as ex:
         # Handle any other unexpected errors during file reading
-        print(f"❌ Oops! Error reading Kotlin code from file {file_path}: {ex}")
+        print(f"❌ Oops! Error reading Kotlin code from file {file_path}.\n{ex}")
         return
     
 
