@@ -1,4 +1,9 @@
 class Example() {
-    fun test(a: String) {}
+    fun test(var a: String): Int {}
+    var t: Int = test(a = "ciao")    
+}
+
+class Example() {
+    fun test(var a: String): Int {}
     var t: Int = test(a = "ciao")    
 }

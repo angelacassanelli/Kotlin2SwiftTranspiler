@@ -1,7 +1,6 @@
 class SymbolTable:
     def __init__(self):
-        self.scopes = [{"variables": {}, "functions": {}}]  # Stack: each level is a dictionary representing a scope.
-        print(f"Current scopes: {self.scopes}")
+        self.scopes = [{"variables": {}, "functions": {}, "classes": set()}] # Stack: each level is a dictionary representing a scope.
 
 
     def __repr__(self):
@@ -10,8 +9,7 @@ class SymbolTable:
 
     def add_scope(self):
         """Adds a new scope by appending an empty dictionary to the stack."""
-        self.scopes.append({"variables": {}, "functions": {}})
-        print(f"Current scopes: {self.scopes}")
+        self.scopes.append({"variables": {}, "functions": {}, "classes": set()})
 
 
     def remove_scope(self):
@@ -22,7 +20,6 @@ class SymbolTable:
         """
         if len(self.scopes) > 1:
             self.scopes.pop()
-            print(f"Current scopes: {self.scopes}")
         else:
             raise ValueError("❌ Cannot remove the global scope.")
 
@@ -72,6 +69,7 @@ class SymbolTable:
         if name in current_scope:
             raise ValueError(f"❌ Variable '{name}' is already declared in the current scope.")
         current_scope[name] = variable
+        print(f"Variable '{name}' added to the current scope.")
 
 
     def update_variable(self, name, new_value):
@@ -167,6 +165,7 @@ class SymbolTable:
             if fun["param_types"] == param_types:
                 raise ValueError(f"❌ function '{name}' with signature '{param_types}' is already declared in current scope.")
         current_scope[name].append({"param_types": param_types, "return_type": return_type})
+        print(f"Function '{name}' added to the current scope.")
 
 
     def get_function_return_type(self, name, param_types):
@@ -189,3 +188,39 @@ class SymbolTable:
                     if fun["param_types"] == param_types:
                         return fun["return_type"]
         raise ValueError(f"❌ Function '{name}' with parameters {param_types} is not declared in any scope.")
+
+
+    ##### Classes #####
+
+
+    def add_class(self, name):
+        """
+        Adds a class to the current scope.
+
+        Args:
+            name (str): The name of the class.
+
+        Raises:
+            ValueError: If the class already exists in the current scope.
+        """
+        current_scope = self.scopes[-1]["classes"]
+        if name in current_scope:
+            raise ValueError(f"❌ Class '{name}' is already declared in the current scope.")
+        current_scope.add(name)
+        print(f"Class '{name}' added to the current scope.")
+
+
+    def lookup_class(self, name):
+        """
+        Searches for a class in the active scopes, starting from the current one.
+
+        Args:
+            name (str): The name of the class to search for.
+
+        Returns:
+            bool: True if the class exists, False otherwise.
+        """
+        for scope in reversed(self.scopes):
+            if name in scope["classes"]:
+                return True
+        return False

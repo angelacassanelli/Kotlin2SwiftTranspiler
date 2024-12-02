@@ -228,37 +228,42 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         class_name = self.visit_identifier(ctx.IDENTIFIER())
 
-        self.symbol_table.add_scope()
-        body = self.visit_class_body(ctx.classBody()) if ctx.classBody() else ""
-        self.symbol_table.remove_scope()
+        if self.check_class_already_declared_in_current_scope(ctx = ctx, class_name=class_name):
+            return
+        else:
+            self.symbol_table.add_class(class_name)
 
-        has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
-        if ctx.propertyList():        
-            propertyList = self.visit_property_list(ctx.propertyList())
-            properties_declarations = "\n".join([
-                f"{property['keyword']} {property['name']}: {property['type']}"
-                for property in propertyList
-            ])
-            properties_assignments = "\n".join([
-                f"self.{property["name"]} = {property["name"]}"
-                for property in propertyList
-            ])
-            constructor_params = ", ".join([
-                f"{property['name']}: {property['type']}" +
-                (f" = {property['value']}" if property['value'] is not None else "")
-                for property in propertyList
-            ])
-            constructor = f"init({constructor_params}) {{\n{properties_assignments}\n}}"
+            self.symbol_table.add_scope()
+            body = self.visit_class_body(ctx.classBody()) if ctx.classBody() else ""
+            self.symbol_table.remove_scope()
+
+            has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
+            if ctx.propertyList():        
+                propertyList = self.visit_property_list(ctx.propertyList())
+                properties_declarations = "\n".join([
+                    f"{property['keyword']} {property['name']}: {property['type']}"
+                    for property in propertyList
+                ])
+                properties_assignments = "\n".join([
+                    f"self.{property["name"]} = {property["name"]}"
+                    for property in propertyList
+                ])
+                constructor_params = ", ".join([
+                    f"{property['name']}: {property['type']}" +
+                    (f" = {property['value']}" if property['value'] is not None else "")
+                    for property in propertyList
+                ])
+                constructor = f"init({constructor_params}) {{\n{properties_assignments}\n}}"
+                class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
+                return f"{class_declaration} {{\n{properties_declarations}\n{constructor}\n{body}\n}}"
+            elif ctx.parameterList():
+                constructor_params = self.visit_parameter_list(ctx.parameterList())
+                constructor = f"init({constructor_params}) {{}}"
+                class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
+                return f"{class_declaration} {{\n{constructor}\n{body}\n}}"
             class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
-            return f"{class_declaration} {{\n{properties_declarations}\n{constructor}\n{body}\n}}"
-        elif ctx.parameterList():
-            constructor_params = self.visit_parameter_list(ctx.parameterList())
-            constructor = f"init({constructor_params}) {{}}"
-            class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
-            return f"{class_declaration} {{\n{constructor}\n{body}\n}}"
-        class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
-        
-        return f"{class_declaration} {{\n{body}\n}}"
+            
+            return f"{class_declaration} {{\n{body}\n}}"
     
 
     def visit_class_body(self, ctx):
@@ -776,8 +781,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
             self.semantic_error_listener.semantic_error(
-                msg = f"Function '{fun_name}' with signature '{kotlin_param_types}' is already declared." if kotlin_param_types
-                        else f"Function '{fun_name}' is already declared.", 
+                msg = f"Function '{fun_name}' with signature '{kotlin_param_types}' is already declared in the current scope." if kotlin_param_types
+                        else f"Function '{fun_name}' is already declared in the current scope.", 
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
@@ -816,3 +821,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument(self, ctx):
         return self.check_expression_type(ctx.expression())
+
+
+    def check_class_already_declared_in_current_scope(self, ctx, class_name):
+        if self.symbol_table.lookup_class(class_name):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Class '{class_name}' is already declared in the current scope.",
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return True
+        return False
