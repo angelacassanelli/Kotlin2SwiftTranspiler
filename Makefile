@@ -29,7 +29,7 @@ test:
 
 # Esegui il transpiler
 run:
-	$(PYTHON) $(SRC_DIR)/transpiler.py 
+	$(PYTHON) $(SRC_DIR)/Transpiler.py 
 
 # Pulisci i file generati e di output
 clean:

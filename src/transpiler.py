@@ -138,7 +138,7 @@ def parse_kotlin_code(kotlin_code):
         if syntax_error_listener.has_errors():
             raise Exception("\n".join(syntax_error_listener.get_errors()))  # Raise if syntax errors are found
         else:
-            print(f"✅ Tree generated successfully:\n{tree.toStringTree(recog=parser)}")        
+            print(f"✅ Tree generated successfully:\n    {tree.toStringTree(recog=parser)}")        
             return tree  # Return the parse tree if parsing is successful
     
     except Exception as ex:
