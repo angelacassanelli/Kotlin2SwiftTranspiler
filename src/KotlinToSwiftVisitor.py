@@ -191,7 +191,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
 
         # Check if the variable is already declared
-        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):
+        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
             return
         else:
             if ctx.type_():
@@ -205,8 +205,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             # Check if the function body contains a return statement and that the return value matches the return type
             self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
 
-            # Check if the function declaration contains duplicated parameters
-            self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name)
+            if ctx.parameterList():
+                # Check if the function declaration contains duplicated parameters
+                self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name) 
                         
             self.symbol_table.add_function(fun_name, kotlin_param_types, param_names, kotlin_return_type)
 

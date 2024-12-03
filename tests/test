@@ -2,9 +2,9 @@ class Example() {
     var a: Int = 1
     var b: Int = 2
 
-    fun test(a : String) {
+    fun test() {
         print("hello")
     }
     
-    test(a = "ciao")
+    test()
 }
