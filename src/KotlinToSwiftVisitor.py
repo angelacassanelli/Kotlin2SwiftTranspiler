@@ -64,8 +64,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_block(self, ctx):
         # Visits a block of statements and joins them with newlines.
         print(f"    🔍 Visiting block: {ctx.getText()}")        
-        for stmt in ctx.statement():
-            print(stmt.getText()) 
         statements = [self.visit_statement(stmt) for stmt in ctx.statement()]
         return "\n".join(filter(None, statements))
         
@@ -184,6 +182,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         fun_name = self.visit_identifier(ctx.IDENTIFIER())        
         kotlin_param_types = self.check_parameter_type_list(ctx.parameterList()) if ctx.parameterList() else None
+        param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
 
         # Check if the variable is already declared
         if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):
@@ -203,7 +202,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             # Check if the function declaration contains duplicated parameters
             self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name)
                         
-            self.symbol_table.add_function(fun_name, kotlin_param_types, kotlin_return_type)
+            self.symbol_table.add_function(fun_name, kotlin_param_types, param_names, kotlin_return_type)
 
             parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
             
@@ -458,8 +457,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
 
         if ctx.argumentList():        
-            self.check_argument_types(ctx, fun_name) # TODO: TEST type match
-            # self.check_argument_names(ctx, fun_name) # TODO: check that arg-names match param_names                
+            self.check_argument_types(ctx, fun_name) 
+            self.check_argument_names(ctx, fun_name)                 
         
         arguments = self.visit_argument_list(ctx.argumentList()) if ctx.argumentList() else ""
         return f"{fun_name}({arguments})"
@@ -791,7 +790,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     
     def check_duplicate_parameters(self, ctx, fun_name):
-        parameter_list = [param.strip() for param in self.check_parameter_list(ctx).split(",")]
+        parameter_list = [param.strip() for param in self.check_parameter_name_list(ctx).split(",")]
         params_seen = set() # non-duplicated params
         duplicate_params = []
 
@@ -812,11 +811,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return True
 
 
-    def check_parameter_list(self, ctx):
-        return ", ".join([self.check_parameter(param) for param in ctx.parameter()])
+    def check_parameter_name_list(self, ctx):
+        return ", ".join([self.check_parameter_name(param) for param in ctx.parameter()])
 
 
-    def check_parameter(self, ctx):    
+    def check_parameter_name(self, ctx):    
         param_name = self.visit_identifier(ctx.IDENTIFIER())
         return param_name
     
@@ -965,8 +964,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
  
 
     def check_argument_names(self, ctx, fun_name):
-        argument_names = self.check_argument_type_list(ctx.argumentList())         
-        function_versions = None # TODO get params names -> modifica la tabella dei simboli in modo da aggiungere anche i nomi dei parametri
+        argument_names = self.check_argument_name_list(ctx.argumentList())     
+        function_versions = self.symbol_table.get_function_params(fun_name)    
         
         if not function_versions:
             self.semantic_error_listener.semantic_error(

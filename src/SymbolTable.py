@@ -149,7 +149,7 @@ class SymbolTable:
         return None
 
 
-    def add_function(self, name, param_types, return_type):
+    def add_function(self, name, param_types, param_names, return_type):
         """Adds a function to the current scope.
 
         Args:
@@ -168,7 +168,7 @@ class SymbolTable:
             if fun["param_types"] == param_types:
                 raise ValueError(f"❌ function '{name}' with signature '{param_types}' is already declared in current scope.")
         
-        current_scope[name].append({"param_types": param_types, "return_type": return_type})
+        current_scope[name].append({"param_types": param_types, "param_names": param_names, "return_type": return_type})
         print(f"    📍 Function '{name}' added to the current scope.")
 
 
