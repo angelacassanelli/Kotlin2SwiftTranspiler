@@ -149,12 +149,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         var_name = self.visit_identifier(ctx.IDENTIFIER())        
         mutable, keyword = (False, "let") if ctx.VAL() else (True, "var")
 
+        print(f"===> ciao")
+
         # Check if the variable is already declared
         if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = var_name):
             return
         else:
-            # Check unsupported type
-            kotlin_type = ctx.type_().getText()
+            # Check unsupported type            
+            kotlin_type = ctx.type_().getText() if ctx.type_() else self.check_expression_type(ctx.expression())
+
             if not self.check_supported_type(ctx = ctx, type=kotlin_type):
                 return
 
@@ -169,8 +172,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             # Add the variable to the symbol table
             self.add_variable_to_symbol_table(var_name=var_name, type=kotlin_type, mutable=mutable, value=var_value)
             
-            swift_type = self.visit_type(ctx.type_())
-            swift_var_declaration = f"{keyword} {var_name}: {swift_type}"
+            swift_type = ctx.type_().getText() if ctx.type_() else None
+            
+            swift_var_declaration = f"{keyword} {var_name}"
+                        
+            if swift_type:
+                swift_var_declaration += f" : {swift_type}"
+
             if var_value:
                 swift_var_declaration += f" = {var_value}"
             return swift_var_declaration        

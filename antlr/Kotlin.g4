@@ -59,7 +59,9 @@ assignmentStatement
 
 // Variable declaration: declares a mutable or immutable variable with an optional type and initial value
 varDeclaration        
-    : (VAR | VAL) IDENTIFIER COLON type (EQ expression)?
+    : (VAR | VAL) IDENTIFIER COLON type
+    | (VAR | VAL) IDENTIFIER EQ expression
+    | (VAR | VAL) IDENTIFIER COLON type EQ expression
     ;
 
 // Function declaration: defines a function with parameters, an optional return type, and a body
