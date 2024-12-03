@@ -7,5 +7,4 @@ class Example() {
     }
     
     var c: Int = test(a = 1, b = 2)
-
 }
