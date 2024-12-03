@@ -1,0 +1,17 @@
+class TestFunctions {
+    fun sayHello() {
+        println("Hello")
+    }
+
+    fun sayHello() { // Errore: Firma duplicata
+        println("Duplicate Hello")
+    }
+
+    fun add(a: Int, b: Int): Int {
+        return a + b
+    }
+
+    fun add(a: Int, b: String): Int { // Firma valida perché i parametri differiscono
+        return a + b.toInt()
+    }
+}

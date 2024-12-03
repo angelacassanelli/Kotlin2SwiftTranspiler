@@ -6,6 +6,6 @@ class Example() {
         return a + b
     }
     
-    var c: Int = test(a = 1, bb = 2)
+    var c: Int = test(a = 1, b = 2)
 
 }

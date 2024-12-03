@@ -1,0 +1,7 @@
+class TestReadPrint {
+    fun readInput() {
+        val input = readLine() // Corretta
+        val number: Int = readLine() // Errore: Necessario cast esplicito
+        println("Input: " + input)
+    }
+}

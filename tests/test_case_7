@@ -1,0 +1,10 @@
+class TestIf {
+    fun checkCondition() {
+        val condition = 5
+        if (condition) { // Errore: Condizione non booleana
+            println("True")
+        } else {
+            println("False")
+        }
+    }
+}

@@ -1,0 +1,8 @@
+class TestVariables {
+    fun test() {
+        var a: Int = 10
+        val b: String = "Hello"
+        var c: Int = "Wrong type" // Errore: Assegnazione con tipo errato
+        var a: Int = 20           // Errore: Doppia dichiarazione della variabile 'a'
+    }
+}

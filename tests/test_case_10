@@ -1,0 +1,20 @@
+class TestMixed {
+    var x: Int = 10
+    val y: String = "Constant"
+
+    fun mix() {
+        x = "Assign wrong type" // Errore: Tipo incompatibile
+        y = "Try to change val" // Errore: Modifica di una costante
+    }
+
+    fun duplicateVariables() {
+        var z: Int = 10
+        var z: Int = 20 // Errore: Doppia dichiarazione
+    }
+
+    fun invalidControlFlow() {
+        if (10) { // Errore: Condizione non booleana
+            println("Invalid condition")
+        }
+    }
+}
