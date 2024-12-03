@@ -1,4 +1,4 @@
 class Example() {
-func test() { print("hello") }
-var test = "AA"
+func test(a: String) { print(a) }
+test(a: "ciao")
 }

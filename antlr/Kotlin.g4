@@ -53,8 +53,12 @@ forStatement
     ;
 
 // Assignment statement: assigns a value to a variable
+// By including callExpression inside assignmentStatement, we resolve the conflict 
+// where IDENTIFIER could be interpreted as either an assignment (IDENTIFIER = expression) 
+// or a function call (IDENTIFIER(...)). 
 assignmentStatement
     : IDENTIFIER EQ expression
+    | callExpression    // Workaround for ambiguity between assignmentStatement and callExpression:
     ;
 
 // Variable declaration: declares a mutable or immutable variable with an optional type and initial value

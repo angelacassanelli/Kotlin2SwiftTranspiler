@@ -117,29 +117,36 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_assignment_statement(self, ctx):
-        # Converts Kotlin variable assignment to Swift.
+        # Converts Kotlin variable assignment to Swift.    
         print(f"    🔍 Visiting assignment statement: {ctx.getText()}")
-        var_name = self.visit_identifier(ctx.IDENTIFIER())
-
-        # Check if variable is declared
-        if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
-            return
-        else:
-            info = self.symbol_table.get_variable_info(var_name)
-            if info:
-                var_type, is_mutable = info
-
-            # Check mutability
-            if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
-                return
-            
-            # Check type mismatch            
-            if not self.validate_value(ctx=ctx, type=var_type):
-                return
         
-            var_value = self.visit_expression(ctx=ctx.expression())
-            self.symbol_table.update_variable(name=var_name, new_value=var_value) 
-            return f"{var_name} = {var_value}"
+        # Workaround for handling both assignments and function calls in the same rule.
+        # If the assignment is a function call (e.g., test()), the callExpression is visited.
+        # Otherwise, it processes the regular variable assignment.
+        if ctx.callExpression():
+            return self.visit_call_expression(ctx.callExpression()) 
+        else:        
+            var_name = self.visit_identifier(ctx.IDENTIFIER())
+
+            # Check if variable is declared
+            if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
+                return
+            else:
+                info = self.symbol_table.get_variable_info(var_name)
+                if info:
+                    var_type, is_mutable = info
+
+                # Check mutability
+                if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
+                    return
+                
+                # Check type mismatch            
+                if not self.validate_value(ctx=ctx, type=var_type):
+                    return
+            
+                var_value = self.visit_expression(ctx=ctx.expression())
+                self.symbol_table.update_variable(name=var_name, new_value=var_value) 
+                return f"{var_name} = {var_value}"
         
 
     def visit_var_declaration(self, ctx):

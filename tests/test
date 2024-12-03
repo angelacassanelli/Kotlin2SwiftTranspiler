@@ -1,7 +1,7 @@
 class Example() {
-    fun test() {
-        println("hello")
+    fun test(a: String) {
+        println(a)
     }
     
-    test()
+    test(a = "ciao")
 }
