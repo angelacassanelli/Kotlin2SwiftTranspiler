@@ -1,4 +1,5 @@
 import os
+import argparse
 from antlr4 import *
 from generated.antlr.KotlinLexer import KotlinLexer
 from generated.antlr.KotlinParser import KotlinParser
@@ -9,7 +10,7 @@ from SemanticErrorListener import SemanticErrorListener
 from SymbolTable import SymbolTable
 
 
-def transpiler():
+def transpiler(kotlin_code_path):
     """
     Entry point of the program to transpile Kotlin code to Swift.
 
@@ -30,9 +31,6 @@ def transpiler():
         Exception: If an error occurs at any point in reading, parsing, or transpiling the code.
     """
     
-    # Define the path to the Kotlin code file for the test case
-    kotlin_code_path = "tests/test_case_0"
-
     try:
         kotlin_code = read_kotlin_code(kotlin_code_path)
         swift_code = transpile_kotlin_to_swift(kotlin_code)
@@ -59,8 +57,7 @@ def transpile_kotlin_to_swift(kotlin_code):
         
     # Check if the parsing was successful (i.e., the tree is not None)
     if tree is None:
-        print(f"❌ Oops! Parsing failed: no parse tree generated.")
-        return
+        Exception(f"❌ Oops! Parsing failed: no parse tree generated.")
         
     # Create a new symbol table
     symbol_table = SymbolTable()  
@@ -173,8 +170,7 @@ def read_kotlin_code(file_path):
         
     except FileNotFoundError:
         # Handle case where the file does not exist
-        print(f"❌ Oops! File {file_path} not found.")
-        return
+        raise Exception(f"❌ Oops! File {file_path} not found.")
     except Exception as ex:
         # Handle any other unexpected errors during file reading
         print(f"❌ Oops! Error reading Kotlin code from file {file_path}.\n{ex}")
@@ -183,4 +179,14 @@ def read_kotlin_code(file_path):
 
 # Ensure the script runs only when executed directly (not imported as a module)
 if __name__ == "__main__":
-    transpiler()
+    # Set up argument parsing
+    parser = argparse.ArgumentParser(description="Transpile Kotlin code to Swift.")
+    parser.add_argument(
+        "kotlin_file", 
+        type=str, 
+        help="Path to the Kotlin file to transpile."
+    )
+    args = parser.parse_args()
+
+    # Call the transpiler with the provided input file
+    transpiler(args.kotlin_file)
