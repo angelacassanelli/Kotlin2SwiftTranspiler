@@ -149,8 +149,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         var_name = self.visit_identifier(ctx.IDENTIFIER())        
         mutable, keyword = (False, "let") if ctx.VAL() else (True, "var")
 
-        print(f"===> ciao")
-
         # Check if the variable is already declared
         if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = var_name):
             return
