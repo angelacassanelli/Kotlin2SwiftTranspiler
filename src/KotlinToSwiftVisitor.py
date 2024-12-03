@@ -55,7 +55,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         elif ctx.returnStatement():
             return self.visit_return_statement(ctx.returnStatement())
         elif ctx.commentStatement():
-            return self.visitComment(ctx.commentStatement())        
+            return self.visit_comment_statement(ctx.commentStatement())        
         else: 
             print(f"    ❌ Unrecognized statement: {ctx.getText()}")
             return ""

@@ -1,9 +1,6 @@
 class Example() {
-    var a: Int = 1
-    var b: Int = 2
-
     fun test() {
-        print("hello")
+        println("hello")
     }
     
     test()
