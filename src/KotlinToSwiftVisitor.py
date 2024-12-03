@@ -462,12 +462,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting call expression: {ctx.getText()}")
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
 
-        if ctx.argumentList():        
+        if ctx.argumentList():    
             self.check_argument_types(ctx, fun_name) 
             self.check_argument_names(ctx, fun_name)                 
+            arguments = self.visit_argument_list(ctx.argumentList()) 
+            return f"{fun_name}({arguments})"
         
-        arguments = self.visit_argument_list(ctx.argumentList()) if ctx.argumentList() else ""
-        return f"{fun_name}({arguments})"
+        return f"{fun_name}()"
 
 
     def visit_literal(self, ctx):
@@ -876,7 +877,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_argument_name(self, ctx):
-        argument_name = self.visit_identifier(ctx.IDENTIFIER()) if (ctx.IDENTIFIER()) else None
+        argument_name = self.visit_identifier(ctx.IDENTIFIER()) if (ctx.IDENTIFIER()) else "None"
         return argument_name
 
 
@@ -970,9 +971,10 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
  
 
     def check_argument_names(self, ctx, fun_name):
-        argument_names = self.check_argument_name_list(ctx.argumentList())     
+        argument_names = self.check_argument_name_list(ctx.argumentList())
+        argument_names_list = argument_names.split(", ")
         function_versions = self.symbol_table.get_function_params(fun_name)    
-        
+
         if not function_versions:
             self.semantic_error_listener.semantic_error(
                 msg=f"Function '{fun_name}' with argument names {argument_names} is not declared in any scope.",
@@ -980,25 +982,28 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 column=ctx.start.column,
             )
             return False            
-        
+
         # Check if there is a version of the function that matches the provided argument names
         for fun in function_versions:
+
             param_names = fun["param_names"]  # Assuming you have stored parameter names in the function definitions
-            
+            param_names_list = param_names.split(", ")
+
             # Check if the number of parameters matches
-            if len(param_names) != len(argument_names):
+            if len(param_names_list) != len(argument_names_list):
                 continue  # They don't match, try the next version of the function
             
             # Check if the parameter names match
             match = True
-            for param_name, arg_name in zip(param_names, argument_names):
-                if arg_name is not None and param_name != arg_name:
+
+            for param_name, arg_name in zip(param_names_list, argument_names_list):
+                if arg_name != "None" and param_name != arg_name:
                     match = False
                     break
             
             if match:
                 return True  # Found a match
-
+        
         # If no matches are found
         self.semantic_error_listener.semantic_error(
             msg=f"Function '{fun_name}' with argument names {argument_names} does not match any signature in the current scope.",
