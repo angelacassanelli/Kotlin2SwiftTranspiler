@@ -177,7 +177,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             # Add the variable to the symbol table
             self.add_variable_to_symbol_table(var_name=var_name, type=kotlin_type, mutable=mutable, value=var_value)
             
-            swift_type = ctx.type_().getText() if ctx.type_() else None
+            swift_type = self.visit_type(ctx.type_()) if ctx.type_() else None
             
             swift_var_declaration = f"{keyword} {var_name}"
                         

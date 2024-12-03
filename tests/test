@@ -1,7 +1,3 @@
 class Example() {
-    fun test(a: String) {
-        println(a)
-    }
-    
-    test(a = "ciao")
+    var b : Boolean = true
 }

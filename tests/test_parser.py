@@ -1,5 +1,5 @@
 import unittest
-from src.parser import parse_kotlin_code
+from src.Transpiler import parse_kotlin_code
 from src.KotlinToSwiftVisitor import KotlinToSwiftVisitor
 from src.SemanticErrorListener import SemanticErrorListener
 from src.SymbolTable import SymbolTable
