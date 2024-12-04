@@ -185,8 +185,8 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
     #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # def test_function_arithmetic_expression_3(self):
-    #     kotlin_code = """class Example() {\nval price: Int = basePrice + (taxRate * basePrice / 100)\n}"""
-    #     expected_swift = """class Example() {\nlet price: Int = basePrice + (taxRate * basePrice / 100)\n}"""
+    #     kotlin_code = """class Example() {\nval basePrice = 10\nval taxRate = 10\nval price: Int = basePrice + (taxRate * basePrice / 100)\n}"""
+    #     expected_swift = """class Example() {\nlet basePrice = 10\nlet taxRate = 10\nlet price: Int = basePrice + (taxRate * basePrice / 100)\n}"""
     #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # def test_function_arithmetic_expression_4(self):
@@ -196,25 +196,25 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # Relational expressions
 
-    # def test_function_relational_expression_1(self):
-    #     kotlin_code = """class Example() {\nval isGreater: Boolean = x > y && y >= z\n}"""
-    #     expected_swift = """class Example() {\nlet isGreater: Bool = x > y && y >= z\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_relational_expression_1(self):
+        kotlin_code = """class Example() {\nvar x = 1\nvar y = 2\nvar z = 3\nval isGreater : Boolean = x > y && y >= z\n}"""
+        expected_swift = """class Example() {\nvar x = 1\nvar y = 2\nvar z = 3\nlet isGreater : Bool = x > y && y >= z\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # def test_function_relational_expression_2(self):
-    #     kotlin_code = """class Example() {\nval isEqual: Boolean = (a + b) == c\n}"""
-    #     expected_swift = """class Example() {\nlet isEqual: Bool = (a + b) == c\n}"""
+    #     kotlin_code = """class Example() {\nvar a = 10\nvar b = 20\nvar c = 30\nval isEqual : Boolean = (a + b) == c\n}"""
+    #     expected_swift = """class Example() {\nvar a = 10\nvar b = 20\nvar c = 30\nlet isEqual : Bool = (a + b) == c\n}"""
     #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_relational_expression_3(self):
-    #     kotlin_code = """class Example() {\nval isInRange: Boolean = value >= lowerBound && value <= upperBound\n}"""
-    #     expected_swift = """class Example() {\nlet isInRange: Bool = value >= lowerBound && value <= upperBound\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_relational_expression_3(self):
+        kotlin_code = """class Example() {\nvar value = 100\nval lowerBound = 0\nval upperBound = 100\nval isInRange : Boolean = value >= lowerBound && value <= upperBound\n}"""
+        expected_swift = """class Example() {\nvar value = 100\nlet lowerBound = 0\nlet upperBound = 100\nlet isInRange : Bool = value >= lowerBound && value <= upperBound\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_relational_expression_4(self):
-    #     kotlin_code = """class Example() {\nval isNotMatching: Boolean = (input1 != input2) || input3 == null\n}"""
-    #     expected_swift = """class Example() {\nlet isNotMatching: Bool = (input1 != input2) || input3 == null\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_relational_expression_4(self):
+        kotlin_code = """class Example() {\nvar input1 = 10\nvar input2 = 50\nval isNotMatching : Boolean = input1 != input2\n}"""
+        expected_swift = """class Example() {\nvar input1 = 10\nvar input2 = 50\nlet isNotMatching : Bool = input1 != input2\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Logic - arithmetic expressions
 
