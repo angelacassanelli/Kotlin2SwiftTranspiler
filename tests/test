@@ -1,5 +1,9 @@
 class Example() {
 
+    fun test(a: Boolean): Boolean {
+        return !a
+    }
+
     var c = test(false)
 
 }
