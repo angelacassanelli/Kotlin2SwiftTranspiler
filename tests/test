@@ -1,5 +1,5 @@
 class Example() {
-    fun exampleFunction(var x: Int, y: Int, b: Boolean): Boolean { 
+    fun exampleFunction(): Boolean { 
         if (x > y) { 
             return b 
         } else { 

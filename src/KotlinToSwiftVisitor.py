@@ -202,6 +202,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
             return
         else:
+            self.symbol_table.add_scope()            
+
+            if(ctx.parameterList()):
+                for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
+                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
+
             if ctx.type_():
                 kotlin_return_type = ctx.type_().getText()
                 # Check unsupported return type
@@ -211,25 +217,19 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 kotlin_return_type = None
 
             # # Check if the function body contains a return statement and that the return value matches the return type
-            # self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type) # TODO: Bug fix
+            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type) # TODO: Bug fix
 
             if ctx.parameterList():
                 # Check if the function declaration contains duplicated parameters
                 self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name) 
-                        
+
+            body = self.visit_block(ctx.block())
+
+            self.symbol_table.remove_scope()
+        
             self.symbol_table.add_function(fun_name, kotlin_param_types, param_names, kotlin_return_type)
 
             parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
-            
-            self.symbol_table.add_scope()
-
-            if(ctx.parameterList()):
-                for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
-                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
-            
-            body = self.visit_block(ctx.block())
-            
-            self.symbol_table.remove_scope()
 
             if ctx.type_():
                 return_type = self.visit_type(ctx.type_()) 
