@@ -1,11 +1,7 @@
- class Example() {
-    var a: Int = 10
-    var b: Int = 100
-    fun isAGreaterThanB(): Boolean { 
-        if (a > b) { 
-            return true 
-        } else { 
-            return false 
-        } 
-    }
+class Example() {
+    val isCitizen = true
+    val age = 18
+    val hasPermanentResidency = false
+    
+    val canVote: Boolean = isCitizen || (age >= 18 && hasPermanentResidency)
 }

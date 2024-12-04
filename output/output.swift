@@ -1,5 +1,6 @@
 class Example() {
-func exampleFunction() -> Int { var x : Int
-var y : Int
-if x > y { return 10 } else { return 10 } }
+let isCitizen = true
+let age = 18
+let hasPermanentResidency = false
+let canVote : Bool = isCitizen || (age >= 18 && hasPermanentResidency)
 }

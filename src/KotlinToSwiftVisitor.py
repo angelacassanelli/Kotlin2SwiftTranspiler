@@ -779,9 +779,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 var_type, _ = info
             return var_type
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
-            return self.check_expression_type(ctx=ctx)
+            return self.check_expression_type(ctx=ctx.expression())
         elif ctx.literal():
-            return self.check_literal_type(ctx=ctx)
+            return self.check_literal_type(ctx=ctx.literal())
         elif ctx.callExpression():
             return self.check_call_expression(ctx.callExpression())
         else:
