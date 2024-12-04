@@ -210,7 +210,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 kotlin_return_type = None
 
             # Check if the function body contains a return statement and that the return value matches the return type
-            # self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
+            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
 
             if ctx.parameterList():
                 # Check if the function declaration contains duplicated parameters
@@ -975,7 +975,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     return False
             
     
-    def check_no_return_type_in_if_else_statement(self, ctx, fun_name):
+    def check_no_return_type_in_if_else_statement(self, ctx, fun_name): # TODO
         if ctx.ELSE():
             if ctx.block(1): 
                 block = ctx.block(1)
@@ -1017,7 +1017,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     )
                     return False
 
-  
 
     def check_return_type_in_for_statement(self, ctx, fun_name, fun_return_type):
         if ctx.block(): 
@@ -1035,29 +1034,23 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_return_type_in_if_else_statement(self, ctx, fun_name, fun_return_type):
         if ctx.ELSE():
-            if ctx.block(1): 
-                block = ctx.block(1)
-                for stmt in block.statement():
-                    if stmt.returnStatement():
-                        return_stmt = stmt.returnStatement()
-                        self.validate_return_statement(return_stmt, fun_name, fun_return_type)
-            else:  
-                stmt = ctx.statement(1)
-                if stmt.returnStatement():
-                    return_stmt = stmt.returnStatement()
-                    self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
+            self.checkIfElseStatement(ctx.elseBody(), fun_name, fun_return_type)
 
-        if ctx.block(0): 
-            block = ctx.block(0)
+        return self.checkIfElseStatement(ctx.ifBody(), fun_name, fun_return_type)
+
+
+    def checkIfElseStatement(self, ctx, fun_name, fun_return_type):
+        if ctx.block(): 
+            block = ctx.block()
             for stmt in block.statement():
                 if stmt.returnStatement():
                     return_stmt = stmt.returnStatement()
-                    return self.validate_return_statement(return_stmt, fun_name, fun_return_type)
+                    self.validate_return_statement(return_stmt, fun_name, fun_return_type)
         else:  
-            stmt = ctx.statement(0)
+            stmt = ctx.statement()
             if stmt.returnStatement():
                 return_stmt = stmt.returnStatement()
-                return self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
+                self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
 
 
     def validate_return_statement(self, ctx, fun_name, fun_return_type):
