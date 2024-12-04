@@ -1,5 +1,5 @@
 class Example() {
-func exampleFunction() -> Bool { var x : Int
+func exampleFunction() -> Int { var x : Int
 var y : Int
-if x > y { return true } else { return false } }
+if x > y { return 10 } else { return 10 } }
 }

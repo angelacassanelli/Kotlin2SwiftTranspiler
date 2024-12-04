@@ -973,12 +973,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         column = ctx.start.column
                     )
                     return False
-            
-    
+
+
     def check_no_return_type_in_if_else_statement(self, ctx, fun_name): # TODO
         if ctx.ELSE():
-            if ctx.block(1): 
-                block = ctx.block(1)
+            else_body = ctx.elseBody()
+            if else_body.block(): 
+                block = else_body.block()
                 for stmt in block.statement():
                     if stmt.returnStatement():
                         self.semantic_error_listener.semantic_error(
@@ -988,7 +989,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         )
                         return False
             else:  
-                stmt = ctx.statement(1)
+                stmt = else_body.statement()
                 if stmt.returnStatement():
                     self.semantic_error_listener.semantic_error(
                         msg = f"Function '{fun_name}' has no return type, but includes a return statement.", 
@@ -997,19 +998,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     )
                     return False
 
-        if ctx.block(0): 
-            block = ctx.block(0)
-            for stmt in block.statement():
+            if_body = ctx.ifBody()
+            if if_body.block(): 
+                block = if_body.block()
+                for stmt in block.statement():
+                    if stmt.returnStatement():
+                        self.semantic_error_listener.semantic_error(
+                            msg = f"Function '{fun_name}' has no return type, but includes a return statement.", 
+                            line = ctx.start.line,  
+                            column = ctx.start.column
+                        )
+                        return False
+            else:  
+                stmt = if_body.statement()
                 if stmt.returnStatement():
-                    self.semantic_error_listener.semantic_error(
-                        msg = f"Function '{fun_name}' has no return type, but includes a return statement.", 
-                        line = ctx.start.line,  
-                        column = ctx.start.column
-                    )
-                    return False
-        else:  
-            stmt = ctx.statement(0)
-            if stmt.returnStatement():
                     self.semantic_error_listener.semantic_error(
                         msg = f"Function '{fun_name}' has no return type, but includes a return statement.", 
                         line = ctx.start.line,  
