@@ -1,3 +1,7 @@
 class Example() {
-func exampleFunction(x: Int, y: Int, b: Bool) -> Bool { if x > y { return b } else { return false } }
+let a: Bool
+init(a: Bool) {
+self.a = a
+}
+func test() -> Bool { return a }
 }

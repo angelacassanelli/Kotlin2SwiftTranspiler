@@ -216,7 +216,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             else:
                 kotlin_return_type = None
 
-            # # Check if the function body contains a return statement and that the return value matches the return type
+            # Check if the function body contains a return statement and that the return value matches the return type
             self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type) # TODO: Bug fix
 
             if ctx.parameterList():
@@ -260,14 +260,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         else:
             self.symbol_table.add_class(class_name)
 
+            propertyList = self.visit_property_list(ctx.propertyList()) if ctx.propertyList() else None
+            constructor_params = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else None
+
             self.symbol_table.add_scope()
-            body = self.visit_class_body(ctx.classBody()) if ctx.classBody() else ""
+            body = self.visit_class_body(ctx.classBody()) if ctx.classBody() else ""            
             self.symbol_table.remove_scope()
 
             has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
-            if ctx.propertyList():        
-                propertyList = self.visit_property_list(ctx.propertyList())
-                
+            
+            if propertyList: 
                 properties_declarations = []
                 properties_assignments = []
                 constructor_params = []
@@ -294,8 +296,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 constructor = f"init({constructor_params}) {{\n{properties_assignments}\n}}"
                 class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
                 return f"{class_declaration} {{\n{properties_declarations}\n{constructor}\n{body}\n}}"
-            elif ctx.parameterList():
-                constructor_params = self.visit_parameter_list(ctx.parameterList())
+            elif constructor_params:
                 constructor = f"init({constructor_params}) {{}}"
                 class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
                 return f"{class_declaration} {{\n{constructor}\n{body}\n}}"

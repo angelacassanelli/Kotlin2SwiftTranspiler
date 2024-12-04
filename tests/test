@@ -1,9 +1,6 @@
-class Example() {
-    fun exampleFunction(): Boolean { 
-        if (x > y) { 
-            return b 
-        } else { 
-            return false 
-        } 
+class Example(val a: Boolean) {
+    fun test(): Boolean {
+        return a
     }
+
 }
