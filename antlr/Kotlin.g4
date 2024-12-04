@@ -18,7 +18,7 @@ topLevelStatement
 statement
     : readStatement         // Reads input from the user
     | printStatement        // Prints output to the console
-    | ifStatement           // Conditional "if" statement
+    | ifElseStatement       // Conditional "if" statement
     | forStatement          // "For" loop with a range
     | assignmentStatement   // Variable assignment
     | varDeclaration        // Declaration of a variable
@@ -42,9 +42,17 @@ printStatement
     ;
 
 // Conditional "if" statement, with an optional "else" block
+ifElseStatement
+    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET ifStatement 
+      ( ELSE elseStatement )?
+    ;
+
 ifStatement
-    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET (block | statement) 
-      ( ELSE (block | statement) )?
+    : (block | statement)
+    ;
+
+elseStatement
+    : (block | statement)
     ;
 
 // "For" loop: iterates over a range

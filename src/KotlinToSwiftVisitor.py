@@ -44,8 +44,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return self.visit_read_statement(ctx.readStatement())
         elif ctx.printStatement():
             return self.visit_print_statement(ctx.printStatement())
-        elif ctx.ifStatement():
-            return self.visit_if_statement(ctx.ifStatement())
+        elif ctx.ifElseStatement():
+            return self.visit_if_else_statement(ctx.ifElseStatement())
         elif ctx.forStatement():
             return self.visit_for_statement(ctx.forStatement())
         elif ctx.assignmentStatement():
@@ -82,7 +82,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"print({expression})"
     
 
-    def visit_if_statement(self, ctx):
+    def visit_if_else_statement(self, ctx):
         # Converts a Kotlin if-else statement to Swift. The else block is optional.
         print(f"    🔍 Visiting if statement: {ctx.getText()}")
         condition = self.visit_expression(ctx.expression())
@@ -90,18 +90,21 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if not self.validate_if_condition(ctx):
             return
 
-        if ctx.block(0): 
-            body = self.visit_block(ctx.block(0))
-        else:  
-            body = self.visit_statement(ctx.statement(0))
-        if ctx.ELSE():
-            if ctx.block(1): 
-                else_body = self.visit_block(ctx.block(1))
-            else:
-                else_body = self.visit_statement(ctx.statement(1))
-            return f"if {condition} {{ {body} }} else {{ {else_body} }}"
+        if_body = self.visitIfStatement(ctx.ifStatement())
 
-        return f"if {condition} {{ {body} }}"
+        if ctx.ELSE():
+            else_body = self.visitElseStatement(ctx.ifStatement())
+
+            return f"if {condition} {{ {if_body} }} else {{ {else_body} }}"
+
+        return f"if {condition} {{ {if_body} }}"
+
+    
+    def visitIfStatement(self, ctx):
+        return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
+
+    def visitElseStatement(self, ctx):
+        return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
 
 
     def visit_for_statement(self, ctx):
@@ -210,7 +213,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 kotlin_return_type = None
 
             # Check if the function body contains a return statement and that the return value matches the return type
-            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
+            # self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
 
             if ctx.parameterList():
                 # Check if the function declaration contains duplicated parameters
@@ -925,9 +928,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     elif stmt.forStatement():
                         for_stmt = stmt.forStatement()
                         return self.check_return_type_in_for_statement(for_stmt, fun_name, fun_return_type) 
-                    elif stmt.ifStatement():
-                        if_stmt = stmt.ifStatement()
-                        return self.check_return_type_in_if_statement(if_stmt, fun_name, fun_return_type) 
+                    elif stmt.ifElseStatement():
+                        if_stmt = stmt.ifElseStatement()
+                        return self.check_return_type_in_if_else_statement(if_stmt, fun_name, fun_return_type) 
                 # Return statement not found
                 self.semantic_error_listener.semantic_error(
                     msg = f"Function '{fun_name}' must have a return statement.", 
@@ -947,9 +950,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 elif stmt.forStatement():
                     for_stmt = stmt.forStatement()
                     return self.check_no_return_type_in_for_statement(for_stmt, fun_name)
-                elif stmt.ifStatement():
-                    if_stmt = stmt.ifStatement()
-                    return self.check_no_return_type_in_if_statement(if_stmt, fun_name)
+                elif stmt.ifElseStatement():
+                    if_stmt = stmt.ifElseStatement()
+                    return self.check_no_return_type_in_if_else_statement(if_stmt, fun_name)
         return True    
     
 
@@ -975,7 +978,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     return False
             
     
-    def check_no_return_type_in_if_statement(self, ctx, fun_name, fun_return_type):
+    def check_no_return_type_in_if_else_statement(self, ctx, fun_name):
         if ctx.ELSE():
             if ctx.block(1): 
                 block = ctx.block(1)
@@ -1033,7 +1036,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
             
     
-    def check_return_type_in_if_statement(self, ctx, fun_name, fun_return_type):
+    def check_return_type_in_if_else_statement(self, ctx, fun_name, fun_return_type):
         if ctx.ELSE():
             if ctx.block(1): 
                 block = ctx.block(1)

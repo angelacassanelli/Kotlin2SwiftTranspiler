@@ -1,12 +1,13 @@
 class Example() {
-    fun exampleFunction(): Boolean { 
+    fun exampleFunction() { 
         var x: Int
         var y: Int
         
         if (x > y) 
-            return 10
-        else 
-            return false
+            println("ciao")
+        else {
+            println("ciaoooo")
+        }
         
     }
 }
