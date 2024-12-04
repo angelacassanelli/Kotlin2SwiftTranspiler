@@ -274,8 +274,8 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
   
     # def test_function_with_params_and_return_declaration(self):
-    #     kotlin_code = """class Example() {\nfun exampleFunction(x: Int, z: Int, b: Boolean): Boolean { if (x > y) { return b } else { return false } }\n}"""
-    #     expected_swift = """class Example() {\nfunc exampleFunction(x: Int, z: Int, b: Bool) -> Bool { if x > y { return b } else { return false } }\n}"""
+    #     kotlin_code = """class Example() {\nfun exampleFunction(x: Int, y: Int, b: Boolean): Boolean { if (x > y) { return b } else { return false } }\n}"""
+    #     expected_swift = """class Example() {\nfunc exampleFunction(x: Int, y: Int, b: Bool) -> Bool { if x > y { return b } else { return false } }\n}"""
     #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Class Declaration
