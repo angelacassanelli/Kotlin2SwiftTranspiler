@@ -138,15 +138,15 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # for Statement
 
-    # def test_for_statement(self):
-    #     kotlin_code = """class Example() {\nfun test() { for (i in 1 .. 5) { println("for instruction") } }\n}"""
-    #     expected_swift = """class Example() {\nfunc test() { for i in 1 ... 5 { print("for instruction") } }\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_for_statement(self):
+        kotlin_code = """class Example() {\nfun test() { var i = 1\nfor (i in 1 .. 5) { println("for instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { var i = 1\nfor i in 1 ... 5 { print("for instruction") } }\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
-    # def test_for_statement_without_brackets(self):
-    #     kotlin_code = """class Example() {\nfun test() { for (i in 1 .. 5) println("for instruction") }\n}"""
-    #     expected_swift = """class Example() {\nfunc test() { for i in 1 ... 5 { print("for instruction") } }\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_for_statement_without_brackets(self):
+        kotlin_code = """class Example() {\nfun test() { var i = 1\nfor (i in 1 .. 5) println("for instruction") }\n}"""
+        expected_swift = """class Example() {\nfunc test() { var i = 1\nfor i in 1 ... 5 { print("for instruction") } }\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     ### Object Oriented Programming ###
 
