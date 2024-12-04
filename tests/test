@@ -1,7 +1,5 @@
-class Example(a: Boolean) {
+class Example() {
 
-    fun test(): Boolean {
-        return a
-    }
+    var c = test(false)
 
 }

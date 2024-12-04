@@ -1,4 +1,5 @@
 class Example() {
-init(a: Bool) {}
-func test() -> Bool { return a }
+func test(a: Bool) -> Bool { return !a }
+var a = false
+var c = test(a)
 }

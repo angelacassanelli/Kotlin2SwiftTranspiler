@@ -872,6 +872,18 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return self.visit_expression(ctx.expression()) if (ctx.expression()) else "None"        
     
 
+    def check_function_not_declared_in_current_scope(self, ctx, fun_name, argument_types):
+        if not self.symbol_table.lookup_function(fun_name, argument_types):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Trying to call function '{fun_name}' with signature '{argument_types}' before its declaration." if argument_types 
+                        else f"Trying to call function '{fun_name}' before its declaration.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return True
+        return False
+
+
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
             self.semantic_error_listener.semantic_error(
@@ -888,16 +900,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         fun_name = ctx.IDENTIFIER().getText()
         argument_types = self.check_argument_type_list(ctx.argumentList()) if ctx.argumentList() else None
         
-        if not self.symbol_table.lookup_function(fun_name, argument_types):
-            self.semantic_error_listener.semantic_error(
-                msg = f"Trying to call function '{fun_name}' with signature '{argument_types}' before its declaration." if argument_types 
-                        else f"Trying to call function '{fun_name}' before its declaration.", 
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
-            return
-        
-        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
+        if self.check_function_not_declared_in_current_scope(ctx, fun_name, argument_types):
             return
         
         return_type = self.symbol_table.get_function_return_type(fun_name, argument_types)        
@@ -1091,8 +1094,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_argument_types(self, ctx, fun_name):
         argument_types = self.check_argument_type_list(ctx.argumentList()) 
         
-        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
-            return
+        # if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=argument_types):        
+        #     return
         function_versions = self.symbol_table.get_function_params(fun_name)
         
         if not function_versions:
@@ -1134,8 +1137,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         argument_names = self.check_argument_name_list(ctx.argumentList())
         argument_names_list = argument_names.split(", ")
 
-        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
-            return
+        # if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
+        #     return
         function_versions = self.symbol_table.get_function_params(fun_name)    
 
         if not function_versions:
