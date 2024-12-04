@@ -1,9 +1,1 @@
-class Example() {
-    fun exampleFunction(var x: Int, var y: Int, var b: Boolean): Boolean {
-        if (x > y) { 
-            return b 
-        } else { 
-            return false 
-        } 
-    }
-}
+class Person(var name: String, var age: Int) {}

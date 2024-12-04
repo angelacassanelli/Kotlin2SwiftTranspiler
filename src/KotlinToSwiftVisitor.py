@@ -260,19 +260,30 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
             if ctx.propertyList():        
                 propertyList = self.visit_property_list(ctx.propertyList())
-                properties_declarations = "\n".join([
-                    f"{property['keyword']} {property['name']}: {property['type']}"
-                    for property in propertyList
-                ])
-                properties_assignments = "\n".join([
-                    f"self.{property["name"]} = {property["name"]}"
-                    for property in propertyList
-                ])
-                constructor_params = ", ".join([
-                    f"{property['name']}: {property['type']}" +
-                    (f" = {property['value']}" if property['value'] is not None else "")
-                    for property in propertyList
-                ])
+                
+                properties_declarations = []
+                properties_assignments = []
+                constructor_params = []
+
+                for property in propertyList:
+                    values = property.split()
+
+                    if len(values) == 4:
+                        var_keyword, var_name, _, var_type = values
+                        var_value = None
+                    elif len(values) == 6:
+                        var_keyword, var_name, _, var_type, _, var_value = values                    
+                    else:
+                        raise ValueError(f"    ❌ Error: Invalid properties: {property_string}")
+    
+                    properties_declarations.append(f"{var_keyword} {var_name}: {var_type}")
+                    properties_assignments.append(f"self.{var_name} = {var_name}")
+                    constructor_params.append(f"{var_name}: {var_type}" + (f" = {var_value}" if var_value is not None else ""))
+    
+                properties_declarations = "\n".join(properties_declarations)
+                properties_assignments = "\n".join(properties_assignments)
+                constructor_params = ", ".join(constructor_params)
+
                 constructor = f"init({constructor_params}) {{\n{properties_assignments}\n}}"
                 class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
                 return f"{class_declaration} {{\n{properties_declarations}\n{constructor}\n{body}\n}}"
@@ -281,8 +292,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 constructor = f"init({constructor_params}) {{}}"
                 class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
                 return f"{class_declaration} {{\n{constructor}\n{body}\n}}"
-            class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
             
+            class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
             return f"{class_declaration} {{\n{body}\n}}"
     
 
