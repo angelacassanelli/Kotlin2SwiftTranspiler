@@ -122,8 +122,8 @@ block
 readStatement
 printStatement
 ifElseStatement
-ifStatement
-elseStatement
+ifBody
+elseBody
 forStatement
 assignmentStatement
 varDeclaration

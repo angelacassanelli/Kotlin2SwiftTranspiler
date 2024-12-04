@@ -71,21 +71,21 @@ class KotlinListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#ifStatement.
-    def enterIfStatement(self, ctx:KotlinParser.IfStatementContext):
+    # Enter a parse tree produced by KotlinParser#ifBody.
+    def enterIfBody(self, ctx:KotlinParser.IfBodyContext):
         pass
 
-    # Exit a parse tree produced by KotlinParser#ifStatement.
-    def exitIfStatement(self, ctx:KotlinParser.IfStatementContext):
+    # Exit a parse tree produced by KotlinParser#ifBody.
+    def exitIfBody(self, ctx:KotlinParser.IfBodyContext):
         pass
 
 
-    # Enter a parse tree produced by KotlinParser#elseStatement.
-    def enterElseStatement(self, ctx:KotlinParser.ElseStatementContext):
+    # Enter a parse tree produced by KotlinParser#elseBody.
+    def enterElseBody(self, ctx:KotlinParser.ElseBodyContext):
         pass
 
-    # Exit a parse tree produced by KotlinParser#elseStatement.
-    def exitElseStatement(self, ctx:KotlinParser.ElseStatementContext):
+    # Exit a parse tree produced by KotlinParser#elseBody.
+    def exitElseBody(self, ctx:KotlinParser.ElseBodyContext):
         pass
 
 

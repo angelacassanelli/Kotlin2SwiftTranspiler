@@ -90,20 +90,17 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if not self.validate_if_condition(ctx):
             return
 
-        if_body = self.visitIfStatement(ctx.ifStatement())
+        if_body = self.visitIfElseStatement(ctx.ifBody())
 
         if ctx.ELSE():
-            else_body = self.visitElseStatement(ctx.ifStatement())
+            else_body = self.visitIfElseStatement(ctx.elseBody())
 
             return f"if {condition} {{ {if_body} }} else {{ {else_body} }}"
 
         return f"if {condition} {{ {if_body} }}"
 
     
-    def visitIfStatement(self, ctx):
-        return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
-
-    def visitElseStatement(self, ctx):
+    def visitIfElseStatement(self, ctx):
         return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
 
 

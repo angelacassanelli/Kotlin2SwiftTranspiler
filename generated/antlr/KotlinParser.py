@@ -174,8 +174,8 @@ class KotlinParser ( Parser ):
     RULE_readStatement = 4
     RULE_printStatement = 5
     RULE_ifElseStatement = 6
-    RULE_ifStatement = 7
-    RULE_elseStatement = 8
+    RULE_ifBody = 7
+    RULE_elseBody = 8
     RULE_forStatement = 9
     RULE_assignmentStatement = 10
     RULE_varDeclaration = 11
@@ -208,7 +208,7 @@ class KotlinParser ( Parser ):
 
     ruleNames =  [ "program", "topLevelStatement", "statement", "block", 
                    "readStatement", "printStatement", "ifElseStatement", 
-                   "ifStatement", "elseStatement", "forStatement", "assignmentStatement", 
+                   "ifBody", "elseBody", "forStatement", "assignmentStatement", 
                    "varDeclaration", "functionDeclaration", "returnStatement", 
                    "classDeclaration", "classBody", "propertyList", "property", 
                    "parameterList", "parameter", "argumentList", "argument", 
@@ -743,15 +743,15 @@ class KotlinParser ( Parser ):
         def RIGHT_ROUND_BRACKET(self):
             return self.getToken(KotlinParser.RIGHT_ROUND_BRACKET, 0)
 
-        def ifStatement(self):
-            return self.getTypedRuleContext(KotlinParser.IfStatementContext,0)
+        def ifBody(self):
+            return self.getTypedRuleContext(KotlinParser.IfBodyContext,0)
 
 
         def ELSE(self):
             return self.getToken(KotlinParser.ELSE, 0)
 
-        def elseStatement(self):
-            return self.getTypedRuleContext(KotlinParser.ElseStatementContext,0)
+        def elseBody(self):
+            return self.getTypedRuleContext(KotlinParser.ElseBodyContext,0)
 
 
         def getRuleIndex(self):
@@ -783,7 +783,7 @@ class KotlinParser ( Parser ):
             self.state = 124
             self.match(KotlinParser.RIGHT_ROUND_BRACKET)
             self.state = 125
-            self.ifStatement()
+            self.ifBody()
             self.state = 128
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,5,self._ctx)
@@ -791,7 +791,7 @@ class KotlinParser ( Parser ):
                 self.state = 126
                 self.match(KotlinParser.ELSE)
                 self.state = 127
-                self.elseStatement()
+                self.elseBody()
 
 
         except RecognitionException as re:
@@ -803,7 +803,7 @@ class KotlinParser ( Parser ):
         return localctx
 
 
-    class IfStatementContext(ParserRuleContext):
+    class IfBodyContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -819,23 +819,23 @@ class KotlinParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return KotlinParser.RULE_ifStatement
+            return KotlinParser.RULE_ifBody
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIfStatement" ):
-                listener.enterIfStatement(self)
+            if hasattr( listener, "enterIfBody" ):
+                listener.enterIfBody(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIfStatement" ):
-                listener.exitIfStatement(self)
+            if hasattr( listener, "exitIfBody" ):
+                listener.exitIfBody(self)
 
 
 
 
-    def ifStatement(self):
+    def ifBody(self):
 
-        localctx = KotlinParser.IfStatementContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_ifStatement)
+        localctx = KotlinParser.IfBodyContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 14, self.RULE_ifBody)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 132
@@ -861,7 +861,7 @@ class KotlinParser ( Parser ):
         return localctx
 
 
-    class ElseStatementContext(ParserRuleContext):
+    class ElseBodyContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -877,23 +877,23 @@ class KotlinParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return KotlinParser.RULE_elseStatement
+            return KotlinParser.RULE_elseBody
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterElseStatement" ):
-                listener.enterElseStatement(self)
+            if hasattr( listener, "enterElseBody" ):
+                listener.enterElseBody(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitElseStatement" ):
-                listener.exitElseStatement(self)
+            if hasattr( listener, "exitElseBody" ):
+                listener.exitElseBody(self)
 
 
 
 
-    def elseStatement(self):
+    def elseBody(self):
 
-        localctx = KotlinParser.ElseStatementContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_elseStatement)
+        localctx = KotlinParser.ElseBodyContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 16, self.RULE_elseBody)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 136

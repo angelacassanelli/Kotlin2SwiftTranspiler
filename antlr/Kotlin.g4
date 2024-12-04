@@ -43,15 +43,15 @@ printStatement
 
 // Conditional "if" statement, with an optional "else" block
 ifElseStatement
-    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET ifStatement 
-      ( ELSE elseStatement )?
+    : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET ifBody 
+      ( ELSE elseBody )?
     ;
 
-ifStatement
+ifBody
     : (block | statement)
     ;
 
-elseStatement
+elseBody
     : (block | statement)
     ;
 
