@@ -623,7 +623,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return               
+                return   
+            return KotlinTypes.BOOLEAN.value            
         return left_type
     
 
@@ -638,7 +639,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return               
+                return    
+            return KotlinTypes.BOOLEAN.value                       
         return left_type
     
     
@@ -653,6 +655,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     column = ctx.start.column
                 )
                 return 
+            return KotlinTypes.BOOLEAN.value            
         return left_type
     
 
@@ -667,7 +670,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return               
+                return      
+            return KotlinTypes.BOOLEAN.value                     
         return left_type
 
 
@@ -683,6 +687,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     column = ctx.start.column
                 )
                 return          
+            return KotlinTypes.INT.value            
         return left_type
 
     
@@ -697,7 +702,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return        
+                return  
+            return KotlinTypes.INT.value                  
         return left_type
 
 
@@ -738,7 +744,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return 
             else:
                 self.check_range_expression(ctx.rangeExpression())
-                return
+                return KotlinTypes.BOOLEAN.value            
         return left_type
     
 

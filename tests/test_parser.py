@@ -116,25 +116,25 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # if Statement
     
-    # def test_if_arithmetic_expression_statement(self):
-    #     kotlin_code = """class Example() {\nfun test() { if (1 > 2) { println("if instruction") } }\n}"""
-    #     expected_swift = """class Example() {\nfunc test() { if 1 > 2 { print("if instruction") } }\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_if_arithmetic_expression_statement(self):
+        kotlin_code = """class Example() {\nfun test() { if (1 > 2) { println("if instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if 1 > 2 { print("if instruction") } }\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
     
     def test_if_boolean_expression_statement(self):
         kotlin_code = """class Example() {\nfun test() { if (true) { println("if instruction") } }\n}"""
         expected_swift = """class Example() {\nfunc test() { if true { print("if instruction") } }\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_if_else_statement(self):
-    #     kotlin_code = """class Example() {\nfun test() { if (1 <= 2) { println("if instruction") } else { println("else instruction") } }\n}"""
-    #     expected_swift = """class Example() {\nfunc test() { if 1 <= 2 { print("if instruction") } else { print("else instruction") } }\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_if_else_statement(self):
+        kotlin_code = """class Example() {\nfun test() { if (1 <= 2) { println("if instruction") } else { println("else instruction") } }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if 1 <= 2 { print("if instruction") } else { print("else instruction") } }\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_if_statement_without_brackets(self):
-    #     kotlin_code = """class Example() {\nfun test() { if (1 < 2) println("if instruction") }\n}"""
-    #     expected_swift = """class Example() {\nfunc test() { if 1 < 2 { print("if instruction") } }\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_if_statement_without_brackets(self):
+        kotlin_code = """class Example() {\nfun test() { if (1 < 2) println("if instruction") }\n}"""
+        expected_swift = """class Example() {\nfunc test() { if 1 < 2 { print("if instruction") } }\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # for Statement
 

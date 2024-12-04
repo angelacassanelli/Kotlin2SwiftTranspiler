@@ -1,3 +1,3 @@
 class Example() {
-var b : Bool = true
+var s : Bool = 1 == 1
 }
