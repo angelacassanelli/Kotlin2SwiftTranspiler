@@ -274,7 +274,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     elif len(values) == 6:
                         var_keyword, var_name, _, var_type, _, var_value = values                    
                     else:
-                        raise ValueError(f"    ❌ Error: Invalid properties: {property_string}")
+                        raise ValueError(f"    ❌ Error: Invalid properties: {propertyList}")
     
                     properties_declarations.append(f"{var_keyword} {var_name}: {var_type}")
                     properties_assignments.append(f"self.{var_name} = {var_name}")
