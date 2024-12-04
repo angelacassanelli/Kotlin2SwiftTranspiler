@@ -241,20 +241,20 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # Expressions with parenthesis
 
-    # def test_function_expression_with_peranthesis_1(self):
-    #     kotlin_code = """class Example() {\nval result: Int = (((10 + 2) * 5) / 3) - 1\n}"""
-    #     expected_swift = """class Example() {\nlet result: Int = (((10 + 2) * 5) / 3) - 1\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_expression_with_peranthesis_1(self):
+        kotlin_code = """class Example() {\nval result : Int = (((10 + 2) * 5) / 3) - 1\n}"""
+        expected_swift = """class Example() {\nlet result : Int = (((10 + 2) * 5) / 3) - 1\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_expression_with_peranthesis_2(self):
-    #     kotlin_code = """class Example() {\nval isTrue: Int = (((a && b) || c) && !d)\n}"""
-    #     expected_swift = """class Example() {\nlet isTrue: Int = (((a && b) || c) && !d)\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_expression_with_peranthesis_2(self):
+        kotlin_code = """class Example() {\nvar a = true\nvar b = true\nvar c = true\nvar d = false\nval isTrue : Boolean = (((a && b) || c) && !d)\n}"""
+        expected_swift = """class Example() {\nvar a = true\nvar b = true\nvar c = true\nvar d = false\nlet isTrue : Bool = (((a && b) || c) && !d)\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_expression_with_peranthesis_3(self):
-    #     kotlin_code = """class Example() {\nval complex: Int = ((x * y) - (z / w)) > threshold\n}"""
-    #     expected_swift = """class Example() {\nlet complex: Int = ((x * y) - (z / w)) > threshold\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_expression_with_peranthesis_3(self):
+        kotlin_code = """class Example() {\nvar x = 10\nvar y = 20\nvar z = 30\nvar w = 40\nvar threshold = 50\nval complex : Boolean = ((x * y) - (z / w)) > threshold\n}"""
+        expected_swift = """class Example() {\nvar x = 10\nvar y = 20\nvar z = 30\nvar w = 40\nvar threshold = 50\nlet complex : Bool = ((x * y) - (z / w)) > threshold\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Function Declaration
 
