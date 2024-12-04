@@ -218,25 +218,25 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # Logic - arithmetic expressions
 
-    # def test_function_logic_arithmetic_expression_1(self):
-    #     kotlin_code = """class Example() {\nval isValidScore: Boolean = ((score + bonus) > 50) && !isPenalty\n}"""
-    #     expected_swift = """class Example() {\nlet isValidScore: Bool = ((score + bonus) > 50) && !isPenalty\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_logic_arithmetic_expression_1(self):
+        kotlin_code = """class Example() {\nvar score = 10\nvar bonus = 5\nval isPenalty = false\n\nval isValidScore : Boolean = ((score + bonus) > 50) && !isPenalty\n}"""
+        expected_swift = """class Example() {\nvar score = 10\nvar bonus = 5\nlet isPenalty = false\nlet isValidScore : Bool = ((score + bonus) > 50) && !isPenalty\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_logic_arithmetic_expression_2(self):
-    #     kotlin_code = """class Example() {\nval canPass: Boolean = (examScore >= 50) && (attendanceRate > 75)\n}"""
-    #     expected_swift = """class Example() {\nlet canPass: Bool = (examScore >= 50) && (attendanceRate > 75)\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_logic_arithmetic_expression_2(self):
+        kotlin_code = """class Example() {\nvar examScore = 18\nval attendanceRate = 1\nval canPass : Boolean = (examScore >= 50) && (attendanceRate > 75)\n}"""
+        expected_swift = """class Example() {\nvar examScore = 18\nlet attendanceRate = 1\nlet canPass : Bool = (examScore >= 50) && (attendanceRate > 75)\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_logic_arithmetic_expression_3(self):
-    #     kotlin_code = """class Example() {\nval isQualified: Boolean = ((experience * skillLevel) >= 100) || hasCertification\n}"""
-    #     expected_swift = """class Example() {\nlet isQualified: Bool = ((experience * skillLevel) >= 100) || hasCertification\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_logic_arithmetic_expression_3(self):
+        kotlin_code = """class Example() {\nvar experience = 5\nvar skillLevel = 3\nvar hasCertification = false\nval isQualified : Boolean = ((experience * skillLevel) >= 100) || hasCertification\n}"""
+        expected_swift = """class Example() {\nvar experience = 5\nvar skillLevel = 3\nvar hasCertification = false\nlet isQualified : Bool = ((experience * skillLevel) >= 100) || hasCertification\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_logic_arithmetic_expression_4(self):
-    #     kotlin_code = """class Example() {\nval isBalanced: Boolean = (income - expenses) >= 0 && !hasDebts\n}"""
-    #     expected_swift = """class Example() {\nlet isBalanced: Bool = (income - expenses) >= 0 && !hasDebts\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_logic_arithmetic_expression_4(self):
+        kotlin_code = """class Example() {\nvar income = 1000\nvar expenses = 800\nvar hasDebts = false\nval isBalanced : Boolean = (income - expenses) >= 0 && !hasDebts\n}"""
+        expected_swift = """class Example() {\nvar income = 1000\nvar expenses = 800\nvar hasDebts = false\nlet isBalanced : Bool = (income - expenses) >= 0 && !hasDebts\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
 
     # Expressions with parenthesis
