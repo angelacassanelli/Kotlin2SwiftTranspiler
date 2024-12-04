@@ -196,6 +196,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         fun_name = self.visit_identifier(ctx.IDENTIFIER())   
         kotlin_param_types = self.check_parameter_type_list(ctx.parameterList()) if ctx.parameterList() else None
         param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
+        param_values = self.check_parameter_value_list(ctx.parameterList()) if ctx.parameterList() else None
 
         # Check if the variable is already declared
         if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
@@ -222,8 +223,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             
             self.symbol_table.add_scope()
 
-            for param_type, param_name in zip(kotlin_param_types.split(", "), param_names.split(", ")):
-                self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=None) # TODO: add value if present
+            if(ctx.parameterList()):
+                for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
+                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
             
             body = self.visit_block(ctx.block())
             
@@ -855,6 +857,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_parameter_name(self, ctx):    
         param_name = self.visit_identifier(ctx.IDENTIFIER())
         return param_name
+    
+
+    def check_parameter_value_list(self, ctx):
+        return ", ".join([self.check_parameter_value(param) for param in ctx.parameter()])
+
+
+    def check_parameter_value(self, ctx):       
+        return self.visit_expression(ctx.expression()) if (ctx.expression()) else "None"        
     
 
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
