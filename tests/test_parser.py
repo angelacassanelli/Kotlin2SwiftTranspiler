@@ -152,24 +152,24 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
 
     # Logical expressions
 
-    # def test_function_logical_expression_1(self):
-    #     kotlin_code = """class Example() {\nval isAdult: Boolean = age >= 18 && hasID\n}"""
-    #     expected_swift = """class Example() {\nlet isAdult: Bool = age >= 18 && hasID\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_logical_expression_1(self):
+        kotlin_code = """class Example() {\nval age : Int = 18\nval hasID : Boolean =  true\nval isAdult : Boolean = age >= 18 && hasID\n}"""
+        expected_swift = """class Example() {\nlet age : Int = 18\nlet hasID : Bool = true\nlet isAdult : Bool = age >= 18 && hasID\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # def test_function_logical_expression_2(self):
-    #     kotlin_code = """class Example() {\nval canVote: Boolean = isCitizen || (age >= 18 && hasPermanentResidency)\n}"""
-    #     expected_swift = """class Example() {\nlet canVote: Bool = isCitizen || (age >= 18 && hasPermanentResidency)\n}"""
+    #     kotlin_code = """class Example() {\nval isCitizen = true\nval age = 18\nval hasPermanentResidency = false\nval canVote: Boolean = isCitizen || (age >= 18 && hasPermanentResidency)\n}"""
+    #     expected_swift = """class Example() {\nlet isCitizen = true\nlet age = 18\nlet hasPermanentResidency = false\nlet canVote: Bool = isCitizen || (age >= 18 && hasPermanentResidency)\n}"""
     #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_function_logical_expression_3(self):
-    #     kotlin_code = """class Example() {\nval isValid: Boolean = (input != null) && (input > 5) || isFallbackEnabled\n}"""
-    #     expected_swift = """class Example() {\nlet isValid: Bool = (input != null) && (input > 5) || isFallbackEnabled\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_function_logical_expression_3(self):
+        kotlin_code = """class Example() {\nval input = 10\nval isFallbackEnabled = true\nval isValid : Boolean = input > 5 || isFallbackEnabled\n}"""
+        expected_swift = """class Example() {\nlet input = 10\nlet isFallbackEnabled = true\nlet isValid : Bool = input > 5 || isFallbackEnabled\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # def test_function_logical_expression_4(self):
-    #     kotlin_code = """class Example() {\nval shouldRun: Boolean = !isDisabled && (isEnabled || hasPermissions)\n}"""
-    #     expected_swift = """class Example() {\nlet shouldRun: Bool = !isDisabled && (isEnabled || hasPermissions)\n}"""
+    #     kotlin_code = """class Example() {\nval isDisabled = false\nval isEnabled = false\nval hasPermissions = true\nval shouldRun : Boolean = !isDisabled && (isEnabled || hasPermissions)\n}"""
+    #     expected_swift = """class Example() {\nlet isDisabled = false\nlet isEnabled = false\nlet hasPermissions = true\nlet shouldRun : Bool = !isDisabled && (isEnabled || hasPermissions)\n}"""
     #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
     # Arithmetic expressions
