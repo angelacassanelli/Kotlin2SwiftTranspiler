@@ -1,4 +1,5 @@
-class Example(val a: Boolean) {
+class Example(a: Boolean) {
+
     fun test(): Boolean {
         return a
     }

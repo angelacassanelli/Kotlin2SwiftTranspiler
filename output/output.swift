@@ -1,7 +1,4 @@
 class Example() {
-let a: Bool
-init(a: Bool) {
-self.a = a
-}
+init(a: Bool) {}
 func test() -> Bool { return a }
 }

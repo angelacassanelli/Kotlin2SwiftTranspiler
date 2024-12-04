@@ -206,6 +206,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
             if(ctx.parameterList()):
                 for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
+                    if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = param_name):
+                        return    
                     self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
 
             if ctx.type_():
@@ -558,7 +560,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """Checks if the variable is already declared in any scope."""
         if not self.symbol_table.lookup_variable(var_name):
             self.semantic_error_listener.semantic_error(
-                msg = f"Trying to assign variable '{var_name}' before its declaration.", 
+                msg = f"Trying to access or assign variable '{var_name}' before its declaration.", 
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
@@ -782,6 +784,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_primary_expression_type(self, ctx):
         if ctx.IDENTIFIER():
             identifier = self.visit_identifier(ctx.IDENTIFIER())
+            if not self.check_variable_already_declared(ctx=ctx, var_name=identifier):        
+                return
             info = self.symbol_table.get_variable_info(identifier)
             if info:
                 var_type, _ = info
@@ -891,6 +895,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
+            return
+        
+        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
             return
         
         return_type = self.symbol_table.get_function_return_type(fun_name, argument_types)        
@@ -1083,7 +1090,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_types(self, ctx, fun_name):
         argument_types = self.check_argument_type_list(ctx.argumentList()) 
+        
+        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
+            return
         function_versions = self.symbol_table.get_function_params(fun_name)
+        
         if not function_versions:
             self.semantic_error_listener.semantic_error(
                 msg=f"Function '{fun_name}' with argument types {argument_types} is not declared in any scope.",
@@ -1122,6 +1133,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_argument_names(self, ctx, fun_name):
         argument_names = self.check_argument_name_list(ctx.argumentList())
         argument_names_list = argument_names.split(", ")
+
+        if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
+            return
         function_versions = self.symbol_table.get_function_params(fun_name)    
 
         if not function_versions:
