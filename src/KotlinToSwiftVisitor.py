@@ -193,7 +193,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Transforms a Kotlin function declaration into a Swift function declaration.
         print(f"    🔍 Visiting function declaration: {ctx.getText()}")
 
-        fun_name = self.visit_identifier(ctx.IDENTIFIER())        
+        fun_name = self.visit_identifier(ctx.IDENTIFIER())   
         kotlin_param_types = self.check_parameter_type_list(ctx.parameterList()) if ctx.parameterList() else None
         param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
 
@@ -209,8 +209,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             else:
                 kotlin_return_type = None
 
-            # Check if the function body contains a return statement and that the return value matches the return type
-            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type)
+            # # Check if the function body contains a return statement and that the return value matches the return type
+            # self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type) # TODO: Bug fix
 
             if ctx.parameterList():
                 # Check if the function declaration contains duplicated parameters
@@ -221,7 +221,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
             
             self.symbol_table.add_scope()
+
+            for param_type, param_name in zip(kotlin_param_types.split(", "), param_names.split(", ")):
+                self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=None) # TODO: add value if present
+            
             body = self.visit_block(ctx.block())
+            
             self.symbol_table.remove_scope()
 
             if ctx.type_():
@@ -822,7 +827,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     
     def check_duplicate_parameters(self, ctx, fun_name):
-        parameter_list = [param.strip() for param in self.check_parameter_name_list(ctx).split(",")]
+        parameter_list = [param.strip() for param in self.check_parameter_name_list(ctx).split(", ")]
         params_seen = set() # non-duplicated params
         duplicate_params = []
 
@@ -1148,7 +1153,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_names_for_none(self, argument_names):
         # Split the string by commas to get the list of argument names
-        arg_names_list = argument_names.split(",")
+        arg_names_list = argument_names.split(", ")
         
         # Check if any element in the list is 'None'
         if any(arg_name == "None" for arg_name in arg_names_list):

@@ -1,7 +1,9 @@
 class Example() {
-    val isCitizen = true
-    val age = 18
-    val hasPermanentResidency = false
-    
-    val canVote: Boolean = isCitizen || (age >= 18 && hasPermanentResidency)
+    fun exampleFunction(var x: Int, y: Int, b: Boolean): Boolean { 
+        if (x > y) { 
+            return b 
+        } else { 
+            return false 
+        } 
+    }
 }
