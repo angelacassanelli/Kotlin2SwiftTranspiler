@@ -290,10 +290,10 @@ class TestKotlinToSwiftTransformer(unittest.TestCase):
         expected_swift = """class Example() {\n\n}"""
         self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
 
-    # def test_class_with_function_declaration(self):
-    #     kotlin_code = """class Example() {\nvar a: Int = 10\nvar b: Int = 100\nfun isAGreaterThanB(): Boolean { if (a > b) { return true } else { return false } }\n}"""
-    #     expected_swift = """class Example() {\nvar a: Int = 10\nvar b: Int = 100\nfunc isAGreaterThanB() -> Bool { if a > b { return true } else { return false } }\n}"""
-    #     self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
+    def test_class_with_function_declaration(self):
+        kotlin_code = """class Example() {\nvar a : Int = 10\nvar b : Int = 100\nfun isAGreaterThanB(): Boolean { if (a > b) { return true } else { return false } }\n}"""
+        expected_swift = """class Example() {\nvar a : Int = 10\nvar b : Int = 100\nfunc isAGreaterThanB() -> Bool { if a > b { return true } else { return false } }\n}"""
+        self.assertEqual(generate_swift_from_kotlin(kotlin_code), expected_swift)
         
     def test_class_with_params_declaration(self):
         kotlin_code = """class Person(val name: String, var age: Int) {\nfun greet() { println("Hello!") }\n}"""

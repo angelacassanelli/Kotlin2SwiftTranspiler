@@ -1,13 +1,11 @@
-class Example() {
-    fun exampleFunction(): Int { 
-        var x: Int
-        var y: Int
-        
-        if (x > y) {
-            return 10
-        } else {
-            return 10
-        }
-        
+ class Example() {
+    var a: Int = 10
+    var b: Int = 100
+    fun isAGreaterThanB(): Boolean { 
+        if (a > b) { 
+            return true 
+        } else { 
+            return false 
+        } 
     }
 }
