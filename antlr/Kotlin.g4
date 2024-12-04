@@ -33,7 +33,7 @@ block
 
 // Input statement: reads a line of input and optionally assigns it to a variable 
 readStatement
-    : (VAR | VAL)? IDENTIFIER EQ READLINE LEFT_ROUND_BRACKET RIGHT_ROUND_BRACKET
+    : READLINE LEFT_ROUND_BRACKET RIGHT_ROUND_BRACKET
     ;
 
 // Output statement: prints an expression to the console

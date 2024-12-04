@@ -71,8 +71,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_read_statement(self, ctx):
         # Converts a Kotlin readLine statement to Swift, handling optional var/val keyword.
         print(f"    🔍 Visiting read statement: {ctx.getText()}")
-        identifier = self.visit_identifier(ctx.IDENTIFIER())
-        return f"{identifier} = readLine()"
+        return f"readLine()"
     
 
     def visit_print_statement(self, ctx):
