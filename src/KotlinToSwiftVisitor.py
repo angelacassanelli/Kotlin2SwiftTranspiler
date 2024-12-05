@@ -586,7 +586,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_supported_type(self, ctx, type):
         """Checks if the Kotlin type is supported."""
         print(f"    🔍 Checking if type {type} is supported.")
-        if type not in KotlinTypes:
+        if type not in [item.value for item in KotlinTypes]:
+        #if type not in KotlinTypes: # deprecated from python 3.8
             self.semantic_error_listener.semantic_error(
                 f"Unsupported type '{type}'.",
                 line=ctx.start.line,
