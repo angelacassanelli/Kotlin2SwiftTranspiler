@@ -1,11 +1,7 @@
 class TestFor {
     fun iterate() {
-        val numbers = 1..5
+        val number = 1
         for (number in 10) { // Error: Int is not iterable
-            println(number)
-        }
-
-        for (number in numbers) {
             println(number)
         }
     }
