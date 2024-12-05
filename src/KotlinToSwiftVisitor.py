@@ -653,7 +653,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return   
+                return "None"
             return KotlinTypes.BOOLEAN.value            
         return left_type
     
@@ -670,7 +670,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return    
+                return "None"
             return KotlinTypes.BOOLEAN.value                       
         return left_type
     
@@ -686,7 +686,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return 
+                return "None"
             return KotlinTypes.BOOLEAN.value            
         return left_type
     
@@ -703,7 +703,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return      
+                return "None"
             return KotlinTypes.BOOLEAN.value                     
         return left_type
 
@@ -720,7 +720,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return          
+                return "None"
             return KotlinTypes.INT.value            
         return left_type
 
@@ -737,7 +737,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return  
+                return "None"
             return KotlinTypes.INT.value                  
         return left_type
 
@@ -752,7 +752,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return
+                return "None"
             return expr_type
         elif ctx.MINUS():  
             expr_type = self.check_primary_expression_type(ctx.primaryExpression())  
@@ -762,7 +762,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return
+                return "None"
             return expr_type
         else:
             return self.check_membership_expression_type(ctx.membershipExpression())
@@ -778,7 +778,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return 
+                return "None"
             else:
                 self.check_range_expression(ctx.rangeExpression())
                 return KotlinTypes.BOOLEAN.value            
@@ -795,15 +795,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
-        return
+        return "None"
 
 
     def check_primary_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the primary expression {ctx.getText()}.")
         if ctx.IDENTIFIER():
-            identifier = self.visit_identifier(ctx.IDENTIFIER())
+            identifier = self.visit_identifier(ctx.IDENTIFIER())        
             if not self.check_variable_already_declared(ctx=ctx, var_name=identifier):        
-                return
+                return "None"
             info = self.symbol_table.get_variable_info(identifier)
             if info:
                 var_type, _ = info
@@ -820,7 +820,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
-            return
+            return "None"
 
 
     def check_literal_type(self, ctx):
@@ -838,7 +838,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
-            return
+            return "None"
 
 
     def check_parameter_type_list(self, ctx):
@@ -928,7 +928,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Checking call expression {ctx.getText()}.")
         fun_name = ctx.IDENTIFIER().getText()
         argument_types = self.check_argument_type_list(ctx.argumentList()) if ctx.argumentList() else None
-        
+
         if self.check_function_not_declared_in_current_scope(ctx, fun_name, argument_types):
             return
         
