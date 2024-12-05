@@ -1,10 +1,10 @@
 class Math() {
-    fun main() {
-         sum = add(a = 5, b = 7)
-        println(sum)
-    }
-
     fun add(a: Int, b: Int): Int {
         return a + b
+    }
+    
+    fun main() {
+        sum = add(a = 5, b = 7) // Error: Assignment before declaration
+        println(sum)
     }
 }

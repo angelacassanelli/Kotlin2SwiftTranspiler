@@ -3,15 +3,16 @@ class TestFunctions {
         println("Hello")
     }
 
-    fun sayHello() { // Errore: Firma duplicata
+    fun sayHello() { // Error: Redeclaration of function 'sayHello'
         println("Duplicate Hello")
     }
 
-    fun add(a: Int, b: Int): Int {
-        return a + b
+    fun add(a: Int, b: Int) {
+        println(a+b)
     }
 
-    fun add(a: Int, b: String): Int { // Firma valida perché i parametri differiscono
-        return a + b.toInt()
+    fun add(a: Int, b: String) { 
+        println(a)
+        println(b)
     }
 }

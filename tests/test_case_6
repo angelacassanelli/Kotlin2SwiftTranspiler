@@ -1,9 +1,9 @@
 class TestReturn {
     fun getNumber(): Int {
-        return "Not a number" // Errore: Tipo di ritorno errato
+        return "Not a number" // Error: Wrong return type
     }
 
-    fun sayHi(): Unit {
-        return "Hi" // Errore: Il tipo Unit non dovrebbe avere un valore di ritorno
+    fun sayHi() {
+        return "Hi" // Error: Return statement in void function
     }
 }
