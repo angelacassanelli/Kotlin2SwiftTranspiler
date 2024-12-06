@@ -1,6 +1,5 @@
 class TestFor {
     fun iterate() {
-        val numbers = 1..5
         for (number in 10) { // Errore: '10' non è un range o una collezione iterabile
             println(number)
         }
