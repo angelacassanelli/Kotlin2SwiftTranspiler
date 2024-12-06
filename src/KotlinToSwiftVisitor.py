@@ -458,11 +458,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting membership expression: {ctx.getText()}")
         left = self.visit_primary_expression(ctx.primaryExpression())
         if ctx.rangeExpression():
-            right = self.visit_range_expression(ctx.rangeExpression()) 
-            if ctx.NOT() and ctx.IN():
-                return f"{left} !in {right}"
-            elif ctx.IN():
-                return f"{left} in {right}"
+            right = self.visit_range_expression(ctx.rangeExpression())
+            if right:   
+                if ctx.NOT() and ctx.IN():
+                    return f"{left} !in {right}"
+                elif ctx.IN():
+                    return f"{left} in {right}"
         return f"{left}"
     
 
@@ -483,6 +484,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Handles range expressions in Kotlin (e.g., a..b).
         print(f"    🔍 Visiting range expression: {ctx.getText()}")
         left = self.visit_additive_expression(ctx.additiveExpression(0))
+        if not ctx.additiveExpression(1):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Invalid range found.", 
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return None
         right = self.visit_additive_expression(ctx.additiveExpression(1))        
         return f"{left} ... {right}"
 
@@ -789,7 +797,17 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_range_expression(self, ctx):
         print(f"    🔍 Checking the type of the range expression {ctx.getText()}.")
         left_type = self.check_additive_expression_type(ctx.additiveExpression(0))
+        
+        if not ctx.additiveExpression(1):
+            self.semantic_error_listener.semantic_error(
+                msg = f"The for loop requires a range in the iteration condition, but found {left_type}.",
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return "None"
+
         right_type = self.check_additive_expression_type(ctx.additiveExpression(1))
+        
         if left_type != KotlinTypes.INT.value or right_type != KotlinTypes.INT.value:
             self.semantic_error_listener.semantic_error(
                 msg = f"The range operator '..' is only supported for Int types, found {left_type} and {right_type} instead.", 
