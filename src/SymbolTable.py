@@ -1,7 +1,7 @@
 class SymbolTable:
     def __init__(self):
         self.scopes = [{"variables": {}, "functions": {}, "classes": set()}] # Stack: each level is a dictionary representing a scope.
-        print(f"    📍 Initial scope added: {self.scopes[-1]}") 
+        print(f"    📍 Initial scope added.") 
 
 
     def __repr__(self):
@@ -11,7 +11,7 @@ class SymbolTable:
     def add_scope(self):
         """Adds a new scope by appending an empty dictionary to the stack."""
         self.scopes.append({"variables": {}, "functions": {}, "classes": set()})
-        print(f"    📍 Current scope added: {self.scopes[-1]}") 
+        print(f"    📍 Current scope added.") 
 
 
     def remove_scope(self):
@@ -21,8 +21,9 @@ class SymbolTable:
             ValueError: If trying to remove the global scope (the last remaining scope).
         """
         if len(self.scopes) > 1:
+            removed_scope = self.scopes[-1]
             self.scopes.pop()
-            print(f"    📍 Last scope removed: {self.scopes[-1]}") 
+            print(f"    📍 Last scope removed: {removed_scope}") 
         else:
             raise ValueError("❌ Cannot remove the global scope.")
 

@@ -1,4 +1,4 @@
 class TestFor {
-func iterate() { for x in 10 ... 20 {  }
-print(x) }
+func iterate() -> Int { for x in 10 ... 20 {  }
+return x }
 }

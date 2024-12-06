@@ -108,12 +108,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_for_statement(self, ctx):
         # Converts a Kotlin for loop with a range to a Swift-compatible loop.
         print(f"    🔍 Visiting for statement: {ctx.getText()}")
+        self.symbol_table.add_scope() 
         self.check_membership_expression_type(ctx.membershipExpression())
         expression = self.visit_memebership_expression(ctx.membershipExpression())
         if ctx.block(): 
             body = self.visit_block(ctx.block())
         else:  
             body = self.visit_statement(ctx.statement())
+        self.symbol_table.remove_scope() 
         return f"for {expression} {{ {body} }}"
 
 
@@ -196,20 +198,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         fun_name = self.visit_identifier(ctx.IDENTIFIER())   
         kotlin_param_types = self.check_parameter_type_list(ctx.parameterList()) if ctx.parameterList() else None
-        param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
-        param_values = self.check_parameter_value_list(ctx.parameterList()) if ctx.parameterList() else None
 
         # Check if the variable is already declared
         if self.check_function_already_declared_in_current_scope(ctx = ctx, fun_name = fun_name, kotlin_param_types=kotlin_param_types):        
             return
         else:
-            self.symbol_table.add_scope()            
-
-            if(ctx.parameterList()):
-                for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
-                    if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = param_name):
-                        return    
-                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
+            param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
+            param_values = self.check_parameter_value_list(ctx.parameterList()) if ctx.parameterList() else None
 
             if ctx.type_():
                 kotlin_return_type = ctx.type_().getText()
@@ -218,27 +213,33 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     return
             else:
                 kotlin_return_type = None
-
-            # Check if the function body contains a return statement and that the return value matches the return type
-            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type) # TODO: Bug fix
+        
+            self.symbol_table.add_function(fun_name, kotlin_param_types, param_names, kotlin_return_type)
+            self.symbol_table.add_scope() 
 
             if ctx.parameterList():
+                for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
+                    if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = param_name):
+                        return    
+                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
+
                 # Check if the function declaration contains duplicated parameters
                 self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name) 
 
-            body = self.visit_block(ctx.block())
-
-            self.symbol_table.remove_scope()
-        
-            self.symbol_table.add_function(fun_name, kotlin_param_types, param_names, kotlin_return_type)
-
             parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
+
+            body = self.visit_block(ctx.block())        
+
+            # Check if the function body contains a return statement and that the return value matches the return type
+            self.check_return_statement(ctx = ctx.block(), fun_name = fun_name, fun_return_type = kotlin_return_type) # TODO: Bug fix
 
             if ctx.type_():
                 return_type = self.visit_type(ctx.type_()) 
                 swift_function = f"func {fun_name}({parameters}) -> {return_type} {{ {body} }}"
             else:
                 swift_function = f"func {fun_name}({parameters}) {{ {body} }}"
+
+            self.symbol_table.remove_scope()
 
             return swift_function
 
@@ -262,14 +263,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return
         else:
             self.symbol_table.add_class(class_name)
+            self.symbol_table.add_scope()
 
             propertyList = self.visit_property_list(ctx.propertyList()) if ctx.propertyList() else None
             constructor_params = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else None
-
-            self.symbol_table.add_scope()
             body = self.visit_class_body(ctx.classBody()) if ctx.classBody() else ""            
-            self.symbol_table.remove_scope()
-
+            
             has_parentheses = ctx.LEFT_ROUND_BRACKET() is not None and ctx.RIGHT_ROUND_BRACKET() is not None                    
             
             if propertyList: 
@@ -304,6 +303,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
                 return f"{class_declaration} {{\n{constructor}\n{body}\n}}"
             
+            self.symbol_table.remove_scope()
+
             class_declaration = f"class {class_name}()" if has_parentheses else f"class {class_name}"
             return f"{class_declaration} {{\n{body}\n}}"
     

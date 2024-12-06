@@ -1,8 +1,7 @@
 class TestFor {
-    fun iterate() {
+    fun iterate(): Int{
         for (x in 10..20) { 
-            
-        }
-        println(x)
+        }        
+        return x
     }
 }
