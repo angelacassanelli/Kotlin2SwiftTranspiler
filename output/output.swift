@@ -1,4 +1,4 @@
 class TestFor {
-func iterate() -> Int { for x in 10 ... 20 {  }
-return x }
+func iterate() -> Int { var a = 10
+for x in 10 ... 20 { return a } }
 }

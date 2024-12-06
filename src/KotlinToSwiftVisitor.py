@@ -108,14 +108,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def visit_for_statement(self, ctx):
         # Converts a Kotlin for loop with a range to a Swift-compatible loop.
         print(f"    🔍 Visiting for statement: {ctx.getText()}")
-        self.symbol_table.add_scope() 
         self.check_membership_expression_type(ctx.membershipExpression())
         expression = self.visit_memebership_expression(ctx.membershipExpression())
         if ctx.block(): 
             body = self.visit_block(ctx.block())
         else:  
             body = self.visit_statement(ctx.statement())
-        self.symbol_table.remove_scope() 
         return f"for {expression} {{ {body} }}"
 
 
@@ -1027,10 +1025,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     if stmt.returnStatement():
                         return_stmt = stmt.returnStatement()
                         return self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
-                    elif stmt.forStatement():
+                for stmt in ctx.statement():
+                    if stmt.forStatement():
                         for_stmt = stmt.forStatement()
                         return self.check_return_statement_in_for_statement(for_stmt, fun_name, fun_return_type) 
-                    elif stmt.ifElseStatement():
+                for stmt in ctx.statement():
+                    if stmt.ifElseStatement():
                         if_stmt = stmt.ifElseStatement()
                         return self.check_return_statement_in_if_else_statement(if_stmt, fun_name, fun_return_type) 
                 # Return statement not found
@@ -1049,10 +1049,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         column = ctx.start.column
                     )
                     return False
-                elif stmt.forStatement():
+            for stmt in ctx.statement():
+                if stmt.forStatement():
                     for_stmt = stmt.forStatement()
                     return self.check_no_return_statement_in_for_statement(for_stmt, fun_name)
-                elif stmt.ifElseStatement():
+            for stmt in ctx.statement():
+                if stmt.ifElseStatement():
                     if_stmt = stmt.ifElseStatement()
                     return self.check_no_return_statement_in_if_else_statement(if_stmt, fun_name)
         return True    
