@@ -1,6 +1,6 @@
 class TestFor {
     fun iterate(){
-        var x: Int 
-        println()
+        var x: Int = 10
+        println(x)
     }
 }

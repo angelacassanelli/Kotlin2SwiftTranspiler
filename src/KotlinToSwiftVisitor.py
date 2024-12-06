@@ -470,7 +470,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         # Handles primary expressions in Kotlin (e.g., literals, identifiers, or call expressions).
         print(f"    🔍 Visiting primary expression: {ctx.getText()}")
         if ctx.IDENTIFIER():
-            return ctx.IDENTIFIER().getText()  
+            identifier = ctx.IDENTIFIER().getText()  
+            self.check_variable_already_assigned(ctx, identifier)
+            return identifier
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
             return f"({self.visit_expression(ctx.expression())})"  
         elif ctx.callExpression():
@@ -587,6 +589,21 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 column=ctx.start.column
             )
             return True
+        return False
+    
+
+    def check_variable_already_assigned(self, ctx, var_name):
+        """Checks if the variable is already (declared and) assigned."""        
+        print(f"    🔍 Checking if the variable {ctx.getText()} is already assigned.")
+        if self.check_variable_already_declared(ctx, var_name):
+            if self.symbol_table.get_variable_assigned(var_name):
+                return True
+        
+        self.semantic_error_listener.semantic_error(
+            msg=f"Variable '{var_name}' is not assigned yet.",
+            line=ctx.start.line,
+            column=ctx.start.column
+        )
         return False
     
     
