@@ -1,11 +1,6 @@
 class TestFor {
-    fun iterate(): Int {
-        var a = 10
-
-        for (x in 10..20) {
-            return a
-
-        } 
-
+    fun iterate(){
+        var x: Int 
+        println()
     }
 }

@@ -783,7 +783,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 identifier = ctx.primaryExpression().IDENTIFIER()
                 var_name = self.visit_identifier(identifier)
             
-                if self.symbol_table.lookup_variable(var_name):
+                if self.check_variable_already_declared(ctx, var_name):
                     left_type = self.check_primary_expression_type(ctx.primaryExpression())
                     info = self.symbol_table.get_variable_info(var_name)
                     var_type, is_mutable = info
@@ -801,8 +801,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                             column = ctx.start.column
                         )
                         return left_type
-                else:
-                    self.add_variable_to_symbol_table(var_name=var_name, type=KotlinTypes.INT.value, mutable=True, value=None)
                     self.check_range_expression(ctx.rangeExpression())
                     return KotlinTypes.BOOLEAN.value 
             else:
