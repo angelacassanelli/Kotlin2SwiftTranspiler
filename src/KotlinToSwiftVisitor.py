@@ -1,7 +1,7 @@
 from antlr4 import ParseTreeVisitor
 from generated.antlr.KotlinParser import KotlinParser
 from Symbol import Symbol
-from Types import SwiftTypes, KotlinTypes
+from Types import KotlinTypes
 from Utils import KOTLIN_2_SWIFT_TYPES, RESERVED_KEYWORDS
 
 
@@ -779,19 +779,44 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_membership_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the membership expression {ctx.getText()}.")
-        left_type = self.check_primary_expression_type(ctx.primaryExpression())
         if ctx.rangeExpression():
-            if left_type != KotlinTypes.INT.value:
+            if ctx.primaryExpression().IDENTIFIER():
+                identifier = ctx.primaryExpression().IDENTIFIER()
+                var_name = self.visit_identifier(identifier)
+            
+                if self.symbol_table.lookup_variable(var_name):
+                    left_type = self.check_primary_expression_type(ctx.primaryExpression())
+                    info = self.symbol_table.get_variable_info(var_name)
+                    var_type, is_mutable = info
+                    if var_type != KotlinTypes.INT.value:
+                        self.semantic_error_listener.semantic_error(
+                            msg = f"The left-hand side of the 'in' operator must be Int, found {left_type} instead.", 
+                            line = ctx.start.line, 
+                            column = ctx.start.column
+                        )
+                        return left_type
+                    if is_mutable == False:
+                        self.semantic_error_listener.semantic_error(
+                            msg = f"The left-hand side of the 'in' operator must be mutable.", 
+                            line = ctx.start.line, 
+                            column = ctx.start.column
+                        )
+                        return left_type
+                else:
+                    self.add_variable_to_symbol_table(var_name=var_name, type=KotlinTypes.INT.value, mutable=True, value=None)
+                    self.check_range_expression(ctx.rangeExpression())
+                    return KotlinTypes.BOOLEAN.value 
+            else:
+                left_type = self.check_primary_expression_type(ctx.primaryExpression())
                 self.semantic_error_listener.semantic_error(
-                    msg = f"The left-hand side of the 'in' operator must be Int, found {left_type} instead.", 
+                    msg = f"The left-hand side of the 'in' operator must be a variable.", 
                     line = ctx.start.line, 
                     column = ctx.start.column
                 )
-                return "None"
-            else:
-                self.check_range_expression(ctx.rangeExpression())
-                return KotlinTypes.BOOLEAN.value            
-        return left_type
+                return left_type
+        else:
+            left_type = self.check_primary_expression_type(ctx.primaryExpression())
+            return left_type
     
 
     def check_range_expression(self, ctx):

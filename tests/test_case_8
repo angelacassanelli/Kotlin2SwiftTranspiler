@@ -1,8 +1,8 @@
 class TestFor {
     fun iterate() {
-        val number = 1
-        for (number in 10) { // Error: Int is not iterable
-            println(number)
+        for (x in 10..20) { 
+            
         }
+        println(x)
     }
 }
