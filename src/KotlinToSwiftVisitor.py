@@ -1377,19 +1377,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return False
 
 
-    def check_argument_names_for_none(self, argument_names):
-        print(f"    🔍 Checking if any argument name in {argument_names} is None.")
-        
-        # Split the string by commas to get the list of argument names
-        arg_names_list = argument_names.split(", ")
-        
-        # Check if any element in the list is 'None'
-        if any(arg_name == "None" for arg_name in arg_names_list):
-            return True  # At least one argument name is 'None'
-        
-        return False  # No 'None' in the argument names list
-
-
     def check_class_already_declared_in_current_scope(self, ctx, class_name):
         print(f"    🔍 Checking if class {class_name} is already declared in the current scope.")
         

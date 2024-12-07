@@ -1,4 +1,6 @@
 class Example() {
-func test() -> Bool { var a = true
-if a { return a } else { return a } }
+func test(b: Int, c: Int) -> Int { return b }
+var x = 10
+var y = 10
+var a = test(x, y)
 }

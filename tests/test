@@ -1,6 +1,6 @@
 class Example() {
-    fun test(): Boolean{
-        var a = true
-        if(a){} else {}
+    fun test(b: Int, c: Int): Int{
+        return (b + c)
     }
+    var a = test(b = 1, c = 2)
 }
