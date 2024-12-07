@@ -22,9 +22,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print("🚀 Visiting Kotlin code...")
         print(f"    🔍 Visiting program: {ctx.getText()}")
         
-        statements = [self.visit_top_level_statement(stmt) for stmt in ctx.topLevelStatement()]
-        return "\n".join(filter(None, statements)) # Joins non-empty strings with a newline separator.
-    
+        if(ctx.topLevelStatement()):
+            statements = [self.visit_top_level_statement(stmt) for stmt in ctx.topLevelStatement()]
+            return "\n".join(filter(None, statements)) # Joins non-empty strings with a newline separator.
+        else:
+            raise ValueError(f"    ❌ Invalid top level statement in program.")
 
     def visit_top_level_statement(self, ctx):
         # Handles different types of top-level statements and directs to specific visit methods.
@@ -71,7 +73,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     elif len(values) == 6:
                         var_keyword, var_name, _, var_type, _, var_value = values                    
                     else:
-                        raise ValueError(f"    ❌ Error: Invalid properties: {propertyList}")
+                        raise ValueError(f"    ❌ Invalid properties: {propertyList}")
     
                     properties_declarations.append(f"{var_keyword} {var_name}: {var_type}")
                     properties_assignments.append(f"self.{var_name} = {var_name}")
@@ -102,7 +104,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         identifier_name = ctx.getText()
         if identifier_name in self.reserved_keywords:
-            raise ValueError(f"❌ Error: '{identifier_name}' is a reserved keyword and cannot be used as an identifier.")
+            raise ValueError(f"    ❌ '{identifier_name}' is a reserved keyword and cannot be used as an identifier.")
         return identifier_name
     
 
@@ -144,6 +146,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting class body: {ctx.getText()}")
         statements = []
         if ctx.children:
+            print("AAAA")
             for stmt in ctx.children:
                 if isinstance(stmt, KotlinParser.VarDeclarationContext):
                     statements.append(self.visit_var_declaration(stmt))
@@ -154,7 +157,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 else:
                     print(f"    ❌ Unrecognized statement: {ctx.getText()}")
                     return ""
-        return "\n".join(filter(None, statements))
+            return "\n".join(filter(None, statements))
+        else:
+            raise ValueError(f"    ❌ Invalid statement in class body.")
 
 
     def visit_var_declaration(self, ctx):
