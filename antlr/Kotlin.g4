@@ -96,7 +96,7 @@ classDeclaration
 
 // Class body: contains declarations of variables, functions, or comments
 classBody
-    : (varDeclaration | assignmentStatement | functionDeclaration | commentStatement)*
+    : (varDeclaration | functionDeclaration | commentStatement)*
     ;
 
 // Parameter list: used in function or class constructors

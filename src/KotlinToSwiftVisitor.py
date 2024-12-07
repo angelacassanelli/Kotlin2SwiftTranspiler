@@ -147,8 +147,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             for stmt in ctx.children:
                 if isinstance(stmt, KotlinParser.VarDeclarationContext):
                     statements.append(self.visit_var_declaration(stmt))
-                elif isinstance(stmt, KotlinParser.AssignmentStatementContext):
-                    statements.append(self.visit_assignment_statement(stmt))
                 elif isinstance(stmt, KotlinParser.FunctionDeclarationContext):
                     statements.append(self.visit_function_declaration(stmt))
                 elif isinstance(stmt, KotlinParser.CommentStatementContext):
