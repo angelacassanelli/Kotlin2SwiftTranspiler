@@ -596,6 +596,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def add_variable_to_symbol_table(self, var_name, type, mutable, value = None):
         """Adds a variable to the symbol table."""
         print(f"    🔍 Adding variable {var_name} to the symbol table.")
+        
         symbol = Symbol(name=var_name, type=type, mutable=mutable, value = value)
         self.symbol_table.add_variable(var_name, symbol)
 
@@ -603,6 +604,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_variable_already_declared(self, ctx, var_name):
         """Checks if the variable is already declared in any scope."""
         print(f"    🔍 Checking if variable {var_name} is already declared.")
+        
         if not self.symbol_table.lookup_variable(var_name):
             self.semantic_error_listener.semantic_error(
                 msg = f"Trying to access or assign variable '{var_name}' before its declaration.", 
@@ -616,6 +618,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_variable_already_declared_in_current_scope(self, ctx, var_name):
         """Checks if the variable is already declared in the current scope."""
         print(f"    🔍 Checking if variable {var_name} is already declared in the current scope.")
+        
         if self.symbol_table.lookup_variable_in_current_scope(var_name):
             self.semantic_error_listener.semantic_error(
                 msg=f"Variable '{var_name}' is already declared in the current scope.",
@@ -629,6 +632,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_variable_already_assigned(self, ctx, var_name):
         """Checks if the variable is already (declared and) assigned."""        
         print(f"    🔍 Checking if the variable {ctx.getText()} is already assigned.")
+        
         if self.check_variable_already_declared(ctx, var_name):
             if self.symbol_table.get_variable_assigned(var_name):
                 return True
@@ -644,6 +648,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_supported_type(self, ctx, type):
         """Checks if the Kotlin type is supported."""
         print(f"    🔍 Checking if type {type} is supported.")
+        
         if type not in [item.value for item in KotlinTypes]:
         #if type not in KotlinTypes: # deprecated from python 3.8
             self.semantic_error_listener.semantic_error(
@@ -658,6 +663,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def validate_value(self, ctx, type):
         """Validates the value assigned to the variable and checks for type mismatch."""        
         print(f"    🔍 Checking if the variable {ctx.getText()} has a valid type.")
+        
         value_type = self.check_expression_type(ctx.expression())
         if value_type and type != value_type:
             self.semantic_error_listener.semantic_error(
@@ -672,6 +678,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_mutability(self, ctx, var_name, is_mutable):
         """Checks if the variable being assigned is mutable."""
         print(f"    🔍 Checking if the variable {var_name} is mutable.")
+        
         if not is_mutable:               
             self.semantic_error_listener.semantic_error(
                 msg = f"Trying to update immutable variable '{var_name}'.", 
@@ -684,6 +691,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def validate_if_condition(self, ctx):
         print(f"    🔍 Validating if statement condition.")
+        
         condition_type = self.check_expression_type(ctx=ctx.expression())
         if condition_type != KotlinTypes.BOOLEAN.value:
             self.semantic_error_listener.semantic_error(
@@ -697,11 +705,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the expression {ctx.getText()}.")
+        
         return self.check_logical_or_expression_type(ctx.logicalOrExpression())
     
 
     def check_logical_or_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the logical or expression {ctx.getText()}.")
+        
         left_type = self.check_logical_and_expression_type(ctx.logicalAndExpression(0))
 
         for i in range(1, len(ctx.logicalAndExpression())):
@@ -719,6 +729,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_logical_and_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the logical and expression {ctx.getText()}.")
+        
         left_type = self.check_equality_expression_type(ctx.equalityExpression(0))
 
         for i in range(1, len(ctx.equalityExpression())):
@@ -736,6 +747,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_equality_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the equality expression {ctx.getText()}.")
+        
         left_type = self.check_relational_expression_type(ctx.relationalExpression(0))
         for i in range(1, len(ctx.relationalExpression())):
             right_type = self.check_relational_expression_type(ctx.relationalExpression(i))
@@ -752,6 +764,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_relational_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the relational expression {ctx.getText()}.")
+        
         left_type = self.check_additive_expression_type(ctx.additiveExpression(0))  
                 
         if len(ctx.additiveExpression()) > 1:
@@ -769,6 +782,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_additive_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the additive expression {ctx.getText()}.")
+        
         left_type = self.check_multiplicative_expression_type(ctx.multiplicativeExpression(0))
         
         for i in range(1, len(ctx.multiplicativeExpression())):
@@ -786,6 +800,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_multiplicative_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the multiplicative expression {ctx.getText()}.")
+        
         left_type = self.check_unary_expression_type(ctx.unaryExpression(0))
         
         for i in range(1, len(ctx.unaryExpression())):
@@ -803,6 +818,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_unary_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the unary expression {ctx.getText()}.")
+        
         if ctx.NOT(): 
             expr_type = self.check_primary_expression_type(ctx.primaryExpression())  
             if expr_type != KotlinTypes.BOOLEAN.value:
@@ -829,6 +845,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_membership_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the membership expression {ctx.getText()}.")
+        
         if ctx.rangeExpression():
             if ctx.primaryExpression().IDENTIFIER():
                 identifier = ctx.primaryExpression().IDENTIFIER()
@@ -869,6 +886,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_range_expression(self, ctx):
         print(f"    🔍 Checking the type of the range expression {ctx.getText()}.")
+        
         left_type = self.check_additive_expression_type(ctx.additiveExpression(0))
         
         if not ctx.additiveExpression(1):
@@ -892,6 +910,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_primary_expression_type(self, ctx):
         print(f"    🔍 Checking the type of the primary expression {ctx.getText()}.")
+        
         if ctx.IDENTIFIER():
             identifier = self.visit_identifier(ctx.IDENTIFIER())        
             if not self.check_variable_already_declared(ctx=ctx, var_name=identifier):        
@@ -917,6 +936,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_literal_type(self, ctx):
         print(f"    🔍 Checking the type of the literal expression {ctx.getText()}.")
+        
         literal = ctx.getText()
         if literal.isdigit():
             return KotlinTypes.INT.value
@@ -935,11 +955,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_parameter_type_list(self, ctx):
         print(f"    🔍 Checking the type of the parameters list {ctx.getText()}.")
+        
         return ", ".join([self.check_parameter_type(param) for param in ctx.parameter()])
 
 
     def check_parameter_type(self, ctx):      
         print(f"    🔍 Checking the type of the parameter {ctx.getText()}.")  
+        
         kotlin_param_type = ctx.type_().getText()
         if not self.check_supported_type(ctx=ctx, type=kotlin_param_type):
             return
@@ -948,6 +970,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_duplicate_parameters(self, ctx, fun_name):
         print(f"    🔍 Checking for duplicate parameters in function {fun_name}.")
+        
         parameter_list = [param.strip() for param in self.check_parameter_name_list(ctx).split(", ")]
         params_seen = set() # non-duplicated params
         duplicate_params = []
@@ -970,28 +993,33 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_parameter_name_list(self, ctx):
+        
         print(f"    🔍 Checking the name of the parameters list {ctx.getText()}.")
         return ", ".join([self.check_parameter_name(param) for param in ctx.parameter()])
 
 
     def check_parameter_name(self, ctx):    
         print(f"    🔍 Checking the name of the parameter {ctx.getText()}.")
+        
         param_name = self.visit_identifier(ctx.IDENTIFIER())
         return param_name
     
 
     def check_parameter_value_list(self, ctx):
         print(f"    🔍 Checking the value of the parameters list {ctx.getText()}.")
+        
         return ", ".join([self.check_parameter_value(param) for param in ctx.parameter()])
 
 
     def check_parameter_value(self, ctx):   
         print(f"    🔍 Checking the value of the parameter {ctx.getText()}.")    
+        
         return self.visit_expression(ctx.expression()) if (ctx.expression()) else "None"        
     
 
     def check_function_not_declared_in_current_scope(self, ctx, fun_name, argument_types):
         print(f"    🔍 Checking if function {fun_name} is not declared in currrent scope.")
+        
         if not self.symbol_table.lookup_function(fun_name, argument_types):
             self.semantic_error_listener.semantic_error(
                 msg = f"Trying to call function '{fun_name}' with signature '{argument_types}' before its declaration." if argument_types 
@@ -1005,6 +1033,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         print(f"    🔍 Checking if function {fun_name} is already declared in currrent scope.")
+        
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
             self.semantic_error_listener.semantic_error(
                 msg = f"Function '{fun_name}' with signature '{kotlin_param_types}' is already declared in the current scope." if kotlin_param_types
@@ -1018,6 +1047,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_call_expression(self, ctx):
         print(f"    🔍 Checking call expression {ctx.getText()}.")
+        
         fun_name = ctx.IDENTIFIER().getText()
         argument_types = self.check_argument_type_list(ctx.argumentList()) if ctx.argumentList() else None
 
@@ -1038,27 +1068,32 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_argument_type_list(self, ctx):
         print(f"    🔍 Checking the type of the arguments list {ctx.getText()}.")
+        
         return ", ".join([self.check_argument_type(argument) for argument in ctx.argument()])       
     
 
     def check_argument_type(self, ctx):
         print(f"    🔍 Checking the type of the argument {ctx.getText()}.")
+        
         return self.check_expression_type(ctx.expression())
 
 
     def check_argument_name_list(self, ctx):
         print(f"    🔍 Checking the name of the arguments list {ctx.getText()}.")
+        
         return ", ".join([self.check_argument_name(argument) for argument in ctx.argument()])       
     
 
     def check_argument_name(self, ctx):
         print(f"    🔍 Checking the name of the argument {ctx.getText()}.")
+        
         argument_name = self.visit_identifier(ctx.IDENTIFIER()) if (ctx.IDENTIFIER()) else "None"
         return argument_name
 
 
     def check_return_statement(self, ctx, fun_name, fun_return_type):
         print(f"    🔍 Checking the return statement of the function {fun_name}.")
+        
         # Iterate over all statements in the function body and check for return statements
         if fun_return_type:
             if not ctx.statement():
@@ -1111,6 +1146,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_return_statement_in_for_statement(self, ctx, fun_name, fun_return_type):
         print(f"    🔍 Checking the return statement of the function {fun_name} in for statement.")
+        
         if ctx.block(): 
             block = ctx.block()
             for stmt in block.statement():
@@ -1126,6 +1162,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_return_statement_in_if_else_statement(self, ctx, fun_name, fun_return_type):
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else statement.")
+        
         if ctx.ELSE():
             else_body = ctx.elseBody()
             self.check_return_statement_in_if_else_body(else_body, fun_name, fun_return_type)
@@ -1136,6 +1173,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_return_statement_in_if_else_body(self, ctx, fun_name, fun_return_type):
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else body.")
+        
         if ctx.block(): 
             block = ctx.block()
             for stmt in block.statement():
@@ -1151,6 +1189,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_no_return_statement_in_for_statement(self, ctx, fun_name):
         print(f"    🔍 Checking missing return statement of the function {fun_name} in for statement.")
+        
         if ctx.block(): 
             block = ctx.block()
             for stmt in block.statement():
@@ -1174,6 +1213,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_no_return_statement_in_if_else_statement(self, ctx, fun_name): 
         print(f"    🔍 Checking missing return statement of the function {fun_name} in if-else statement.")
+        
         if ctx.ELSE():
             else_body = ctx.elseBody()
             self.check_no_return_statement_in_if_else_body(else_body, fun_name)
@@ -1184,6 +1224,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_no_return_statement_in_if_else_body(self, ctx, fun_name):
         print(f"    🔍 Checking missing return statement of the function {fun_name} in if-else body.")
+        
         if ctx.block(): 
             block = ctx.block()
             for stmt in block.statement():
@@ -1207,6 +1248,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def validate_return_statement(self, ctx, fun_name, fun_return_type):
         print(f"    🔍 Validating return statement of the function {fun_name}.")
+        
         return_expression = ctx.expression()
         if return_expression:
             if not self.validate_value(ctx=ctx, type=fun_return_type):
@@ -1230,12 +1272,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_arguments(self, ctx, fun_name):
         print(f"    🔍 Checking arguments of function {fun_name}.")
+        
         self.check_argument_types(ctx, fun_name) 
         self.check_argument_names(ctx, fun_name)    
 
 
     def check_argument_types(self, ctx, fun_name):
         print(f"    🔍 Checking types of arguments of the function {fun_name}.")
+        
         argument_types = self.check_argument_type_list(ctx.argumentList()) 
         
         if self.check_function_not_declared_in_current_scope(ctx = ctx, fun_name = fun_name, argument_types=argument_types):        
@@ -1279,6 +1323,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_names(self, ctx, fun_name):
         print(f"    🔍 Checking names of arguments of the function {fun_name}.")
+        
         argument_names = self.check_argument_name_list(ctx.argumentList())
         argument_names_list = argument_names.split(", ")
 
@@ -1324,6 +1369,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_names_for_none(self, argument_names):
         print(f"    🔍 Checking if any argument name in {argument_names} is None.")
+        
         # Split the string by commas to get the list of argument names
         arg_names_list = argument_names.split(", ")
         
@@ -1336,6 +1382,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_class_already_declared_in_current_scope(self, ctx, class_name):
         print(f"    🔍 Checking if class {class_name} is already declared in the current scope.")
+        
         if self.symbol_table.lookup_class(class_name):
             self.semantic_error_listener.semantic_error(
                 msg = f"Class '{class_name}' is already declared in the current scope.",
