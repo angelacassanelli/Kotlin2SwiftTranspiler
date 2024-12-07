@@ -10,31 +10,17 @@ from SemanticErrorListener import SemanticErrorListener
 from SymbolTable import SymbolTable
 
 
-def transpiler(kotlin_code_path):
-    """
-    Entry point of the program to transpile Kotlin code to Swift.
-
-    This function performs the following steps:
-    1. Reads a sample Kotlin code file.
-    2. Parses the Kotlin code using the `parseKotlinCode` function to generate the abstract syntax tree (AST).
-    3. Initializes the `KotlinToSwiftVisitor` to traverse the parse tree and transform it into Swift code.
-    4. Generates the corresponding Swift code.
-    5. Prints the generated Swift code, or an error message if parsing or transformation fails.
-
-    Workflow:
-        - Read Kotlin code from a file.
-        - Parse the code into a parse tree.
-        - Transform the parse tree to Swift code using the visitor pattern.
-        - Handle errors during reading, parsing, and transformation.
-
-    Raises:
-        Exception: If an error occurs at any point in reading, parsing, or transpiling the code.
-    """
-    
+def transpile_kotlin_code(kotlin_code_path):
     try:
         kotlin_code = read_kotlin_code(kotlin_code_path)
+        
+        # Check if the generated Swift code is empty or None, and handle that case
+        if kotlin_code is None or kotlin_code.strip() == "":
+            print("❌ Oops! No Kotlin code to transpile.")
+            return
+        
         swift_code = transpile_kotlin_to_swift(kotlin_code)
-
+        
         # Check if the generated Swift code is empty or None, and handle that case
         if swift_code is None or swift_code.strip() == "":
             print("❌ Oops! No Swift code generated.")
@@ -76,31 +62,10 @@ def transpile_kotlin_to_swift(kotlin_code):
     if semantic_error_listener.has_errors():
         raise Exception("\n".join(semantic_error_listener.get_errors())) # Raise if semantic errors are found        
     
-        
     return swift_code
 
 
 def parse_kotlin_code(kotlin_code):
-    """
-    Parses the provided Kotlin code and returns the parse tree.
-
-    This function takes a string containing Kotlin code, processes it through
-    the lexical analysis and parsing stages, and generates a parse tree. If any 
-    lexical or syntax errors are encountered, an exception is raised with details 
-    of the errors. If parsing is successful, the parse tree is returned.
-
-    Args:
-        kotlin_code (str): The Kotlin source code to be parsed.
-
-    Returns:
-        tree (ParseTree or None): The parse tree if parsing is successful, 
-                                   otherwise None in case of an error.
-
-    Raises:
-        Exception: If there are any lexical or syntax errors encountered 
-                   during the parsing process, an exception with the error details is raised.
-    """
-    
     print("🚀 Parsing Kotlin code...")
 
     # Convert the Kotlin code string into an input stream that the lexer can process
@@ -156,9 +121,11 @@ def write_swift_code(swift_code):
             file.write(swift_code)
         print(f"✅ Swift code generated and saved to {swift_output_file}:\n\n{swift_code}")
         return
+    
     except Exception as ex:
         print(f"❌ Oops! Error writing Swift code to file {swift_output_file}.\n{ex}")
         return
+
 
 def read_kotlin_code(file_path):
     print("🚀 Reading Kotlin code...")
@@ -174,11 +141,12 @@ def read_kotlin_code(file_path):
     except Exception as ex:
         # Handle any other unexpected errors during file reading
         print(f"❌ Oops! Error reading Kotlin code from file {file_path}.\n{ex}")
-        return
+        return None
     
 
 # Ensure the script runs only when executed directly (not imported as a module)
 if __name__ == "__main__":
+    
     # Set up argument parsing
     parser = argparse.ArgumentParser(description="Transpile Kotlin code to Swift.")
     parser.add_argument(
@@ -189,4 +157,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Call the transpiler with the provided input file
-    transpiler(args.kotlin_file)
+    transpile_kotlin_code(args.kotlin_file)
