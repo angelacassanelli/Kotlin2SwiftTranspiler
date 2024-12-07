@@ -17,7 +17,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         self.reserved_keywords = RESERVED_KEYWORDS
 
 
-    def visit_program(self, ctx):        
+    def visit_program(self, ctx: KotlinParser.ProgramContext):        
         # Visits the program node, iterating over top-level statements and joining them into a single Swift program.
         print("🚀 Visiting Kotlin code...")
         print(f"    🔍 Visiting program: {ctx.getText()}")
@@ -28,7 +28,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         else:
             raise ValueError(f"    ❌ Invalid top level statement in program.")
 
-    def visit_top_level_statement(self, ctx):
+    def visit_top_level_statement(self, ctx: KotlinParser.TopLevelStatementContext):
         # Handles different types of top-level statements and directs to specific visit methods.
         print(f"    🔍 Visiting top level statement: {ctx.getText()}")
         
@@ -41,7 +41,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return None
 
 
-    def visit_class_declaration(self, ctx):
+    def visit_class_declaration(self, ctx: KotlinParser.ClassDeclarationContext):
         # Converts a Kotlin class declaration into a Swift class declaration.
         print(f"    🔍 Visiting class declaration: {ctx.getText()}")
 
@@ -98,7 +98,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return f"{class_declaration} {{\n{body}\n}}"
     
 
-    def visit_identifier(self, ctx):
+    def visit_identifier(self, ctx: KotlinParser):
         # Handles identifiers, checking if they are reserved keywords.
         print(f"    🔍 Visiting identifier: {ctx.getText()}")
         
@@ -108,28 +108,28 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return identifier_name
     
 
-    def visit_property_list(self, ctx):
+    def visit_property_list(self, ctx: KotlinParser.PropertyListContext):
         # Converts a list of Kotlin properties into Swift properties.
         print(f"    🔍 Visiting property list: {ctx.getText()}")
         
         return [self.visit_property(property) for property in ctx.property_()]
 
 
-    def visit_property(self, ctx):
+    def visit_property(self, ctx: KotlinParser.PropertyContext):
         # Converts a Kotlin property into a Swift property.
         print(f"    🔍 Visiting property: {ctx.getText()}")
         
         return self.visit_var_declaration(ctx.varDeclaration())
     
 
-    def visit_parameter_list(self, ctx):
+    def visit_parameter_list(self, ctx: KotlinParser.ParameterListContext):
         # Converts a list of Kotlin parameters into Swift parameters.
         print(f"    🔍 Visiting parameter list: {ctx.getText()}")
         
         return ", ".join([self.visit_parameter(param) for param in ctx.parameter()])
 
 
-    def visit_parameter(self, ctx):
+    def visit_parameter(self, ctx: KotlinParser.ParameterContext):
         # Converts a Kotlin parameter into a Swift parameter.
         print(f"    🔍 Visiting parameter: {ctx.getText()}")
         
@@ -141,7 +141,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"{param_name}: {param_type}"
 
 
-    def visit_class_body(self, ctx):
+    def visit_class_body(self, ctx: KotlinParser.ClassBodyContext):
         # Handles the body of a Kotlin class, converting its statements.
         print(f"    🔍 Visiting class body: {ctx.getText()}")
         statements = []
@@ -162,7 +162,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             raise ValueError(f"    ❌ Invalid statement in class body.")
 
 
-    def visit_var_declaration(self, ctx):
+    def visit_var_declaration(self, ctx: KotlinParser.VarDeclarationContext):
         # Converts a Kotlin 'var' declaration to Swift, including type and optional initialization.
         print(f"    🔍 Visiting variable declaration: {ctx.getText()}")
         
@@ -203,7 +203,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return swift_var_declaration     
 
 
-    def visit_type(self, ctx): 
+    def visit_type(self, ctx: KotlinParser.TypeContext): 
         # Converts Kotlin types to Swift types.
         print(f"    🔍 Visiting type: {ctx.getText()}")
         
@@ -214,7 +214,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return swift_type.value   
     
 
-    def visit_assignment_statement(self, ctx):
+    def visit_assignment_statement(self, ctx: KotlinParser.AssignmentStatementContext):
         # Converts Kotlin variable assignment to Swift.    
         print(f"    🔍 Visiting assignment statement: {ctx.getText()}")
         
@@ -247,7 +247,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 return f"{var_name} = {var_value}"
 
 
-    def visit_function_declaration(self, ctx):
+    def visit_function_declaration(self, ctx: KotlinParser.FunctionDeclarationContext):
         # Transforms a Kotlin function declaration into a Swift function declaration.
         print(f"    🔍 Visiting function declaration: {ctx.getText()}")
 
@@ -302,7 +302,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return swift_function
 
 
-    def visit_block(self, ctx):
+    def visit_block(self, ctx: KotlinParser.BlockContext):
         # Visits a block of statements and joins them with newlines.
         print(f"    🔍 Visiting block: {ctx.getText()}")        
         
@@ -310,7 +310,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return "\n".join(filter(None, statements))
 
 
-    def visit_statement(self, ctx):
+    def visit_statement(self, ctx: KotlinParser.StatementContext):
         # Handles various types of statements like read, print, if, for, etc.
         print(f"    🔍 Visiting statement: {ctx.getText()}")
         if ctx.readStatement():
@@ -334,14 +334,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return ""
         
 
-    def visit_read_statement(self, ctx):
+    def visit_read_statement(self, ctx: KotlinParser.ReadStatementContext):
         # Converts a Kotlin readLine statement to Swift, handling optional var/val keyword.
         
         print(f"    🔍 Visiting read statement: {ctx.getText()}")
         return f"readLine()"
     
 
-    def visit_print_statement(self, ctx):
+    def visit_print_statement(self, ctx: KotlinParser.PrintStatementContext):
         # Converts a Kotlin print statement to a Swift print statement.
         print(f"    🔍 Visiting print statement: {ctx.getText()}")
         
@@ -349,7 +349,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"print({expression})"
     
 
-    def visit_if_else_statement(self, ctx):
+    def visit_if_else_statement(self, ctx: KotlinParser.IfElseStatementContext):
         # Converts the Kotlin if-else body to Swift.
         print(f"    🔍 Visiting if statement: {ctx.getText()}")
         
@@ -358,24 +358,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if not self.validate_if_condition(ctx):
             return None
 
-        if_body = self.visit_if_else_body(ctx.ifBody())
+        if_body = self.visit_if_body(ctx.ifBody())
 
         if ctx.ELSE():
-            else_body = self.visit_if_else_body(ctx.elseBody())
+            else_body = self.visit_else_body(ctx.elseBody())
 
             return f"if {condition} {{ {if_body} }} else {{ {else_body} }}"
 
         return f"if {condition} {{ {if_body} }}"
 
     
-    def visit_if_else_body(self, ctx):
+    def visit_if_body(self, ctx: KotlinParser.IfBodyContext):
         # Converts a Kotlin if-else statement to Swift. The else block is optional.
         print(f"    🔍 Visiting if-else statement: {ctx.getText()}")
         
         return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
 
 
-    def visit_for_statement(self, ctx):
+    def visit_else_body(self, ctx: KotlinParser.ElseBodyContext):
+        # Converts a Kotlin if-else statement to Swift. The else block is optional.
+        print(f"    🔍 Visiting if-else statement: {ctx.getText()}")
+        
+        return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
+
+
+    def visit_for_statement(self, ctx: KotlinParser.ForStatementContext):
         # Converts a Kotlin for loop with a range to a Swift-compatible loop.
         print(f"    🔍 Visiting for statement: {ctx.getText()}")
         
@@ -388,7 +395,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"for {expression} {{ {body} }}"
 
 
-    def visit_return_statement(self, ctx):
+    def visit_return_statement(self, ctx: KotlinParser.ReturnStatementContext):
         # Handles 'return' statements in Kotlin.
         print(f"    🔍 Visiting return statement: {ctx.getText()}")            
         if ctx.expression():
@@ -535,7 +542,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"{left} ... {right}"
 
 
-    def visit_call_expression(self, ctx):
+    def visit_call_expression(self, ctx: KotlinParser.CallExpressionContext):
         # Handles function call expressions in Kotlin.
         print(f"    🔍 Visiting call expression: {ctx.getText()}")
         
@@ -550,14 +557,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"{fun_name}()"
     
 
-    def visit_argument_list(self, ctx):
+    def visit_argument_list(self, ctx: KotlinParser.ArgumentListContext):
         # Converts a list of Kotlin arguments into Swift arguments.
         print(f"    🔍 Visiting argument list: {ctx.getText()}")
         
         return ", ".join([self.visit_argument(argument) for argument in ctx.argument()])
     
 
-    def visit_argument(self, ctx):
+    def visit_argument(self, ctx: KotlinParser.ArgumentContext):
         # Converts a Kotlin argument into a Swift argument.
         print(f"    🔍 Visiting argument: {ctx.getText()}")
         
@@ -568,14 +575,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"{argument_value}"
 
 
-    def visit_literal(self, ctx):
+    def visit_literal(self, ctx: KotlinParser.LiteralContext):
         # Handles literal expressions in Kotlin (e.g., string, integer, boolean).
         print(f"    🔍 Visiting literal: {ctx.getText()}")
         
         return ctx.getText()
 
 
-    def visit_comment_statement(self, ctx):
+    def visit_comment_statement(self, ctx: KotlinParser.CommentStatementContext):
         # Converts Kotlin comments to Swift comments.
         print(f"    🔍 Visiting comment: {ctx.getText()}")
         if ctx.LINE_COMMENT():
@@ -586,14 +593,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return None
         
 
-    def visit_line_comment(self, ctx):
+    def visit_line_comment(self, ctx: KotlinParser):
         # Converts Kotlin inline comments to Swift comments.
         print(f"    🔍 Visiting inline comment: {ctx.getText()}")
         comment = ctx.getText()[2:].strip() 
         return f"# {comment}"
 
 
-    def visit_block_comment(self, ctx):
+    def visit_block_comment(self, ctx: KotlinParser):
         # Converts Kotlin block comments to Swift comments.
         print(f"    🔍 Visiting block comment: {ctx.getText()}")
         comment = ctx.getText()[2:-2].strip() 
