@@ -503,8 +503,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         if ctx.IDENTIFIER():
             identifier = ctx.IDENTIFIER().getText()  
-            self.check_variable_already_assigned(ctx, identifier) # TODO: verifica se check assigned deve essere gestito con if
-            return identifier
+            self.check_variable_already_assigned(ctx, identifier) 
+            return identifier # return identifier anyway
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
             return f"({self.visit_expression(ctx.expression())})"  
         elif ctx.callExpression():
