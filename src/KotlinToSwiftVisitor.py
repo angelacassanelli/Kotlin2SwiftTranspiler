@@ -629,23 +629,25 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             )
             return True
         return False
-    
+
 
     def check_variable_already_assigned(self, ctx, var_name):
         """Checks if the variable is already (declared and) assigned."""        
         print(f"    🔍 Checking if the variable {ctx.getText()} is already assigned.")
         
-        if self.check_variable_already_declared(ctx, var_name): # TODO: se la variabile è già dichiarata verrà stampato errore semantico qui
-            if self.symbol_table.get_variable_assigned(var_name):
-                return True
-        
-        self.semantic_error_listener.semantic_error(
-            msg=f"Variable '{var_name}' is not assigned yet.",
-            line=ctx.start.line,
-            column=ctx.start.column
-        )
-        return False
+        if not self.check_variable_already_declared(ctx, var_name): 
+            return False
     
+        if not self.symbol_table.get_variable_assigned(var_name):
+            self.semantic_error_listener.semantic_error(
+                msg=f"Variable '{var_name}' is not assigned yet.",
+                line=ctx.start.line,
+                column=ctx.start.column
+            )
+            return False
+        
+        return True
+        
     
     def check_supported_type(self, ctx, type):
         """Checks if the Kotlin type is supported."""
