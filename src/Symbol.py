@@ -13,6 +13,7 @@ class Symbol:
         self.mutable = mutable
         self.value = value
 
+
     def __repr__(self):
         """
         Returns a string representation of the Symbol object, useful for debugging.

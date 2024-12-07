@@ -15,6 +15,7 @@ class LexicalErrorListener(ErrorListener):
         super().__init__()
         self.errors = []
 
+
     def lexical_error(self, recognizer, offendingSymbol, line, column, msg, e):
         """
         Records a lexical error with details about its location and description.
@@ -30,11 +31,12 @@ class LexicalErrorListener(ErrorListener):
         Appends a formatted error message to the list of lexical errors.
         """
         error_message = (
-            f"❌ Oops! Lexical Error:\n"
+            f"❌ Oops! Lexical Error Detected:\n"
             f"   🔍 {msg}\n"
             f"   📍 line {line}, column {column}"
         )
         self.errors.append(error_message)
+
 
     def has_errors(self):
         """
@@ -44,6 +46,7 @@ class LexicalErrorListener(ErrorListener):
             bool: True if there are lexical errors, False otherwise.
         """
         return len(self.errors) > 0
+
 
     def get_errors(self):
         """

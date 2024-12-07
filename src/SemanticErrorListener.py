@@ -15,6 +15,7 @@ class SemanticErrorListener:
         super().__init__()
         self.errors = []
 
+
     def semantic_error(self, msg, line, column):
         """
         Records a semantic error with details about its location and description.
@@ -33,6 +34,7 @@ class SemanticErrorListener:
         )
         self.errors.append(error_message)
 
+
     def has_errors(self):
         """
         Checks if any semantic errors were recorded.
@@ -41,6 +43,7 @@ class SemanticErrorListener:
             bool: True if there are semantic errors, False otherwise.
         """
         return len(self.errors) > 0
+
 
     def get_errors(self):
         """

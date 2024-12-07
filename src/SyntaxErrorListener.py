@@ -15,6 +15,7 @@ class SyntaxErrorListener(ErrorListener):
         super().__init__()
         self.errors = []
 
+
     def syntax_error(self, recognizer, offendingSymbol, line, column, msg, e):
         """
         Called by ANTLR when a syntax error is encountered during parsing.
@@ -36,6 +37,7 @@ class SyntaxErrorListener(ErrorListener):
         )
         self.errors.append(error_message)
 
+
     def has_errors(self):
         """
         Checks if any syntax errors were recorded.
@@ -44,6 +46,7 @@ class SyntaxErrorListener(ErrorListener):
             bool: True if there are syntax errors, False otherwise.
         """
         return len(self.errors) > 0
+
 
     def get_errors(self):
         """
