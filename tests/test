@@ -1,6 +1,4 @@
 class Example() {
-    fun test(a: Boolean): Boolean {
-        return !a
-    }
-    var c = test(b)
+    var a: String = 10
+    var a: Int = 10
 }

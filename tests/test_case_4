@@ -1,6 +1,6 @@
 class TestVariables {
     fun test() {
-        var a: String = 10
+        var a: String = 10        // Error: Type mismatch
         val b: String = "Hello"
         var c: Int = "Wrong type" // Error: Type mismatch
         var a: Int = 20           // Error: Redeclaration of variable 'a'
