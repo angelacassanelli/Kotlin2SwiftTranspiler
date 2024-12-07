@@ -855,7 +855,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 identifier = ctx.primaryExpression().IDENTIFIER()
                 var_name = self.visit_identifier(identifier)
             
-                if not self.check_variable_already_declared(ctx, var_name): # TODO: check this
+                if not self.check_variable_already_declared(ctx, var_name): 
                     return "None"
                 else:
                     left_type = self.check_primary_expression_type(ctx.primaryExpression())
