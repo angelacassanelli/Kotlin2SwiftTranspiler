@@ -153,6 +153,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     statements.append(self.visit_function_declaration(stmt))
                 elif isinstance(stmt, KotlinParser.CommentStatementContext):
                     statements.append(self.visit_comment_statement(stmt))
+                else:
+                    print(f"    ❌ Unrecognized statement: {ctx.getText()}")
+                    return ""
         return "\n".join(filter(None, statements))
 
 
@@ -325,7 +328,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return self.visit_comment_statement(ctx.commentStatement())        
         else: 
             print(f"    ❌ Unrecognized statement: {ctx.getText()}")
-            return None
+            return ""
         
 
     def visit_read_statement(self, ctx):

@@ -1,6 +1,2 @@
-class TestVariables {
-    fun test(a: Int = 5, a: Int) {
-        var i : Int
-    }
-    test(a=5, b=7)
-}
+println("ciao")
+
