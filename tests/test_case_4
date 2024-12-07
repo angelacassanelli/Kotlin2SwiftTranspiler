@@ -1,8 +1,11 @@
 class TestVariables {
     fun test() {
-        var a: String = 10        // Error: Type mismatch
-        val b: String = "Hello"
-        var c: Int = "Wrong type" // Error: Type mismatch
-        var a: Int = 20           // Error: Redeclaration of variable 'a'
+        var a: Int = "Wrong type"   // Error: Type mismatch
+        
+        val b: Int = 10
+        var b: Int = 20             // Error: Redeclaration of variable 'b'
+        
+        var c: String = "test"        
+        var c: Boolean = True       // Error: Redeclaration of variable 'c'
     }
 }

@@ -1,5 +1,6 @@
-class Example() {
-    fun test(b: Int, c: Int): Int{
-        return (b + c)
+class TestVariables {
+    fun test() {
+        var b: String = "ciao"
+        var b: Int = 30
     }
 }
