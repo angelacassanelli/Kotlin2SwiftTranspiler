@@ -146,7 +146,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting class body: {ctx.getText()}")
         statements = []
         if ctx.children:
-            print("AAAA")
             for stmt in ctx.children:
                 if isinstance(stmt, KotlinParser.VarDeclarationContext):
                     statements.append(self.visit_var_declaration(stmt))
