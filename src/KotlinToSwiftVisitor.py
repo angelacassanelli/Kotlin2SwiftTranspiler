@@ -536,7 +536,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
 
         if ctx.argumentList():    
-            self.check_arguments(ctx, fun_name) # TODO gestisci se true o false
+            if not self.check_arguments(ctx, fun_name): 
+                return None
             arguments = self.visit_argument_list(ctx.argumentList()) 
             return f"{fun_name}({arguments})"
         

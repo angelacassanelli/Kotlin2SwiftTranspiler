@@ -1,4 +1,4 @@
 class TestVariables {
-func test(a: Int = 5, b: String) { var i = 10
-for i in 1 ... 10 { print("ciao") } }
+func test(a: Int = 5, b: Int) { var i : Int }
+test(a: 5, b: 7)
 }
