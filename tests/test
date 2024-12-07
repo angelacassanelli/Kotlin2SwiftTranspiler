@@ -1,4 +1,6 @@
 class Example() {
-    var a: String = 10
-    var a: Int = 10
+    fun test(): Boolean{
+        var a = true
+        if(a){} else {}
+    }
 }
