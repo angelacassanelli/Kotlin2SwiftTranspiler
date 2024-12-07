@@ -1,5 +1,5 @@
 class TestVariables {
-    fun test(a: Int, a: String) {
+    fun test(a: Int, b: String) {
         println("Hello")
     }
 }

@@ -274,7 +274,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value="") # TODO: add value here
 
                 # Check if the function declaration contains duplicated parameters
-                if self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name): 
+                if not self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name): 
                     return None
 
             parameters = self.visit_parameter_list(ctx.parameterList()) if ctx.parameterList() else ""
