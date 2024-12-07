@@ -1164,13 +1164,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_return_statement_in_if_else_statement(self, ctx, fun_name, fun_return_type):
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else statement.")
         
+        if_body = ctx.ifBody()
+        check_if = self.check_return_statement_in_if_else_body(if_body, fun_name, fun_return_type)
+
         if ctx.ELSE():
             else_body = ctx.elseBody()
             check_else = self.check_return_statement_in_if_else_body(else_body, fun_name, fun_return_type)
-
-        if_body = ctx.ifBody()
-        check_if = self.check_return_statement_in_if_else_body(if_body, fun_name, fun_return_type)
-        return check_if and check_else
+            return check_if and check_else
+        
+        return check_if
 
 
     def check_return_statement_in_if_else_body(self, ctx, fun_name, fun_return_type):
@@ -1223,13 +1225,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_no_return_statement_in_if_else_statement(self, ctx, fun_name): 
         print(f"    🔍 Checking missing return statement of the function {fun_name} in if-else statement.")
         
+        if_body = ctx.ifBody()
+        check_if = self.check_no_return_statement_in_if_else_body(if_body, fun_name)
+
         if ctx.ELSE():
             else_body = ctx.elseBody()
             check_else = self.check_no_return_statement_in_if_else_body(else_body, fun_name)
+            return check_if and check_else
         
-        if_body = ctx.ifBody()
-        check_if = self.check_no_return_statement_in_if_else_body(if_body, fun_name)
-        return check_if and check_else
+        return check_if 
 
 
     def check_no_return_statement_in_if_else_body(self, ctx, fun_name):

@@ -1,5 +1,5 @@
 class Example() {
-    fun test(c: Int, b: Int){
-        println(c)
+    fun test(b: Int, c: Int): Int{
+        return (b + c)
     }
 }
