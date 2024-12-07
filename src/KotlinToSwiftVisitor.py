@@ -230,9 +230,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             if not self.check_variable_already_declared(ctx=ctx, var_name=var_name):        
                 return None
             else:
-                info = self.symbol_table.get_variable_info(var_name)
-                if info:
-                    var_type, is_mutable = info
+                var_type, is_mutable = self.symbol_table.get_variable_info(var_name) 
 
                 # Check mutability
                 if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
@@ -873,8 +871,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     return "None"
                 else:
                     left_type = self.check_primary_expression_type(ctx.primaryExpression())
-                    info = self.symbol_table.get_variable_info(var_name)
-                    var_type, is_mutable = info
+                    var_type, is_mutable = self.symbol_table.get_variable_info(var_name)
                     if var_type != KotlinTypes.INT.value:
                         self.semantic_error_listener.semantic_error(
                             msg = f"The left-hand side of the 'in' operator must be Int, found {left_type} instead.", 
@@ -935,9 +932,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             identifier = self.visit_identifier(ctx.IDENTIFIER())        
             if not self.check_variable_already_declared(ctx=ctx, var_name=identifier):        
                 return "None"
-            info = self.symbol_table.get_variable_info(identifier)
-            if info:
-                var_type, _ = info
+            var_type, _ = self.symbol_table.get_variable_info(identifier)
             return var_type
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
             return self.check_expression_type(ctx=ctx.expression())

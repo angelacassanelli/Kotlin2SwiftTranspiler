@@ -91,7 +91,6 @@ class SymbolTable:
         for scope in reversed(self.scopes):
             if name in scope["variables"]:
                 scope["variables"][name].value = new_value
-                return
         raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
 
 
