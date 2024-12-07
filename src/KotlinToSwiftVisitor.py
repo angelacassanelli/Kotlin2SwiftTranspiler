@@ -267,11 +267,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             self.symbol_table.add_scope() 
 
             if ctx.parameterList():
-                for param_type, param_name, param_value in zip(kotlin_param_types.split(", "), param_names.split(", "), param_values.split(", ")):
+                for param_type, param_name in zip(kotlin_param_types.split(", "), param_names.split(", ")):
                     if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = param_name):
-                        return None 
+                        continue
                     # Add the variable to the symbol table
-                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) 
+                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value="") # TODO: add value here
 
                 # Check if the function declaration contains duplicated parameters
                 self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name) # TODO: gestisci se è true o false
