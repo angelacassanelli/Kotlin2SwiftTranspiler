@@ -1,6 +1,5 @@
 class TestVariables {
-    fun test() {
-        var b: String = "ciao"
-        var b: Int = 30
+    fun test(a: Int, a: String) {
+        println("Hello")
     }
 }
