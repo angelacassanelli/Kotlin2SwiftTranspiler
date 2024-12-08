@@ -774,6 +774,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Checking the type of the equality expression {ctx.getText()}.")
         
         left_type = self.check_relational_expression_type(ctx.relationalExpression(0))
+        
         for i in range(1, len(ctx.relationalExpression())):
             right_type = self.check_relational_expression_type(ctx.relationalExpression(i))
             if right_type != left_type:
