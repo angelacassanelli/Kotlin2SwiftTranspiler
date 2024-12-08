@@ -73,7 +73,7 @@ class SymbolTable:
         if name in current_scope:
             raise ValueError(f"❌ Variable '{name}' is already declared in the current scope.")
         current_scope[name] = variable
-        print(f"    📍 Variable '{name}' added to the current scope.")
+        print(f"    📍 Variable '{name}' of type '{variable.type}' (mutable: {variable.mutable}) added to the current scope with value '{variable.value}'.")
 
 
     def update_variable(self, name, new_value):
@@ -91,6 +91,7 @@ class SymbolTable:
         for scope in reversed(self.scopes):
             if name in scope["variables"]:
                 scope["variables"][name].value = new_value
+                print(f"    📍 Variable '{name}' assigned new value: {new_value}.")
         raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
 
 
@@ -169,7 +170,7 @@ class SymbolTable:
                 raise ValueError(f"❌ function '{name}' with signature '{param_types}' is already declared in current scope.")
         
         current_scope[name].append({"param_types": param_types, "param_names": param_names, "return_type": return_type})
-        print(f"    📍 Function '{name}' added to the current scope.")
+        print(f"    📍 Function '{name}' with signature '{param_types}' and return type '{return_type}' added to the current scope.")
 
 
     def get_function_return_type(self, name, param_types):

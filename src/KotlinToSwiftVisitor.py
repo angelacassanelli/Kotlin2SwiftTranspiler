@@ -258,7 +258,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return None
         else:
             param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
-            param_values = self.check_parameter_value_list(ctx.parameterList()) if ctx.parameterList() else None
+            param_names_values = self.check_parameter_name_value_list(ctx.parameterList()) if ctx.parameterList() else None
+            param_names_values_dict = {
+                item.split(": ")[0]: item.split(": ")[1] if item.split(": ")[1] != "None" else None
+                for item in param_names_values.split(", ")
+            }
 
             if ctx.type_():
                 kotlin_return_type = ctx.type_().getText()
@@ -275,8 +279,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 for param_type, param_name in zip(kotlin_param_types.split(", "), param_names.split(", ")):
                     if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = param_name):
                         continue
+                    
+                    # Get value form param_names_values_dict
+                    param_value = param_names_values_dict.get(param_name, None)
+
                     # Add the variable to the symbol table
-                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value="") # TODO: add value here
+                    self.add_variable_to_symbol_table(var_name=param_name, type=param_type, mutable=False, value=param_value) # TODO: add value here
 
                 # Check if the function declaration contains duplicated parameters
                 if not self.check_duplicate_parameters(ctx = ctx.parameterList(), fun_name=fun_name): 
@@ -1021,16 +1029,18 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return param_name
     
 
-    def check_parameter_value_list(self, ctx):
+    def check_parameter_name_value_list(self, ctx):
         print(f"    🔍 Checking the value of the parameters list {ctx.getText()}.")
         
-        return ", ".join([self.check_parameter_value(param) for param in ctx.parameter() if self.check_parameter_value(param) is not None])
+        return ", ".join([self.check_parameter_name_value(param) for param in ctx.parameter() if self.check_parameter_name_value(param) is not None])
 
 
-    def check_parameter_value(self, ctx):   
+    def check_parameter_name_value(self, ctx):   
         print(f"    🔍 Checking the value of the parameter {ctx.getText()}.")    
         
-        return self.visit_expression(ctx.expression()) if (ctx.expression()) else None        
+        param_name = self.visit_identifier(ctx.IDENTIFIER())
+        param_value = self.visit_expression(ctx.expression()) if (ctx.expression()) else None 
+        return f"{param_name}: {param_value}"
     
 
     def check_function_not_declared_in_current_scope(self, ctx, fun_name, argument_types):
