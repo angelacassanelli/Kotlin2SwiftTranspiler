@@ -94,7 +94,7 @@ returnStatement
 classDeclaration
     : CLASS IDENTIFIER 
       (LEFT_ROUND_BRACKET (propertyList | parameterList)? RIGHT_ROUND_BRACKET)? 
-      LEFT_CURLY_BRACKET classBody? RIGHT_CURLY_BRACKET
+      LEFT_CURLY_BRACKET classBody RIGHT_CURLY_BRACKET
     ;
 
 // Class body: contains declarations of variables, functions, or comments
