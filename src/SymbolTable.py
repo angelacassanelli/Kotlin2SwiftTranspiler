@@ -1,5 +1,17 @@
 class SymbolTable:
 
+    """
+    Manages a symbol table for variable, function, and class declarations, supporting nested scopes.
+
+    The symbol table maintains a stack of scopes, where each scope is represented as a dictionary.
+    The scopes store variables, functions, and classes. The class provides methods for adding, removing, 
+    and looking up symbols in the current scope or across all active scopes.
+
+    Attributes:
+        scopes (list): A stack of scopes, where each scope is a dictionary containing "variables", 
+                        "functions", and "classes".
+    """
+
     def __init__(self):
 
         """
