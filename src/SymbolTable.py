@@ -1,10 +1,31 @@
 class SymbolTable:
+
     def __init__(self):
+
+        """
+        Initializes a new symbol table with an initial scope.
+
+        This constructor sets up a stack of scopes, starting with an empty scope that contains
+        empty dictionaries for variables, functions, and classes.
+
+        Attributes:
+            scopes (list): A stack of scopes, each represented as a dictionary containing 
+                        "variables", "functions", and "classes".
+        """
+
         self.scopes = [{"variables": {}, "functions": {}, "classes": set()}] # Stack: each level is a dictionary representing a scope.
         print(f"    📍 Initial scope added.") 
 
 
     def __repr__(self):
+
+        """
+        Returns a string representation of the symbol table.
+
+        Returns:
+            str: A string describing the symbol table, including its current scopes.
+        """
+
         return f"SymbolTable(scopes={self.scopes})"
     
 
