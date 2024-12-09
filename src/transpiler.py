@@ -11,6 +11,23 @@ from SymbolTable import SymbolTable
 
 
 def transpile_kotlin_code(kotlin_code_path):
+
+    """
+    Transpiles Kotlin code to Swift.
+
+    This function reads Kotlin code from the given file path, parses it, transpiles it into Swift code, 
+    and then writes the resulting Swift code to an output file.
+
+    Args:
+        kotlin_code_path (str): Path to the Kotlin file to transpile.
+
+    Raises:
+        Exception: If an error occurs during parsing, transpiling, or writing the Swift code.
+
+    Returns:
+        None
+    """
+
     try:
         kotlin_code = read_kotlin_code(kotlin_code_path)
         
@@ -36,6 +53,22 @@ def transpile_kotlin_code(kotlin_code_path):
 
 
 def transpile_kotlin_to_swift(kotlin_code):
+
+    """
+    Transpiles the Kotlin code to Swift.
+
+    This function parses the Kotlin code and then uses a visitor pattern to transform the abstract syntax tree (AST) into Swift code.
+
+    Args:
+        kotlin_code (str): The Kotlin code to transpile.
+
+    Raises:
+        Exception: If parsing or semantic errors are encountered.
+
+    Returns:
+        str: The generated Swift code.
+    """
+
     print("🚀 Transpiling Kotlin code...")
 
     # Parse the Kotlin code using the parseKotlinCode function to generate the abstract syntax tree (AST)
@@ -66,6 +99,22 @@ def transpile_kotlin_to_swift(kotlin_code):
 
 
 def parse_kotlin_code(kotlin_code):
+
+    """
+    Parses the provided Kotlin code and generates a parse tree.
+
+    This function uses ANTLR to tokenize the Kotlin code, parse it using a custom syntax error listener, and then returns the parse tree.
+
+    Args:
+        kotlin_code (str): The Kotlin code to parse.
+
+    Raises:
+        Exception: If lexical, syntax, or parsing errors are encountered.
+
+    Returns:
+        ParseTree: The parse tree generated from the Kotlin code.
+    """
+
     print("🚀 Parsing Kotlin code...")
 
     # Convert the Kotlin code string into an input stream that the lexer can process
@@ -110,6 +159,22 @@ def parse_kotlin_code(kotlin_code):
 
 
 def write_swift_code(swift_code):
+
+    """
+    Writes the generated Swift code to a file.
+
+    This function writes the Swift code into an output file named `output.swift` in the `output` directory.
+
+    Args:
+        swift_code (str): The Swift code to write to the file.
+
+    Raises:
+        Exception: If an error occurs while writing the file.
+
+    Returns:
+        None
+    """
+
     print("🚀 Writing Swift code...")
 
     swift_output_dir = "output"
@@ -128,6 +193,22 @@ def write_swift_code(swift_code):
 
 
 def read_kotlin_code(file_path):
+
+    """
+    Reads Kotlin code from a file.
+
+    This function attempts to open the provided Kotlin file and return its contents as a string.
+
+    Args:
+        file_path (str): The path to the Kotlin file to read.
+
+    Raises:
+        Exception: If the file is not found or an error occurs during reading.
+
+    Returns:
+        str: The contents of the Kotlin file as a string.
+    """
+
     print("🚀 Reading Kotlin code...")
 
     try:
@@ -146,6 +227,18 @@ def read_kotlin_code(file_path):
 
 # Ensure the script runs only when executed directly (not imported as a module)
 if __name__ == "__main__":
+
+    """
+    Main entry point for the script.
+
+    This block of code runs when the script is executed directly. It sets up argument parsing and calls the transpiler with the provided input file.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     
     # Set up argument parsing
     parser = argparse.ArgumentParser(description="Transpile Kotlin code to Swift.")
