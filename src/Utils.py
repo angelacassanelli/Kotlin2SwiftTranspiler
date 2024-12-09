@@ -10,7 +10,6 @@ KOTLIN_2_SWIFT_TYPES:
         KotlinTypes.BOOLEAN: Corresponds to the Swift type SwiftTypes.BOOLEAN.
 
 """
-
 KOTLIN_2_SWIFT_TYPES = {
     KotlinTypes.INT: SwiftTypes.INT,
     KotlinTypes.STRING: SwiftTypes.STRING,
