@@ -47,10 +47,12 @@ ifElseStatement
       ( ELSE elseBody )?
     ;
 
+// Body of the "if" block
 ifBody
     : (block | statement)
     ;
 
+// Body of the "else" block
 elseBody
     : (block | statement)
     ;
