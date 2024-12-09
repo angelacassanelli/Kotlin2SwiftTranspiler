@@ -1560,7 +1560,32 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def add_variable_to_symbol_table(self, var_name, type, mutable, value = None):
-        """Adds a variable to the symbol table."""
+        """
+        Adds a variable to the symbol table with its associated properties.
+
+        This method creates a new symbol representing the variable and inserts it
+        into the symbol table. The variable's name, type, mutability, and optional
+        initial value are provided as parameters.
+
+        Args:
+            var_name (str): The name of the variable to be added.
+            type (str): The type of the variable (e.g., 'Int', 'String').
+            mutable (bool): Indicates if the variable is mutable (`True`) or immutable (`False`).
+            value (optional): The initial value of the variable. Defaults to `None`.
+
+        Returns:
+            None
+
+        Side Effects:
+            - Creates a `Symbol` object with the specified properties.
+            - Adds the created `Symbol` to the symbol table.
+
+        Notes:
+            - This method assumes the `Symbol` class is defined with properties `name`, `type`, 
+              `mutable`, and `value`.
+            - A diagnostic message is printed to indicate that the variable is being added 
+              to the symbol table.
+        """
         print(f"    🔍 Adding variable {var_name} to the symbol table.")
         
         symbol = Symbol(name=var_name, type=type, mutable=mutable, value = value)
@@ -1568,7 +1593,38 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_variable_already_declared(self, ctx, var_name):
-        """Checks if the variable is already declared in any scope."""
+        """
+        Checks if a variable is already declared in any accessible scope.
+
+        This method verifies whether the specified variable exists in the symbol table. 
+        If the variable is not found, it raises a semantic error indicating that the 
+        variable is being accessed or assigned before declaration.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) associated with the statement 
+                 where the variable is being used.
+            var_name (str): The name of the variable to check.
+
+        Returns:
+            bool: `True` if the variable is found in the symbol table; otherwise, `False`.
+
+        Side Effects:
+            - Logs a diagnostic message about the check.
+            - If the variable is not found, reports a semantic error through 
+              `self.semantic_error_listener`.
+
+        Notes:
+            - The `symbol_table.lookup_variable(var_name)` method is expected to return `None` 
+              if the variable is not found in the current or parent scopes.
+            - The semantic error provides the line and column information derived from 
+              the `ctx` object to assist in debugging.
+
+        Example:
+            If the symbol table does not contain `var_name`, an error like the following 
+            will be reported:
+            "Trying to access or assign variable 'x' before its declaration."
+
+        """
         print(f"    🔍 Checking if variable {var_name} is already declared.")
         
         if not self.symbol_table.lookup_variable(var_name):
@@ -1582,7 +1638,40 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_variable_already_declared_in_current_scope(self, ctx, var_name):
-        """Checks if the variable is already declared in the current scope."""
+        """
+        Checks if a variable is already declared in the current scope.
+
+        This method ensures that a new variable declaration does not conflict with an 
+        existing variable in the same scope. If a conflict is found, a semantic error 
+        is reported, indicating that the variable is already declared in the current 
+        scope.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) associated with the statement 
+                 where the variable is being declared.
+            var_name (str): The name of the variable to check.
+
+        Returns:
+            bool: `True` if the variable is already declared in the current scope; 
+                  otherwise, `False`.
+
+        Side Effects:
+            - Logs a diagnostic message about the check.
+            - If the variable is already declared, reports a semantic error through 
+              `self.semantic_error_listener`.
+
+        Notes:
+            - The `symbol_table.lookup_variable_in_current_scope(var_name)` method is 
+              expected to search only the current scope for the variable name.
+            - If the variable is found, a semantic error is raised with line and column 
+              information derived from the `ctx` object.
+
+        Example:
+            If `var_name` is already declared in the current scope, an error like the following 
+            will be reported:
+            "Variable 'x' is already declared in the current scope."
+
+        """
         print(f"    🔍 Checking if variable {var_name} is already declared in the current scope.")
         
         if self.symbol_table.lookup_variable_in_current_scope(var_name):
@@ -1596,7 +1685,37 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_variable_already_assigned(self, ctx, var_name):
-        """Checks if the variable is already (declared and) assigned."""        
+        """
+        Checks if a variable has already been declared and assigned a value.
+
+        This method ensures that a variable is both declared and assigned before it is used.
+        If the variable is not declared, a semantic error is raised through 
+        `check_variable_already_declared`. If it is declared but not assigned, an additional 
+        semantic error is reported.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) associated with the statement 
+                 where the variable is being checked.
+            var_name (str): The name of the variable to check.
+
+        Returns:
+            bool: `True` if the variable is declared and assigned; otherwise, `False`.
+
+        Side Effects:
+            - Logs a diagnostic message about the check.
+            - Reports a semantic error if the variable is not declared or not assigned.
+
+        Notes:
+            - The `check_variable_already_declared` method is called first to verify if the 
+              variable is declared. If it is not, the assignment check is skipped.
+            - If the variable is declared but not assigned, an error is raised with detailed 
+              location information.
+
+        Example:
+            - For a variable `x` used before assignment, the following error might be reported:
+              "Variable 'x' is not assigned yet."
+
+        """
         print(f"    🔍 Checking if the variable {ctx.getText()} is already assigned.")
         
         if not self.check_variable_already_declared(ctx, var_name): 
@@ -1614,7 +1733,35 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
     
     def check_supported_type(self, ctx, type):
-        """Checks if the Kotlin type is supported."""
+        """
+        Validates if the given Kotlin type is supported by the transpiler.
+
+        This method checks if the provided type exists within the predefined list of supported
+        Kotlin types. If the type is unsupported, a semantic error is raised, providing the
+        line and column information from the parsing context.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) where the type is being checked.
+            type (str): The Kotlin type to be validated.
+
+        Returns:
+            bool: `True` if the type is supported; otherwise, `False`.
+
+        Side Effects:
+            - Logs a diagnostic message indicating the type being checked.
+            - Reports a semantic error if the type is unsupported.
+
+        Example:
+            Supported types include:
+                - `Int`
+                - `String`
+                - `Boolean`
+
+        Notes:
+            - The list of supported types is derived from the `KotlinTypes` enum.
+            - If a type is unsupported, a meaningful error is raised with its location.
+
+        """
         print(f"    🔍 Checking if type {type} is supported.")
         
         if type not in [item.value for item in KotlinTypes]:
@@ -1628,7 +1775,35 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def validate_value(self, ctx, type):
-        """Validates the value assigned to the variable and checks for type mismatch."""        
+        """
+        Validates the value assigned to a variable, ensuring type compatibility.
+
+        This method checks if the type of the value assigned to a variable matches the variable's
+        declared type. If there is a type mismatch, a semantic error is raised.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) representing the assignment.
+            expected_type (str): The expected type of the variable as declared.
+
+        Returns:
+            bool: `True` if the value's type matches the expected type; otherwise, `False`.
+
+        Side Effects:
+            - Logs a diagnostic message about the validation process.
+            - Reports a semantic error if there is a type mismatch.
+
+        Example:
+            Input:
+                - Variable declared as `Int`
+                - Value assigned is a `String`
+            Output:
+                Error: Type mismatch: Variable declared as 'Int' but assigned a value of type 'String'.
+
+        Notes:
+            - The method relies on `check_expression_type` to determine the type of the expression being assigned.
+            - Supports detailed error reporting, including line and column information from the parsing context.
+
+        """
         print(f"    🔍 Checking if the variable {ctx.getText()} has a valid type.")
         
         value_type = self.check_expression_type(ctx.expression())
@@ -1643,7 +1818,33 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     
     def check_mutability(self, ctx, var_name, is_mutable):
-        """Checks if the variable being assigned is mutable."""
+        """
+        Checks if the specified variable is mutable before performing an assignment.
+
+        This method ensures that a variable marked as immutable (e.g., declared with `val` in Kotlin)
+        is not being reassigned. If an attempt is made to update an immutable variable, a semantic
+        error is raised.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) representing the assignment.
+            var_name (str): The name of the variable being checked.
+            is_mutable (bool): A flag indicating whether the variable is mutable (`True`) or immutable (`False`).
+
+        Returns:
+            bool: `True` if the variable is mutable; `False` otherwise.
+
+        Side Effects:
+            - Logs a diagnostic message about the mutability check.
+            - Reports a semantic error if an immutable variable is being reassigned.
+
+        Example:
+            Input:
+                - Variable `x` declared as immutable.
+                - Code attempts `x = 10`.
+            Output:
+                Error: Trying to update immutable variable 'x'.
+
+        """
         print(f"    🔍 Checking if the variable {var_name} is mutable.")
         
         if not is_mutable:               
@@ -1657,6 +1858,29 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def validate_if_condition(self, ctx):
+        """
+        Validates the condition in an 'if' statement.
+
+        This method checks whether the condition of an 'if' statement evaluates to a boolean value.
+        If the condition does not evaluate to a boolean, a semantic error is raised.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) representing the 'if' statement.
+
+        Returns:
+            bool: `True` if the condition is valid (i.e., evaluates to a boolean); `False` otherwise.
+
+        Side Effects:
+            - Logs a diagnostic message about the validation process.
+            - Reports a semantic error if the condition does not evaluate to a boolean type.
+
+        Example:
+            Input:
+                - Kotlin Code: `if (1 + 2) { ... }`
+            Output:
+                Error: Invalid expression type in 'if' condition: expected Boolean, found 'Int'.
+
+        """
         print(f"    🔍 Validating if statement condition.")
         
         condition_type = self.check_expression_type(ctx=ctx.expression())
@@ -1671,12 +1895,50 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_expression_type(self, ctx):
+        """
+        Determines the type of a given expression by recursively evaluating its components.
+
+        This method evaluates the expression represented in the given context to determine its type.
+        It acts as an entry point for type-checking all expressions, starting with logical OR expressions 
+        and proceeding deeper as needed.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) representing the expression.
+
+        Returns:
+            str: The type of the expression (e.g., "Int", "Boolean", "String").
+
+        Side Effects:
+            - Logs a diagnostic message about the expression being type-checked.
+
+        Example:
+            Input:
+                - Kotlin Code: `x && y || z`
+            Output:
+                - Type: "Boolean" (assuming `x`, `y`, and `z` are boolean expressions).
+        """                
         print(f"    🔍 Checking the type of the expression {ctx.getText()}.")
         
         return self.check_logical_or_expression_type(ctx.logicalOrExpression())
     
 
     def check_logical_or_expression_type(self, ctx):
+        """
+        Determines the type of a logical OR expression ('||') and validates operand compatibility.
+
+        This method checks whether the operands of the logical OR expression are of type 'Boolean'.
+        If the types are incompatible, a semantic error is reported.
+
+        Args:
+            ctx: The context object representing the logical OR expression in the ANTLR parse tree.
+
+        Returns:
+            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+
+        Side Effects:
+            - Logs a diagnostic message about the logical OR expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the logical or expression {ctx.getText()}.")
         
         left_type = self.check_logical_and_expression_type(ctx.logicalAndExpression(0))
@@ -1695,6 +1957,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_logical_and_expression_type(self, ctx):
+        """
+        Determines the type of a logical AND expression ('&&') and validates operand compatibility.
+
+        This method checks whether the operands of the logical AND expression are of type 'Boolean'.
+        If the types are incompatible, a semantic error is reported.
+
+        Args:
+            ctx: The context object representing the logical AND expression in the ANTLR parse tree.
+
+        Returns:
+            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+
+        Side Effects:
+            - Logs a diagnostic message about the logical AND expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the logical and expression {ctx.getText()}.")
         
         left_type = self.check_equality_expression_type(ctx.equalityExpression(0))
@@ -1713,6 +1991,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     
     def check_equality_expression_type(self, ctx):
+        """
+        Determines the type of an equality expression ('==' or '!=') and validates operand compatibility.
+        
+        This method checks whether the operands of the equality expression are of the same type,
+        and ensures that the result is of type 'Boolean'.
+
+        Args:
+            ctx: The context object representing the equality expression in the ANTLR parse tree.
+
+        Returns:
+            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+
+        Side Effects:
+            - Logs a diagnostic message about the equality expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the equality expression {ctx.getText()}.")
         
         left_type = self.check_relational_expression_type(ctx.relationalExpression(0))
@@ -1731,6 +2025,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_relational_expression_type(self, ctx):
+        """
+        Determines the type of a relational expression ('<', '<=', '>', '>=') and validates operand compatibility.
+        
+        This method checks whether the operands of the relational expression are of the same type,
+        and ensures that the result is of type 'Boolean'.
+
+        Args:
+            ctx: The context object representing the relational expression in the ANTLR parse tree.
+
+        Returns:
+            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+
+        Side Effects:
+            - Logs a diagnostic message about the relational expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the relational expression {ctx.getText()}.")
         
         left_type = self.check_additive_expression_type(ctx.additiveExpression(0))  
@@ -1749,6 +2059,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_additive_expression_type(self, ctx):
+        """
+        Determines the type of an additive expression ('+' or '-') and validates operand compatibility.
+        
+        This method checks whether the operands of the additive expression are of the same type,
+        and ensures that the result is of type 'Int'.
+
+        Args:
+            ctx: The context object representing the additive expression in the ANTLR parse tree.
+
+        Returns:
+            str: 'Int' if the expression is valid; otherwise, 'None'.
+
+        Side Effects:
+            - Logs a diagnostic message about the additive expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the additive expression {ctx.getText()}.")
         
         left_type = self.check_multiplicative_expression_type(ctx.multiplicativeExpression(0))
@@ -1767,6 +2093,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     
     def check_multiplicative_expression_type(self, ctx):
+        """
+        Determines the type of a multiplicative expression ('*', '/', '%') and validates operand compatibility.
+        
+        This method checks whether the operands of the multiplicative expression are of the same type,
+        and ensures that the result is of type 'Int'.
+
+        Args:
+            ctx: The context object representing the multiplicative expression in the ANTLR parse tree.
+
+        Returns:
+            str: 'Int' if the expression is valid; otherwise, 'None'.
+
+        Side Effects:
+            - Logs a diagnostic message about the multiplicative expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the multiplicative expression {ctx.getText()}.")
         
         left_type = self.check_unary_expression_type(ctx.unaryExpression(0))
@@ -1785,6 +2127,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_unary_expression_type(self, ctx):
+        """
+        Checks the type of a unary expression, validating the operand's type for unary operators.
+        Supports logical NOT and negation (-) operators, along with membership expressions.
+
+        Args:
+            ctx: The context representing the unary expression in the ANTLR parse tree.
+
+        Returns:
+            str: The type of the expression if valid; otherwise, 'None' if there is a type mismatch.
+
+        Side Effects:
+            - Logs a diagnostic message about the unary expression being type-checked.
+            - Reports semantic errors for type mismatches.
+        """
         print(f"    🔍 Checking the type of the unary expression {ctx.getText()}.")
         
         if ctx.NOT(): 
@@ -1812,6 +2168,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_membership_expression_type(self, ctx):
+        """
+        Checks the type of a membership expression, such as using the 'in' operator in Kotlin.
+        Validates the left-hand side (LHS) variable and its type, mutability, and range expression.
+
+        Args:
+            ctx: The context representing the membership expression in the ANTLR parse tree.
+
+        Returns:
+            str: The type of the expression if valid, otherwise returns 'None' for type mismatches.
+        """
         print(f"    🔍 Checking the type of the membership expression {ctx.getText()}.")
         
         if ctx.rangeExpression():
@@ -1854,6 +2220,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_range_expression(self, ctx):
+        """
+        Checks the types of the range expression (i.e., '..' operator in Kotlin).
+        Validates that both the left and right operands are of type 'Int'.
+
+        Args:
+            ctx: The context representing the range expression in the ANTLR parse tree.
+
+        Returns:
+            str: Returns 'Int' if valid, otherwise returns 'None' to indicate type errors.
+        """
         print(f"    🔍 Checking the type of the range expression {ctx.getText()}.")
         
         left_type = self.check_additive_expression_type(ctx.additiveExpression(0))
@@ -1878,6 +2254,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_primary_expression_type(self, ctx):
+        """
+        Checks the type of the primary expression (identifier, literal, function call, or parenthesized expression).
+        
+        Args:
+            ctx: The context representing the primary expression in the ANTLR parse tree.
+
+        Returns:
+            str: The type of the expression if valid, otherwise returns 'None' to indicate errors.
+        """
         print(f"    🔍 Checking the type of the primary expression {ctx.getText()}.")
         
         if ctx.IDENTIFIER():
@@ -1902,6 +2287,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_literal_type(self, ctx):
+        """
+        Checks the type of the literal expression (e.g., Int, String, Boolean, etc.).
+        
+        Args:
+            ctx: The context representing the literal in the ANTLR parse tree.
+
+        Returns:
+            str: The type of the literal expression if valid, otherwise returns 'None' to indicate errors.
+        """
         print(f"    🔍 Checking the type of the literal expression {ctx.getText()}.")
         
         literal = ctx.getText()
@@ -1921,12 +2315,30 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_parameter_type_list(self, ctx):
+        """
+        Checks the types of a list of parameters and returns a comma-separated string of valid types.
+
+        Args:
+            ctx: The context representing the parameter list in the ANTLR parse tree.
+
+        Returns:
+            str: A comma-separated list of parameter types if valid, otherwise returns None to indicate errors.
+        """
         print(f"    🔍 Checking the type of the parameters list {ctx.getText()}.")
         
         return ", ".join([self.check_parameter_type(param) for param in ctx.parameter() if self.check_parameter_type(param) is not None])
 
 
     def check_parameter_type(self, ctx):      
+        """
+        Checks the type of a single parameter and validates if the type is supported.
+        
+        Args:
+            ctx: The context representing the parameter in the ANTLR parse tree.
+        
+        Returns:
+            str: The parameter type if supported, otherwise None.
+        """
         print(f"    🔍 Checking the type of the parameter {ctx.getText()}.")  
         
         kotlin_param_type = ctx.type_().getText()
@@ -1936,6 +2348,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     
     def check_duplicate_parameters(self, ctx, fun_name):
+        """
+        Checks if a function has duplicate parameters.
+
+        Args:
+            ctx: The context representing the function declaration in the ANTLR parse tree.
+            fun_name: The name of the function being checked.
+        
+        Returns:
+            bool: True if no duplicates are found, False otherwise.
+        """
         print(f"    🔍 Checking for duplicate parameters in function {fun_name}.")
         
         parameter_list = [param.strip() for param in self.check_parameter_name_list(ctx).split(", ")]
@@ -1960,12 +2382,30 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_parameter_name_list(self, ctx):
+        """
+        Checks and returns the list of parameter names from the function's parameter list.
+
+        Args:
+            ctx: The context representing the function declaration in the ANTLR parse tree.
+        
+        Returns:
+            list: A list of parameter names.
+        """
         print(f"    🔍 Checking the name of the parameters list {ctx.getText()}.")
         
         return ", ".join([self.check_parameter_name(param) for param in ctx.parameter()])
 
 
     def check_parameter_name(self, ctx):    
+        """
+        Checks the name of the parameter and returns the parameter name.
+        
+        Args:
+            ctx: The context representing a parameter in the ANTLR parse tree.
+        
+        Returns:
+            str: The parameter name.
+        """
         print(f"    🔍 Checking the name of the parameter {ctx.getText()}.")
         
         param_name = self.visit_identifier(ctx.IDENTIFIER())
@@ -1973,12 +2413,33 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_parameter_name_value_list(self, ctx):
+        """
+        Checks the value of the parameters list and returns a comma-separated string 
+        of valid parameter names and values.
+        
+        Args:
+            ctx: The context representing a list of parameters in the ANTLR parse tree.
+        
+        Returns:
+            str: A comma-separated list of valid parameter names and values.
+        """
         print(f"    🔍 Checking the value of the parameters list {ctx.getText()}.")
         
         return ", ".join([self.check_parameter_name_value(param) for param in ctx.parameter() if self.check_parameter_name_value(param) is not None])
 
 
     def check_parameter_name_value(self, ctx):   
+        """
+        Checks and returns the name and value of the parameter, 
+        formatted as 'name: value'. If no value is provided, it returns 
+        'name: None'.
+        
+        Args:
+            ctx: The context representing the parameter in the ANTLR parse tree.
+        
+        Returns:
+            str: A formatted string representing the parameter name and its value.
+        """
         print(f"    🔍 Checking the value of the parameter {ctx.getText()}.")    
         
         param_name = self.visit_identifier(ctx.IDENTIFIER())
@@ -1987,6 +2448,17 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_function_not_declared_in_current_scope(self, ctx, fun_name, argument_types):
+        """
+        Checks if a function is called before its declaration in the current scope.
+        
+        Args:
+            ctx: The context of the function call.
+            fun_name: The name of the function being called.
+            argument_types: A list of argument types used in the function call.
+
+        Returns:
+            bool: True if the function is not declared in the current scope, False otherwise.
+        """
         print(f"    🔍 Checking if function {fun_name} is not declared in currrent scope.")
         
         if not self.symbol_table.lookup_function(fun_name, argument_types):
@@ -2001,6 +2473,17 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
+        """
+        Checks if a function with the given name and parameter types is already declared in the current scope.
+
+        Args:
+            ctx: The context of the function declaration or call.
+            fun_name: The name of the function.
+            kotlin_param_types: The list of parameter types for the function.
+
+        Returns:
+            bool: True if the function is already declared in the current scope, False otherwise.
+        """
         print(f"    🔍 Checking if function {fun_name} is already declared in currrent scope.")
         
         if self.symbol_table.lookup_function(fun_name, kotlin_param_types):
@@ -2015,6 +2498,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
 
     def check_call_expression(self, ctx):
+        """
+        Checks the validity of a function call expression, ensuring that the function is declared 
+        in the current scope, the argument types are correct, and the function has a return value.
+
+        This method performs the following checks:
+        1. Verifies if the called function is declared in the current scope with the given argument types.
+        2. If the function is not declared or is called with incorrect argument types, a semantic error is raised.
+        3. Checks if the function has a valid return type. If the function does not return a value, a semantic error is raised.
+        4. Returns the function's return type if all checks pass; otherwise, returns "None".
+
+        Args:
+            ctx: The context of the function call expression, containing the function name and the argument list.
+
+        Returns:
+            str: The return type of the function if the call is valid, otherwise "None".
+        """
         print(f"    🔍 Checking call expression {ctx.getText()}.")
         
         fun_name = ctx.IDENTIFIER().getText()
@@ -2036,24 +2535,73 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     
     def check_argument_type_list(self, ctx):
+        """
+        Checks the types of the arguments in a function call expression.
+
+        This method iterates over the arguments in the function call and checks the type of each argument 
+        using the `check_argument_type` method. It returns a comma-separated string of argument types.
+
+        Args:
+            ctx: The context of the argument list in the function call expression.
+
+        Returns:
+            str: A comma-separated list of argument types for the function call.
+        """
         print(f"    🔍 Checking the type of the arguments list {ctx.getText()}.")
         
         return ", ".join([self.check_argument_type(argument) for argument in ctx.argument()])       
     
 
     def check_argument_type(self, ctx):
+        """
+        Checks the type of a single argument in a function call.
+
+        This method evaluates the type of the argument by checking the type of its expression 
+        using the `check_expression_type` method. It returns the type of the argument.
+
+        Args:
+            ctx: The context of the argument in the function call expression.
+
+        Returns:
+            str: The type of the argument.
+        """
         print(f"    🔍 Checking the type of the argument {ctx.getText()}.")
         
         return self.check_expression_type(ctx.expression())
 
 
     def check_argument_name_list(self, ctx):
+        """
+        Checks the names of the arguments in a function call.
+
+        This method retrieves and checks the names of all the arguments in the list of arguments 
+        passed to a function call. It returns a string with the names of all arguments, separated 
+        by commas.
+
+        Args:
+            ctx: The context of the argument list in the function call expression.
+
+        Returns:
+            str: A comma-separated string of the argument names.
+        """
         print(f"    🔍 Checking the name of the arguments list {ctx.getText()}.")
         
         return ", ".join([self.check_argument_name(argument) for argument in ctx.argument()])       
     
 
     def check_argument_name(self, ctx):
+        """
+        Checks the name of an individual argument in a function call.
+
+        This method retrieves the name of a single argument passed to a function call.
+        It returns the argument's name as a string.
+
+        Args:
+            ctx: The context of the argument in the function call expression.
+
+        Returns:
+            str: The name of the argument, or "None" if no identifier is found.
+        """
         print(f"    🔍 Checking the name of the argument {ctx.getText()}.")
         
         argument_name = self.visit_identifier(ctx.IDENTIFIER()) if (ctx.IDENTIFIER()) else "None"
@@ -2061,6 +2609,25 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_return_statement(self, ctx, fun_name, fun_return_type):
+        """
+        Checks if a function has a valid return statement based on its return type.
+
+        This method ensures that:
+        1. Functions with a return type include a return statement.
+        2. Functions without a return type do not include a return statement.
+        3. It validates that the return statement, if present, matches the expected return type.
+
+        It also recursively checks for return statements in nested structures like 
+        `for` loops and `if` statements.
+
+        Args:
+            ctx: The context representing the function body in the AST.
+            fun_name: The name of the function being checked.
+            fun_return_type: The expected return type of the function (or `None` if no return type).
+
+        Returns:
+            bool: `True` if the return statement is valid, `False` otherwise.
+        """
         print(f"    🔍 Checking the return statement of the function {fun_name}.")
         
         # Iterate over all statements in the function body and check for return statements
@@ -2114,6 +2681,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_return_statement_in_for_statement(self, ctx, fun_name, fun_return_type):
+        """
+        Checks if a return statement is properly handled inside a `for` loop in a function.
+
+        This method ensures that:
+        1. If a return statement exists within the `for` loop's body, it is validated against 
+        the expected return type of the function.
+        2. The return statement, if present, adheres to the function's return type constraints.
+
+        Args:
+            ctx: The context representing the `for` loop in the AST.
+            fun_name: The name of the function being checked.
+            fun_return_type: The expected return type of the function (or `None` if no return type).
+
+        Returns:
+            bool: `True` if the return statement within the `for` loop is valid, `False` otherwise.
+        """
         print(f"    🔍 Checking the return statement of the function {fun_name} in for statement.")
         
         if ctx.block(): 
@@ -2130,6 +2713,23 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             
     
     def check_return_statement_in_if_else_statement(self, ctx, fun_name, fun_return_type):
+        """
+        Checks if a return statement is properly handled inside an `if-else` statement in a function.
+
+        This method ensures that:
+        1. The return statement is validated in the `if` branch.
+        2. If an `else` branch exists, the return statement is validated there as well.
+        3. The return statement(s) in both branches, if present, adhere to the function's expected return type.
+
+        Args:
+            ctx: The context representing the `if-else` statement in the AST.
+            fun_name: The name of the function being checked.
+            fun_return_type: The expected return type of the function (or `None` if no return type).
+
+        Returns:
+            bool: `True` if all return statements in the `if` and `else` branches are valid, 
+                `False` otherwise.
+        """
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else statement.")
         
         if_body = ctx.ifBody()
@@ -2144,6 +2744,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_return_statement_in_if_else_body(self, ctx, fun_name, fun_return_type):
+        """
+        Checks if a return statement is properly handled inside the body of an `if` or `else` statement.
+
+        This method ensures that:
+        1. The return statement is validated within the block of statements inside the `if` or `else` body.
+        2. If no return statement is found in the body, an error is raised indicating the function must have a return statement.
+
+        Args:
+            ctx: The context representing the body of the `if` or `else` statement in the AST.
+            fun_name: The name of the function being checked.
+            fun_return_type: The expected return type of the function (or `None` if no return type).
+
+        Returns:
+            bool: `True` if a valid return statement is found in the body, 
+                `False` if no return statement is found and an error is raised.
+        """
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else body.")
         
         if ctx.block(): 
@@ -2166,6 +2782,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_no_return_statement_in_for_statement(self, ctx, fun_name):
+        """
+        Ensures that a function without a return type does not contain any return statements within a `for` loop.
+
+        This method checks whether a `for` loop contains any return statements in the function's body. 
+        If a return statement is found in a function that does not have a return type, it raises an error.
+
+        Args:
+            ctx: The context representing the `for` loop statement in the AST.
+            fun_name: The name of the function being checked.
+
+        Returns:
+            bool: `True` if no return statement is found in the `for` loop (or it is correctly handled), 
+                `False` if a return statement is found and an error is raised.
+        """
         print(f"    🔍 Checking missing return statement of the function {fun_name} in for statement.")
         
         if ctx.block(): 
@@ -2191,6 +2821,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_no_return_statement_in_if_else_statement(self, ctx, fun_name): 
+        """
+        Ensures that a function without a return type does not contain any return statements within an `if-else` statement.
+
+        This method checks whether the `if` and `else` blocks within an `if-else` statement contain any return statements. 
+        If a return statement is found in a function that does not have a return type, it raises an error.
+
+        Args:
+            ctx: The context representing the `if-else` statement in the AST.
+            fun_name: The name of the function being checked.
+
+        Returns:
+            bool: `True` if no return statement is found in the `if` and `else` bodies (or it is correctly handled), 
+                `False` if a return statement is found and an error is raised.
+        """
         print(f"    🔍 Checking missing return statement of the function {fun_name} in if-else statement.")
         
         if_body = ctx.ifBody()
@@ -2205,6 +2849,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_no_return_statement_in_if_else_body(self, ctx, fun_name):
+        """
+        Ensures that a function without a return type does not contain any return statements within the body of an `if-else` statement.
+
+        This method checks whether any `return` statements are present within the `if` or `else` body. 
+        If a return statement is found in a function that does not have a return type, it raises an error.
+
+        Args:
+            ctx: The context representing the body of the `if-else` statement in the AST.
+            fun_name: The name of the function being checked.
+
+        Returns:
+            bool: `True` if no return statement is found (or correctly handled), 
+                `False` if a return statement is found and an error is raised.
+        """
         print(f"    🔍 Checking missing return statement of the function {fun_name} in if-else body.")
         
         if ctx.block(): 
@@ -2230,6 +2888,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def validate_return_statement(self, ctx, fun_name, fun_return_type):
+        """
+        Validates the return statement of a function to ensure type correctness.
+
+        This method checks if the return statement has an expression and if the type of the returned value matches the declared return type of the function.
+        If there is a type mismatch or if the return statement does not include an expression, an error is raised.
+
+        Args:
+            ctx: The context representing the return statement in the AST.
+            fun_name: The name of the function being checked.
+            fun_return_type: The declared return type of the function.
+
+        Returns:
+            bool: `True` if the return statement is valid, `False` if an error is found (either due to a type mismatch or a missing return expression).
+        """
         print(f"    🔍 Validating return statement of the function {fun_name}.")
         
         return_expression = ctx.expression()
@@ -2254,12 +2926,39 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def check_arguments(self, ctx, fun_name):
+        """
+        Checks the validity of the arguments for a function by verifying both their types and names.
+
+        This method checks if the arguments of the function match the expected types and if their names are valid.
+        It ensures that both argument types and names are correct before proceeding.
+
+        Args:
+            ctx: The context representing the arguments in the AST.
+            fun_name: The name of the function whose arguments are being checked.
+
+        Returns:
+            bool: `True` if both argument types and names are valid, `False` if any issue is found.
+        """
         print(f"    🔍 Checking arguments of function {fun_name}.")
         
         return (self.check_argument_types(ctx, fun_name) and self.check_argument_names(ctx, fun_name))
 
 
     def check_argument_types(self, ctx, fun_name):
+        """
+        Checks the types of the arguments passed to a function and ensures that they match the expected types for the function.
+
+        This method verifies that the provided argument types for a function call match one of the function signatures
+        declared in the current scope. It checks if the function is defined with the correct parameter types and
+        raises an error if there is no matching signature or if the argument types do not match.
+
+        Args:
+            ctx: The context representing the function call and its argument list in the AST.
+            fun_name: The name of the function being called.
+
+        Returns:
+            bool: `True` if the argument types match a declared function signature, `False` otherwise.
+        """
         print(f"    🔍 Checking types of arguments of the function {fun_name}.")
         
         argument_types = self.check_argument_type_list(ctx.argumentList()) 
@@ -2304,6 +3003,21 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
  
 
     def check_argument_names(self, ctx, fun_name):
+        """
+        Checks the names of the arguments passed to a function and ensures that they match the expected names
+        for the function.
+
+        This method verifies that the provided argument names for a function call match one of the function signatures
+        declared in the current scope. It checks if the function is defined with the correct parameter names and raises
+        an error if there is no matching signature or if the argument names do not match.
+
+        Args:
+            ctx: The context representing the function call and its argument list in the AST.
+            fun_name: The name of the function being called.
+
+        Returns:
+            bool: `True` if the argument names match a declared function signature, `False` otherwise.
+        """
         print(f"    🔍 Checking names of arguments of the function {fun_name}.")
         
         argument_names = self.check_argument_name_list(ctx.argumentList())
@@ -2350,6 +3064,19 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def check_class_already_declared_in_current_scope(self, ctx, class_name):
+        """
+        Checks if a class with the given name is already declared in the current scope.
+
+        This method verifies whether a class has already been declared in the current scope (e.g., in the same file or block).
+        If the class is already declared, it raises a semantic error indicating that the class name is already in use.
+
+        Args:
+            ctx: The context of the class declaration in the AST, which contains information about the line and column.
+            class_name: The name of the class to check for in the current scope.
+
+        Returns:
+            bool: `True` if the class is already declared in the current scope, `False` otherwise.
+        """
         print(f"    🔍 Checking if class {class_name} is already declared in the current scope.")
         
         if self.symbol_table.lookup_class(class_name):
