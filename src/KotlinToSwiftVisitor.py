@@ -19,7 +19,25 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         reserved_keywords (set): A set of reserved keywords in Kotlin that cannot be used as identifiers.
     """
 
-    def __init__(self, symbol_table, semantic_error_listener):        
+
+    def __init__(self, symbol_table, semantic_error_listener):
+        """
+        Initializes an instance of the Kotlin-to-Swift translator.
+
+        This constructor sets the symbol table and semantic error listener for error checking
+        and handling during translation. It also sets up dictionaries for type mapping and
+        reserved keyword management.
+
+        Args:
+            symbol_table (SymbolTable): The symbol table that stores information about variables and their types.
+            semantic_error_listener (SemanticErrorListener): An object that handles semantic errors, such as undeclared variables, type conflicts, etc.
+
+        Attributes:
+            symbol_table (SymbolTable): The symbol table used for managing variables and their types.
+            semantic_error_listener (SemanticErrorListener): The object for listening to semantic errors.
+            kotlin_2_swift_types (dict): A dictionary that maps Kotlin types to corresponding Swift types.
+            reserved_keywords (list): A list of reserved keywords in Kotlin that cannot be used as variable or function names.
+        """
         self.symbol_table = symbol_table
         self.semantic_error_listener = semantic_error_listener        
         self.kotlin_2_swift_types = KOTLIN_2_SWIFT_TYPES
@@ -27,7 +45,22 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_program(self, ctx: KotlinParser.ProgramContext):        
-        # Visits the program node, iterating over top-level statements and joining them into a single Swift program.
+        """
+        Visits the program node in the Kotlin AST (Abstract Syntax Tree) and translates
+        top-level statements into corresponding Swift code.
+
+        This method iterates over the top-level statements of the Kotlin program, converts
+        each statement into Swift code, and joins the results into a single Swift program.
+
+        Args:
+            ctx (KotlinParser.ProgramContext): The context object representing the program node in the Kotlin AST.
+
+        Returns:
+            str: The translated Swift code, with top-level statements joined into a single string.
+
+        Raises:
+            ValueError: If the program contains invalid top-level statements.
+        """     
         print("🚀 Visiting Kotlin code...")
         print(f"    🔍 Visiting program: {ctx.getText()}")
         
@@ -38,7 +71,24 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             raise ValueError(f"    ❌ Invalid top level statement in program.")
 
     def visit_top_level_statement(self, ctx: KotlinParser.TopLevelStatementContext):
-        # Handles different types of top-level statements and directs to specific visit methods.
+        """
+        Handles different types of top-level statements in the Kotlin program and directs them 
+        to the appropriate visit methods for further processing.
+
+        This method checks the type of the top-level statement (e.g., class declaration or comment),
+        and delegates to the corresponding method for further handling. If the statement type is 
+        unrecognized, it prints an error message.
+
+        Args:
+            ctx (KotlinParser.TopLevelStatementContext): The context object representing the top-level statement 
+                                                         in the Kotlin AST.
+
+        Returns:
+            str or None: The translated Swift code for the top-level statement, or None if the statement is unrecognized.
+
+        Prints:
+            An error message if the statement is unrecognized.
+        """
         print(f"    🔍 Visiting top level statement: {ctx.getText()}")
         
         if ctx.classDeclaration():
@@ -51,7 +101,37 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_class_declaration(self, ctx: KotlinParser.ClassDeclarationContext):
-        # Converts a Kotlin class declaration into a Swift class declaration.
+        """
+        Converts a Kotlin class declaration into a Swift class declaration.
+
+        This method processes a Kotlin class declaration and translates it into Swift syntax, 
+        including the class name, properties, constructor, and class body. It also checks for 
+        duplicate class declarations in the current scope and ensures that the class is added 
+        to the symbol table for semantic analysis.
+
+        The method handles:
+        - Class properties (with optional values).
+        - Constructor parameters and their default values.
+        - Class body content (if available).
+        
+        If the class has properties, it generates property declarations, assignments, and 
+        constructs an initializer method in Swift. If no properties are present, it generates 
+        only the initializer method if parameters are specified, otherwise the class will be 
+        declared without a constructor body.
+
+        Args:
+            ctx (KotlinParser.ClassDeclarationContext): The context object representing the class declaration 
+                                                        in the Kotlin AST.
+
+        Returns:
+            str: The translated Swift code for the class declaration.
+
+        Raises:
+            ValueError: If properties in the class declaration are incorrectly formatted.
+
+        Prints:
+            An error message if the class has already been declared in the current scope.
+        """
         print(f"    🔍 Visiting class declaration: {ctx.getText()}")
 
         class_name = self.visit_identifier(ctx.IDENTIFIER())
@@ -108,7 +188,26 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_identifier(self, ctx: KotlinParser):
-        # Handles identifiers, checking if they are reserved keywords.
+        """
+        Handles identifiers in the Kotlin code, ensuring they are not reserved keywords.
+
+        This method checks whether an identifier is a reserved keyword in Kotlin and raises an 
+        error if the identifier conflicts with any keyword. It processes the identifier by 
+        extracting its name from the given context and ensures that it can be safely used in 
+        the translated Swift code.
+
+        Args:
+            ctx (KotlinParser): The context object representing the identifier in the Kotlin AST.
+
+        Returns:
+            str: The name of the identifier, if it is not a reserved keyword.
+
+        Raises:
+            ValueError: If the identifier is a reserved keyword in Kotlin.
+
+        Prints:
+            A message indicating the identifier being visited.
+        """
         print(f"    🔍 Visiting identifier: {ctx.getText()}")
         
         identifier_name = ctx.getText()
@@ -118,28 +217,94 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_property_list(self, ctx: KotlinParser.PropertyListContext):
-        # Converts a list of Kotlin properties into Swift properties.
+        """
+        Converts a list of Kotlin properties into Swift properties.
+
+        This method iterates over a list of properties in a Kotlin class and translates each
+        property into its corresponding Swift declaration using the `visit_property` method.
+        It processes the entire property list and returns the converted list of properties 
+        in Swift syntax.
+
+        Args:
+            ctx (KotlinParser.PropertyListContext): The context object representing the list of properties 
+                                                    in the Kotlin AST.
+
+        Returns:
+            list: A list of strings representing the properties in Swift syntax.
+
+        Prints:
+            A message indicating the property list being visited.
+        """
         print(f"    🔍 Visiting property list: {ctx.getText()}")
         
         return [self.visit_property(property) for property in ctx.property_()]
 
 
     def visit_property(self, ctx: KotlinParser.PropertyContext):
-        # Converts a Kotlin property into a Swift property.
+        """
+        Converts a Kotlin property into a Swift property.
+
+        This method processes a Kotlin property and translates it into the corresponding Swift 
+        property declaration. It does so by delegating to the `visit_var_declaration` method 
+        for further processing of the variable declaration associated with the property.
+
+        Args:
+            ctx (KotlinParser.PropertyContext): The context object representing the property 
+                                                in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift property declaration.
+
+        Prints:
+            A message indicating the property being visited.
+        """
         print(f"    🔍 Visiting property: {ctx.getText()}")
         
         return self.visit_var_declaration(ctx.varDeclaration())
     
 
     def visit_parameter_list(self, ctx: KotlinParser.ParameterListContext):
-        # Converts a list of Kotlin parameters into Swift parameters.
+        """
+        Converts a list of Kotlin parameters into Swift parameters.
+
+        This method processes a list of Kotlin parameters and converts them into a comma-separated 
+        list of Swift parameters by delegating to the `visit_parameter` method for each parameter 
+        in the list.
+
+        Args:
+            ctx (KotlinParser.ParameterListContext): The context object representing the parameter list 
+                                                     in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift parameter list, with each parameter separated by a comma.
+
+        Prints:
+            A message indicating the parameter list being visited.
+        """
         print(f"    🔍 Visiting parameter list: {ctx.getText()}")
         
         return ", ".join([self.visit_parameter(param) for param in ctx.parameter()])
 
 
     def visit_parameter(self, ctx: KotlinParser.ParameterContext):
-        # Converts a Kotlin parameter into a Swift parameter.
+        """
+        Converts a Kotlin parameter into a Swift parameter.
+
+        This method processes a Kotlin parameter, extracting its name and type, and optionally 
+        its default value if provided. It then converts the parameter into a Swift-compatible 
+        format, with default values handled appropriately.
+
+        Args:
+            ctx (KotlinParser.ParameterContext): The context object representing the parameter 
+                                                 in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift parameter, with its name, type, and optional 
+            default value (if applicable).
+
+        Prints:
+            A message indicating the parameter being visited.
+        """
         print(f"    🔍 Visiting parameter: {ctx.getText()}")
         
         param_name = self.visit_identifier(ctx.IDENTIFIER())
@@ -151,7 +316,27 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_class_body(self, ctx: KotlinParser.ClassBodyContext):
-        # Handles the body of a Kotlin class, converting its statements.
+        """
+        Handles the body of a Kotlin class, converting its statements into Swift code.
+
+        This method processes the body of a Kotlin class, iterating over its statements (such as 
+        variable declarations, function declarations, assignment statements, and comments), 
+        converting them into their Swift equivalents. Unrecognized statements are logged as errors.
+
+        Args:
+            ctx (KotlinParser.ClassBodyContext): The context object representing the body of the Kotlin class 
+                                                 in the AST.
+
+        Returns:
+            str: A string containing the converted Swift code for the class body, with each 
+            statement separated by newlines.
+
+        Raises:
+            ValueError: If an invalid statement is encountered in the class body.
+
+        Prints:
+            A message indicating the class body being visited.
+        """
         print(f"    🔍 Visiting class body: {ctx.getText()}")
         statements = []
         if ctx.children:
@@ -175,7 +360,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_var_declaration(self, ctx: KotlinParser.VarDeclarationContext):
-        # Converts a Kotlin 'var' declaration to Swift, including type and optional initialization.
+        """
+        Converts a Kotlin 'var' declaration to Swift, including type and optional initialization.
+
+        This method processes a Kotlin variable declaration, converting it into the equivalent 
+        Swift declaration. It handles both mutable and immutable variables, checks for type 
+        mismatches and unsupported types, and validates initialization expressions. The resulting 
+        Swift declaration is returned as a string, or None is returned if errors are encountered.
+
+        Args:
+            ctx (KotlinParser.VarDeclarationContext): The context object representing the variable declaration
+                                                      in the Kotlin AST.
+
+        Returns:
+            str: A string containing the converted Swift variable declaration, including the 
+            type and value (if applicable). Returns None if the declaration is invalid.
+
+        Raises:
+            None: This method does not raise exceptions directly, but may invoke the semantic error 
+            listener in case of type mismatches.
+
+        Side Effects:
+            - Logs a message indicating the variable declaration being visited.
+            - Invokes the semantic error listener if a type mismatch or unsupported type is detected.
+            - Adds the variable to the symbol table if the declaration is valid.
+        """
         print(f"    🔍 Visiting variable declaration: {ctx.getText()}")
         
         var_name = self.visit_identifier(ctx.IDENTIFIER())        
@@ -227,7 +436,26 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_type(self, ctx: KotlinParser.TypeContext): 
-        # Converts Kotlin types to Swift types.
+        """
+        Converts Kotlin types to Swift types.
+
+        This method processes a Kotlin type and converts it into the corresponding Swift type 
+        based on a predefined mapping. If the Kotlin type is not supported, it returns None.
+
+        Args:
+            ctx (KotlinParser.TypeContext): The context object representing the Kotlin type 
+                                            in the Kotlin AST.
+
+        Returns:
+            str: The corresponding Swift type as a string, or None if the Kotlin type is unsupported.
+
+        Raises:
+            None: This method does not raise exceptions directly, but returns None if the type 
+            cannot be converted.
+
+        Side Effects:
+            - Logs a message indicating the Kotlin type being visited.
+        """
         print(f"    🔍 Visiting type: {ctx.getText()}")
         
         kotlin_type = ctx.getText()  
@@ -238,7 +466,35 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_assignment_statement(self, ctx: KotlinParser.AssignmentStatementContext):
-        # Converts Kotlin variable assignment to Swift.    
+        """
+        Converts Kotlin variable assignment to Swift.
+
+        This method handles the conversion of Kotlin variable assignments to Swift syntax. 
+        It checks whether the assignment is a regular variable assignment or a function call, 
+        handling both scenarios accordingly. It also checks for mutability, variable declarations, 
+        and type mismatches. If the assignment involves a read statement, it ensures that the 
+        correct type (String) is assigned.
+
+        Args:
+            ctx (KotlinParser.AssignmentStatementContext): The context object representing the assignment statement 
+                                                           in the Kotlin AST.
+
+        Returns:
+            str: The Swift equivalent of the Kotlin assignment statement.
+
+        Raises:
+            None: This method returns None if there is an error, such as an undeclared variable, 
+            a mutability issue, or a type mismatch.
+
+        Side Effects:
+            - Logs a message indicating the assignment statement being visited.
+            - Updates the variable value in the symbol table.
+            - Logs semantic errors when type mismatches occur.
+
+        Notes:
+            - If the assignment is a function call, the method processes it as such.
+            - If the variable is a read statement, it ensures the type is String.
+        """
         print(f"    🔍 Visiting assignment statement: {ctx.getText()}")
         
         # Workaround for handling both assignments and function calls in the same rule.
@@ -283,7 +539,37 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_function_declaration(self, ctx: KotlinParser.FunctionDeclarationContext):
-        # Transforms a Kotlin function declaration into a Swift function declaration.
+        """
+        Transforms a Kotlin function declaration into a Swift function declaration.
+
+        This method converts a Kotlin function declaration into the corresponding Swift syntax. 
+        It handles parameter type checking, return type checking, scope management, and ensures 
+        there are no duplicate parameters. Additionally, it verifies the presence of a return 
+        statement in the function body and checks if the return value matches the expected return 
+        type. It also adds the function and its parameters to the symbol table, and creates the 
+        Swift function declaration based on the provided information.
+
+        Args:
+            ctx (KotlinParser.FunctionDeclarationContext): The context object representing the function declaration 
+                                                           in the Kotlin AST.
+
+        Returns:
+            str: The Swift equivalent of the Kotlin function declaration.
+
+        Raises:
+            None: Returns None if the function is already declared or if there are errors 
+            such as unsupported types, duplicate parameters, or missing return types.
+
+        Side Effects:
+            - Adds function and parameter information to the symbol table.
+            - Creates and returns a Swift function declaration.
+            - Logs semantic errors if issues such as unsupported types or duplicate parameters occur.
+
+        Notes:
+            - Handles both functions with and without return types.
+            - Parameters are checked for duplication and added to the symbol table.
+            - The function body is processed, and return type consistency is checked.
+        """
         print(f"    🔍 Visiting function declaration: {ctx.getText()}")
 
         fun_name = self.visit_identifier(ctx.IDENTIFIER())   
@@ -346,7 +632,32 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_block(self, ctx: KotlinParser.BlockContext):
-        # Visits a block of statements and joins them with newlines.
+        """
+        Visits a block of statements and joins them with newlines.
+
+        This method processes a block of Kotlin statements and generates the corresponding Swift code. 
+        It visits each statement within the block, invoking the appropriate visit method for each statement, 
+        and then joins the results with newlines to form a properly structured Swift code block.
+
+        Args:
+            ctx (KotlinParser.BlockContext): The context object representing the block of statements 
+                                             in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin block, with each statement 
+            joined by a newline.
+
+        Raises:
+            None: Returns None for any unrecognized or empty statements.
+
+        Side Effects:
+            - Visits each statement within the block and converts them to Swift.
+            - Joins the converted statements with newlines to form a complete Swift block.
+
+        Notes:
+            - Handles a sequence of statements in a Kotlin block and converts them in order to Swift.
+            - Filters out any empty or unrecognized statements before joining them.
+        """
         print(f"    🔍 Visiting block: {ctx.getText()}")        
         
         statements = [self.visit_statement(stmt) for stmt in ctx.statement()]
@@ -354,7 +665,34 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_statement(self, ctx: KotlinParser.StatementContext):
-        # Handles various types of statements like read, print, if, for, etc.
+        """
+        Handles various types of statements like read, print, if, for, etc., and converts them to Swift.
+
+        This method processes different types of Kotlin statements, such as variable declarations, assignments, 
+        control flow (if, for), and expressions (read, print), by delegating the work to specific visit methods 
+        based on the type of the statement. The corresponding Swift code for each statement is generated and 
+        returned.
+
+        Args:
+            ctx (KotlinParser.StatementContext): The context object representing the statement 
+                                                 in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin statement. If the statement is 
+            unrecognized, an empty string is returned.
+
+        Raises:
+            None: Returns an empty string for unrecognized or invalid statements.
+
+        Side Effects:
+            - Invokes the appropriate visit method for each type of Kotlin statement, converting them to Swift.
+            - Prints diagnostic messages for recognized and unrecognized statements.
+
+        Notes:
+            - The method distinguishes between different types of Kotlin statements (read, print, if, for, etc.) 
+              and calls the corresponding visit methods for each.
+            - If the statement type is unrecognized, a diagnostic message is printed, and an empty string is returned.
+        """
         print(f"    🔍 Visiting statement: {ctx.getText()}")
         if ctx.readStatement():
             return self.visit_read_statement(ctx.readStatement())
@@ -378,14 +716,58 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
 
     def visit_read_statement(self, ctx: KotlinParser.ReadStatementContext):
-        # Converts a Kotlin readLine statement to Swift, handling optional var/val keyword.
-        
+        """
+        Converts a Kotlin readLine statement to Swift, handling the conversion to the appropriate Swift syntax.
+
+        This method specifically handles Kotlin's `readLine()` function, converting it to the corresponding 
+        Swift syntax for reading input from the user. The function does not consider the mutability (var/val) 
+        of the variable, as it only processes the statement itself.
+
+        Args:
+            ctx (KotlinParser.ReadStatementContext): The context object representing the `readLine` statement 
+                                                     in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin `readLine()` statement.
+
+        Raises:
+            None: No exceptions are raised.
+
+        Side Effects:
+            - Prints a diagnostic message for the `readLine()` statement.
+
+        Notes:
+            - The function converts Kotlin's `readLine()` directly to Swift's `readLine()` function without 
+              considering any variable declarations.
+        """        
         print(f"    🔍 Visiting read statement: {ctx.getText()}")
         return f"readLine()"
     
 
     def visit_print_statement(self, ctx: KotlinParser.PrintStatementContext):
-        # Converts a Kotlin print statement to a Swift print statement.
+        """
+        Converts a Kotlin print statement to a Swift print statement.
+
+        This method converts Kotlin's `println()` or `print()` function to Swift's `print()` function.
+        It handles the conversion by extracting the expression inside the Kotlin print statement and
+        formatting it to Swift's print function syntax.
+
+        Args:
+            ctx (KotlinParser.PrintStatementContext): The context object representing the Kotlin print statement 
+                                                      in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin print statement, e.g., `print(expression)`.
+
+        Raises:
+            None: No exceptions are raised.
+
+        Side Effects:
+            - Prints a diagnostic message for the print statement.
+
+        Notes:
+            - This method assumes the expression inside the print statement is handled by the `visit_expression()` method.
+        """
         print(f"    🔍 Visiting print statement: {ctx.getText()}")
         
         expression = self.visit_expression(ctx.expression())
@@ -393,7 +775,30 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_if_else_statement(self, ctx: KotlinParser.IfElseStatementContext):
-        # Converts the Kotlin if-else body to Swift.
+        """
+        Converts a Kotlin if-else statement into a Swift if-else statement.
+
+        This method processes the Kotlin `if`-`else` construct, converting it to the Swift equivalent. 
+        It handles both the `if` block and the optional `else` block, including the condition expression and bodies of the statements.
+
+        Args:
+            ctx (KotlinParser.IfElseStatementContext): The context object representing the Kotlin `if`-`else` statement
+                                                       in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin `if`-`else` statement, formatted as `if {condition} {if_body} else {else_body}`.
+
+        Raises:
+            None: No exceptions are raised.
+
+        Side Effects:
+            - Prints a diagnostic message for the if statement.
+
+        Notes:
+            - This method calls `visit_expression()` to process the condition expression.
+            - If there is no `else` block, the method generates a Swift `if` statement without the `else` part.
+            - The method relies on `validate_if_condition()` to ensure the condition is valid.
+        """
         print(f"    🔍 Visiting if statement: {ctx.getText()}")
         
         condition = self.visit_expression(ctx.expression())
@@ -412,21 +817,82 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     
     def visit_if_body(self, ctx: KotlinParser.IfBodyContext):
-        # Converts a Kotlin if-else statement to Swift. The else block is optional.
+        """
+        Converts the body of a Kotlin `if` statement to its Swift equivalent.
+
+        This method processes the body of the `if` block in a Kotlin `if-else` statement. If the body is a block of statements, 
+        it recursively visits the block; otherwise, it processes the single statement in the body.
+
+        Args:
+            ctx (KotlinParser.IfBodyContext): The context object representing the body of the `if` statement in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin `if` body, either a block of statements or a single statement.
+
+        Raises:
+            None: No exceptions are raised.
+
+        Side Effects:
+            - Prints a diagnostic message for the `if` body.
+
+        Notes:
+            - This method calls `visit_block()` to process the block of statements and `visit_statement()` for individual statements.
+        """
         print(f"    🔍 Visiting if-else statement: {ctx.getText()}")
         
         return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
 
 
     def visit_else_body(self, ctx: KotlinParser.ElseBodyContext):
-        # Converts a Kotlin if-else statement to Swift. The else block is optional.
+        """
+        Converts the body of a Kotlin `else` block in an `if-else` statement to its Swift equivalent.
+
+        This method processes the body of the `else` block in a Kotlin `if-else` statement. If the body is a block of statements, 
+        it recursively visits the block; otherwise, it processes the single statement in the body.
+
+        Args:
+            ctx (KotlinParser.ElseBodyContext): The context object representing the body of the `else` block in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin `else` body, either a block of statements or a single statement.
+
+        Raises:
+            None: No exceptions are raised.
+
+        Side Effects:
+            - Prints a diagnostic message for the `else` body.
+
+        Notes:
+            - This method calls `visit_block()` to process the block of statements and `visit_statement()` for individual statements.
+        """
         print(f"    🔍 Visiting if-else statement: {ctx.getText()}")
         
         return self.visit_block(ctx.block()) if ctx.block() else self.visit_statement(ctx.statement())
 
 
     def visit_for_statement(self, ctx: KotlinParser.ForStatementContext):
-        # Converts a Kotlin for loop with a range to a Swift-compatible loop.
+        """
+        Converts a Kotlin `for` loop with a range into a Swift-compatible `for` loop.
+
+        This method processes a Kotlin `for` loop that iterates over a range (e.g., `for i in 1..10`) and converts it into its
+        Swift equivalent. It handles the membership expression, checks for valid types, and processes the body of the loop.
+
+        Args:
+            ctx (KotlinParser.ForStatementContext): The context object representing the `for` loop in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin `for` loop, with the appropriate expression and body.
+
+        Raises:
+            None: No exceptions are raised, but other validation methods may raise exceptions for invalid expressions or statements.
+
+        Side Effects:
+            - Prints a diagnostic message for the `for` loop statement.
+
+        Notes:
+            - The method calls `check_membership_expression_type()` to ensure the expression is valid and `visit_memebership_expression()` to process the expression.
+            - If the loop body is a block, it uses `visit_block()`, otherwise, it processes a single statement using `visit_statement()`.
+        """
         print(f"    🔍 Visiting for statement: {ctx.getText()}")
         
         self.check_membership_expression_type(ctx.membershipExpression())
@@ -439,7 +905,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_return_statement(self, ctx: KotlinParser.ReturnStatementContext):
-        # Handles 'return' statements in Kotlin.
+        """
+        Converts a Kotlin `return` statement to its Swift equivalent.
+
+        This method processes a Kotlin `return` statement, converting it into a Swift `return` statement. If there is an 
+        expression in the return statement, it processes the expression and returns the Swift syntax for returning a value. 
+        If no expression is present, it returns a simple `return` statement.
+
+        Args:
+            ctx (KotlinParser.ReturnStatementContext): The context object representing the `return` statement 
+                                                       in the Kotlin AST.
+
+        Returns:
+            str: A string representing the Swift equivalent of the Kotlin `return` statement, either with or without an expression.
+
+        Raises:
+            None: No exceptions are raised in this method, but any issues in expression handling may be raised by the `visit_expression()` method.
+
+        Side Effects:
+            - Prints a diagnostic message for the `return` statement.
+
+        Notes:
+            - The method checks if the return statement contains an expression by inspecting `ctx.expression()`.
+            - If an expression is found, the method processes it and returns the corresponding Swift code.
+            - If no expression is present, a simple `return` statement is generated.
+        """
         print(f"    🔍 Visiting return statement: {ctx.getText()}")            
         if ctx.expression():
             expression = self.visit_expression(ctx.expression())
@@ -448,14 +938,63 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_expression(self, ctx: KotlinParser.ExpressionContext):
-        # Handles the transformation of expressions such as literals, identifiers, and operators.
+        """
+        Transforms a Kotlin expression into its Swift equivalent.
+
+        This method is the entry point for visiting a variety of Kotlin expressions, including literals, 
+        identifiers, and operators. It processes the expression in the context of logical OR expressions by 
+        delegating the visit to `visit_logical_or_expression`. It can be extended to handle more specific 
+        types of expressions as the transpiler evolves.
+
+        Args:
+            ctx (KotlinParser.ExpressionContext): The context object representing the expression 
+                                                  in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the given Kotlin expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in expression handling are deferred to more specific methods like 
+                  `visit_logical_or_expression()`.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited expression.
+
+        Notes:
+            - The method currently delegates to `visit_logical_or_expression()` to handle logical OR expressions.
+            - More specific handling for different types of expressions can be added as needed.
+        """
         print(f"    🔍 Visiting expression: {ctx.getText()}")
         
         return self.visit_logical_or_expression(ctx.logicalOrExpression())  
 
 
     def visit_logical_or_expression(self, ctx: KotlinParser.LogicalOrExpressionContext):
-        # Handles logical OR expressions in Kotlin (i.e., a || b).
+        """
+        Transforms a Kotlin logical OR expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin logical OR expressions (i.e., `a || b`) into Swift. 
+        It processes the left and right operands of the logical OR and recursively delegates to handle logical 
+        AND expressions, as they are part of the logical OR's operand expressions.
+
+        Args:
+            ctx (KotlinParser.LogicalOrExpressionContext): The context object representing the logical OR expression 
+                                                           in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the logical OR expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in operand processing are handled by the recursive calls.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited logical OR expression.
+
+        Notes:
+            - The method assumes that logical AND expressions are the building blocks of the logical OR expression.
+            - Operators (i.e., `||`) are placed between operands in the resulting Swift expression.
+            - The handling of the logical AND expressions is delegated to `visit_logical_and_expression()`.
+        """
         print(f"    🔍 Visiting logical OR expression: {ctx.getText()}")
         
         left = self.visit_logical_and_expression(ctx.logicalAndExpression(0))
@@ -467,7 +1006,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_logical_and_expression(self, ctx: KotlinParser.LogicalAndExpressionContext):
-        # Handles logical AND expressions in Kotlin (i.e., a && b).
+        """
+        Transforms a Kotlin logical AND expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin logical AND expressions (i.e., `a && b`) into Swift. 
+        It processes the left and right operands of the logical AND and recursively delegates to handle equality 
+        expressions, as they are part of the logical AND's operand expressions.
+
+        Args:
+            ctx (KotlinParser.LogicalAndExpressionContext): The context object representing the logical AND expression 
+                                                            in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the logical AND expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in operand processing are handled by the recursive calls.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited logical AND expression.
+
+        Notes:
+            - The method assumes that equality expressions are the building blocks of the logical AND expression.
+            - Operators (i.e., `&&`) are placed between operands in the resulting Swift expression.
+            - The handling of the equality expressions is delegated to `visit_equality_expression()`.
+        """
         print(f"    🔍 Visiting logical AND expression: {ctx.getText()}")
         
         left = self.visit_equality_expression(ctx.equalityExpression(0))  
@@ -479,7 +1042,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_equality_expression(self, ctx: KotlinParser.EqualityExpressionContext):
-        # Handles equality expressions in Kotlin (i.e., a == b or a != b).
+        """
+        Transforms a Kotlin equality expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin equality expressions (i.e., `a == b` or `a != b`) into Swift.
+        It processes the left and right operands of the equality expression and recursively delegates to handle relational 
+        expressions, as they are the building blocks of the equality expression.
+
+        Args:
+            ctx (KotlinParser.EqualityExpressionContext): The context object representing the equality expression 
+                                                          in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the equality expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in operand processing are handled by the recursive calls.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited equality expression.
+
+        Notes:
+            - The method assumes that relational expressions are the building blocks of the equality expression.
+            - Operators (i.e., `==` or `!=`) are placed between operands in the resulting Swift expression.
+            - The handling of the relational expressions is delegated to `visit_relational_expression()`.
+        """
         print(f"    🔍 Visiting equality expression: {ctx.getText()}")
         
         left = self.visit_relational_expression(ctx.relationalExpression(0))
@@ -491,7 +1078,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_relational_expression(self, ctx: KotlinParser.RelationalExpressionContext):
-        # Handles relational expressions in Kotlin (e.g., a < b, a > b, etc.).
+        """
+        Transforms a Kotlin relational expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin relational expressions (e.g., `a < b`, `a > b`, `a <= b`, `a >= b`) 
+        into their Swift equivalents. It processes the left and right operands of the relational expression and delegates 
+        the handling of additive expressions (e.g., `a + b`, `a - b`) to another method.
+
+        Args:
+            ctx (KotlinParser.RelationalExpressionContext): The context object representing the relational expression 
+                                                            in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the relational expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in operand processing are handled by the recursive calls.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited relational expression.
+
+        Notes:
+            - The method assumes that additive expressions are the building blocks of relational expressions.
+            - Operators (e.g., `<`, `>`, `<=`, `>=`) are placed between operands in the resulting Swift expression.
+            - The handling of additive expressions is delegated to `visit_additive_expression()`.
+        """
         print(f"    🔍 Visiting relational expression: {ctx.getText()}")
         
         left = self.visit_additive_expression(ctx.additiveExpression(0))
@@ -503,7 +1114,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_additive_expression(self, ctx: KotlinParser.AdditiveExpressionContext):
-        # Handles additive expressions in Kotlin (i.e., a + b or a - b).
+        """
+        Transforms a Kotlin additive expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin additive expressions (e.g., `a + b`, `a - b`) 
+        into their Swift equivalents. It processes the left and right operands of the additive expression and 
+        delegates the handling of multiplicative expressions (e.g., `a * b`, `a / b`) to another method.
+
+        Args:
+            ctx (KotlinParser.AdditiveExpressionContext): The context object representing the additive expression 
+                                                          in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the additive expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in operand processing are handled by the recursive calls.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited additive expression.
+
+        Notes:
+            - The method assumes that multiplicative expressions are the building blocks of additive expressions.
+            - Operators (e.g., `+`, `-`) are placed between operands in the resulting Swift expression.
+            - The handling of multiplicative expressions is delegated to `visit_multiplicative_expression()`.
+        """
         print(f"    🔍 Visiting additive expression: {ctx.getText()}")
         
         left = self.visit_multiplicative_expression(ctx.multiplicativeExpression(0))
@@ -515,7 +1150,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_multiplicative_expression(self, ctx: KotlinParser.MultiplicativeExpressionContext):
-        # Handles multiplicative expressions in Kotlin (i.e., a * b, a / b, or a % b).
+        """
+        Transforms a Kotlin multiplicative expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin multiplicative expressions (e.g., `a * b`, `a / b`, 
+        `a % b`) into their Swift equivalents. It processes the left and right operands of the multiplicative 
+        expression and delegates the handling of unary expressions (e.g., `-a`, `+a`) to another method.
+
+        Args:
+            ctx (KotlinParser.MultiplicativeExpressionContext): The context object representing the multiplicative expression 
+                                                                in the Kotlin AST.
+
+        Returns:
+            str: A string representing the transformed Swift code for the multiplicative expression.
+
+        Raises:
+            None: No exceptions are raised, but any issues in operand processing are handled by the recursive calls.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited multiplicative expression.
+
+        Notes:
+            - The method assumes that unary expressions are the building blocks of multiplicative expressions.
+            - Operators (e.g., `*`, `/`, `%`) are placed between operands in the resulting Swift expression.
+            - The handling of unary expressions is delegated to `visit_unary_expression()`.
+        """
         print(f"    🔍 Visiting multiplicative expression: {ctx.getText()}")
         
         left = self.visit_unary_expression(ctx.unaryExpression(0))
@@ -527,7 +1186,33 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_unary_expression(self, ctx: KotlinParser.UnaryExpressionContext):
-        # Handles unary expressions in Kotlin (i.e., !a or -a).
+        """
+        Transforms a Kotlin unary expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin unary expressions, such as logical negation (`!a`) 
+        and negation (`-a`), into their Swift equivalents. It processes the primary expression that follows 
+        the unary operator and applies the corresponding Swift unary operator.
+
+        Args:
+            ctx (KotlinParser.UnaryExpressionContext): The context object representing the unary expression 
+                                                       in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift code for the unary expression.
+
+        Raises:
+            None: No exceptions are raised, but invalid or unrecognized unary operators are handled implicitly 
+                  by the method's structure.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited unary expression.
+
+        Notes:
+            - The method distinguishes between logical negation (`!`) and arithmetic negation (`-`) 
+              based on the presence of the `NOT` or `MINUS` token in the context.
+            - If the unary expression is neither `!` nor `-`, it delegates the processing of membership 
+              expressions to `visit_memebership_expression()`.
+        """
         print(f"    🔍 Visiting unary expression: {ctx.getText()}")
         
         if ctx.NOT(): 
@@ -539,7 +1224,32 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_memebership_expression(self, ctx: KotlinParser.PrimaryExpressionContext):
-        # Handles membership expressions in Kotlin (i.e., a in b or a !in b).
+        """
+        Transforms a Kotlin membership expression into its Swift equivalent.
+
+        This method handles the transformation of Kotlin membership expressions, such as checking if a value 
+        is in a range or collection (e.g., `a in b` or `a !in b`), into their Swift equivalents. It processes 
+        both the left and right sides of the membership expression and applies the appropriate Swift operators.
+
+        Args:
+            ctx (KotlinParser.PrimaryExpressionContext): The context object representing the membership expression 
+                                                         in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift code for the membership expression.
+
+        Raises:
+            None: No exceptions are raised, but invalid or unrecognized membership expressions are handled 
+                  implicitly by the method's structure.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited membership expression.
+
+        Notes:
+            - The method checks if the membership expression involves the `in` or `!in` operator and transforms 
+              it accordingly.
+            - If the `rangeExpression` is present, it is processed and included in the final expression string.
+        """
         print(f"    🔍 Visiting membership expression: {ctx.getText()}")
         
         left = self.visit_primary_expression(ctx.primaryExpression())
@@ -554,7 +1264,34 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_primary_expression(self, ctx: KotlinParser.PrimaryExpressionContext):
-        # Handles primary expressions in Kotlin (e.g., literals, identifiers, or call expressions).
+        """
+        Transforms a Kotlin primary expression into its Swift equivalent.
+
+        This method handles primary expressions in Kotlin, which can include literals, 
+        identifiers, or function call expressions. It processes the context accordingly 
+        and generates the appropriate Swift representation.
+
+        Args:
+            ctx (KotlinParser.PrimaryExpressionContext): The context object representing the primary expression 
+                                                         in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift code for the primary expression.
+
+        Raises:
+            None: No exceptions are raised, but certain issues like unassigned variables might trigger checks.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited primary expression.
+            - Checks whether the variable has already been assigned when processing an identifier.
+
+        Notes:
+            - If the primary expression is an identifier, the method checks if the variable has been assigned 
+              before and then returns the identifier name.
+            - If the primary expression is a literal or a function call, it recursively processes and transforms 
+              those components.
+            - Parenthesized expressions are also handled by recursively visiting the enclosed expression.
+        """
         print(f"    🔍 Visiting primary expression: {ctx.getText()}")
         
         if ctx.IDENTIFIER():
@@ -570,7 +1307,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_range_expression(self, ctx: KotlinParser.PrimaryExpressionContext):
-        # Handles range expressions in Kotlin (e.g., a..b).
+        """
+        Transforms a Kotlin range expression into its Swift equivalent.
+
+        This method handles range expressions in Kotlin, such as `a..b`, and converts them to 
+        the corresponding Swift range syntax.
+
+        Args:
+            ctx (KotlinParser.PrimaryExpressionContext): The context object representing the range expression 
+                                                         in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift code for the range expression.
+
+        Raises:
+            None: If an invalid range is encountered (i.e., one of the range bounds is missing), 
+                  a semantic error is reported.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited range expression.
+            - Triggers a semantic error if the range expression is invalid (i.e., lacks a second operand).
+
+        Notes:
+            - The method expects a valid range expression with two operands (e.g., `a..b`).
+            - In Swift, the range expression is represented as `a ... b`, with three dots for the range.
+        """
         print(f"    🔍 Visiting range expression: {ctx.getText()}")
         
         left = self.visit_additive_expression(ctx.additiveExpression(0))
@@ -586,7 +1347,32 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_call_expression(self, ctx: KotlinParser.CallExpressionContext):
-        # Handles function call expressions in Kotlin.
+        """
+        Transforms a Kotlin function call expression into its Swift equivalent.
+
+        This method handles function calls in Kotlin and converts them into the corresponding
+        Swift function call syntax.
+
+        Args:
+            ctx (KotlinParser.CallExpressionContext): The context object representing the 
+                                                      function call expression in the Kotlin 
+                                                      Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift function call.
+
+        Raises:
+            None: If the arguments for the function call are invalid, a semantic error is reported.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited function call expression.
+            - Triggers a semantic error if the arguments do not match the expected format.
+
+        Notes:
+            - If the function call includes arguments, they are transformed into the appropriate
+              Swift call format.
+            - If no arguments are provided, the function call will be represented with empty parentheses.
+        """
         print(f"    🔍 Visiting call expression: {ctx.getText()}")
         
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
@@ -601,14 +1387,57 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
 
     def visit_argument_list(self, ctx: KotlinParser.ArgumentListContext):
-        # Converts a list of Kotlin arguments into Swift arguments.
+        """
+        Transforms a list of Kotlin function arguments into Swift-compatible arguments.
+
+        This method processes a list of arguments in a Kotlin function call and converts them 
+        into the corresponding Swift syntax, ensuring each argument is properly formatted.
+
+        Args:
+            ctx (KotlinParser.ArgumentListContext): The context object representing the 
+                                                    list of function arguments in the Kotlin 
+                                                    Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift arguments, separated by commas.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited argument list.
+
+        Notes:
+            - The function assumes that all arguments in the list are properly formatted and 
+              only performs the transformation.
+            - The resulting string will contain all arguments joined by commas, as required by Swift function calls.
+        """
         print(f"    🔍 Visiting argument list: {ctx.getText()}")
         
         return ", ".join([self.visit_argument(argument) for argument in ctx.argument()])
     
 
     def visit_argument(self, ctx: KotlinParser.ArgumentContext):
-        # Converts a Kotlin argument into a Swift argument.
+        """
+        Converts a Kotlin argument into a Swift argument.
+
+        This method processes an individual argument in a Kotlin function call and transforms it 
+        into the corresponding Swift argument format, taking into account both named and unnamed arguments.
+
+        Args:
+            ctx (KotlinParser.ArgumentContext): The context object representing a single argument 
+                                                in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: A string representing the transformed Swift argument, either as a named argument 
+                 (e.g., `name: value`) or just the argument value (e.g., `value`).
+
+        Side Effects:
+            - Prints a diagnostic message for the visited argument.
+
+        Notes:
+            - If the argument has an identifier (name), the Swift argument will be in the format 
+              `name: value`.
+            - If the argument has no name, the Swift argument will just be the value.
+            - The function assumes that the argument expression is correctly formatted in Kotlin.
+        """
         print(f"    🔍 Visiting argument: {ctx.getText()}")
         
         argument_value = self.visit_expression(ctx.expression()) 
@@ -619,14 +1448,53 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
 
     def visit_literal(self, ctx: KotlinParser.LiteralContext):
-        # Handles literal expressions in Kotlin (e.g., string, integer, boolean).
+        """
+        Handles literal expressions in Kotlin, such as string, integer, or boolean literals.
+
+        This method processes a literal expression in Kotlin and directly returns its string representation.
+        The literal can be of various types, including numbers, booleans, or strings.
+
+        Args:
+            ctx (KotlinParser.LiteralContext): The context object representing a literal expression 
+                                               in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: The string representation of the literal value in Kotlin, which is directly returned
+                 as-is for use in Swift code.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited literal.
+
+        Notes:
+            - This function does not modify or interpret the literal value but simply returns it as 
+              it appears in the Kotlin source code.
+        """
         print(f"    🔍 Visiting literal: {ctx.getText()}")
         
         return ctx.getText()
 
 
     def visit_comment_statement(self, ctx: KotlinParser.CommentStatementContext):
-        # Converts Kotlin comments to Swift comments.
+        """
+        Converts Kotlin comments to Swift comments.
+
+        This method processes comment statements in Kotlin and transforms them into their 
+        equivalent Swift comment formats. It handles both single-line and block comments.
+
+        Args:
+            ctx (KotlinParser.CommentStatementContext): The context object representing a comment
+                                                        statement in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: The transformed comment in Swift syntax, either a single-line or block comment.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited comment statement.
+
+        Notes:
+            - Single-line comments in Kotlin (//) are converted to Swift's single-line comment syntax (//).
+            - Block comments in Kotlin (/* */) are converted to Swift's block comment syntax (/* */).
+        """
         print(f"    🔍 Visiting comment: {ctx.getText()}")
         if ctx.LINE_COMMENT():
             return self.visit_line_comment(ctx.LINE_COMMENT())
@@ -637,14 +1505,52 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
 
     def visit_line_comment(self, ctx: KotlinParser):
-        # Converts Kotlin inline comments to Swift comments.
+        """
+        Converts Kotlin inline comments to Swift single-line comments.
+
+        This method processes Kotlin single-line comments (which start with '//' in Kotlin)
+        and converts them to Swift single-line comments (which start with '#').
+
+        Args:
+            ctx (KotlinParser): The context object representing a single-line comment
+                                in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: The transformed comment in Swift syntax, prefixed with '#'.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited comment.
+
+        Notes:
+            - This method trims the "//" prefix and any leading or trailing whitespace 
+              before converting the comment to Swift format.
+        """
         print(f"    🔍 Visiting inline comment: {ctx.getText()}")
         comment = ctx.getText()[2:].strip() 
         return f"# {comment}"
 
 
     def visit_block_comment(self, ctx: KotlinParser):
-        # Converts Kotlin block comments to Swift comments.
+        """
+        Converts Kotlin block comments to Swift block comments.
+
+        This method processes Kotlin block comments (which start with '/*' and end with '*/' in Kotlin)
+        and converts them to Swift block comments (which are also enclosed in '/*' and '*/').
+
+        Args:
+            ctx (KotlinParser): The context object representing a block comment
+                                in the Kotlin Abstract Syntax Tree (AST).
+
+        Returns:
+            str: The transformed comment in Swift syntax, enclosed in '/*' and '*/'.
+
+        Side Effects:
+            - Prints a diagnostic message for the visited block comment.
+
+        Notes:
+            - This method removes the '/*' and '*/' delimiters and any leading/trailing whitespace 
+              before converting the comment to Swift format.
+        """
         print(f"    🔍 Visiting block comment: {ctx.getText()}")
         comment = ctx.getText()[2:-2].strip() 
         return f"/* {comment} */" 
