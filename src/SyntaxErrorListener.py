@@ -1,35 +1,46 @@
 from antlr4.error.ErrorListener import ErrorListener
 
 class SyntaxErrorListener(ErrorListener):
-    """
-    A custom error listener for handling syntax errors during the parsing phase.
 
-    Extends:
-        antlr4.error.ErrorListener.ErrorListener
+    """
+    SyntaxErrorListener:
+        A custom error listener for handling syntax errors during ANTLR parsing.
+
+        Inherits from the `ErrorListener` class of ANTLR to capture and store lexical errors 
+        encountered during parsing.
+
+        Attributes:
+            errors (list): A list that stores error messages related to syntax errors.
     """
 
     def __init__(self):
+
         """
-        Initializes the SyntaxErrorListener with an empty list to store syntax errors.
+        Initializes a new SyntaxErrorListener.
+
+        Sets up an empty list `errors` to store any syntax error messages detected during parsing.
         """
+
         super().__init__()
         self.errors = []
 
 
     def syntax_error(self, recognizer, offendingSymbol, line, column, msg, e):
+
         """
-        Called by ANTLR when a syntax error is encountered during parsing.
+        Callback method invoked when a syntax error is detected.
 
         Args:
-            recognizer: The parser instance that detected the error.
-            offendingSymbol: The invalid token that caused the error (if applicable).
+            recognizer (Recognizer): The recognizer where the error occurred.
+            offendingSymbol (Token): The symbol that caused the syntax error.
             line (int): The line number where the error occurred.
             column (int): The column number where the error occurred.
-            msg (str): A description of the syntax error.
-            e: The exception associated with the syntax error (if any).
+            msg (str): The error message describing the syntax issue.
+            e (RecognitionException): The exception thrown during the syntax error (not used in this method).
 
-        Appends a formatted error message to the list of syntax errors.
+        Formats the error message and stores it in the `errors` list.
         """
+
         error_message = (
             f"❌ Oops! Syntax Error Detected:\n"
             f"   🔍 {msg}\n"
@@ -39,20 +50,24 @@ class SyntaxErrorListener(ErrorListener):
 
 
     def has_errors(self):
+
         """
-        Checks if any syntax errors were recorded.
+        Checks if any syntax errors have been detected.
 
         Returns:
-            bool: True if there are syntax errors, False otherwise.
+            bool: True if there are errors in the `errors` list, False otherwise.
         """
+
         return len(self.errors) > 0
 
 
     def get_errors(self):
+
         """
-        Retrieves the list of recorded syntax errors.
+        Retrieves the list of syntax error messages.
 
         Returns:
-            list: A list of formatted syntax error messages.
+            list: A list of error messages that have been captured by the listener.
         """
+
         return self.errors
