@@ -1,3 +1,3 @@
 class TestVariables {
-var a : String = readLine()
+func test() {  }
 }

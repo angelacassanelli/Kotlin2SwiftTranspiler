@@ -581,10 +581,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         else:
             param_names = self.check_parameter_name_list(ctx.parameterList()) if ctx.parameterList() else None
             param_names_values = self.check_parameter_name_value_list(ctx.parameterList()) if ctx.parameterList() else None
-            param_names_values_dict = {
-                item.split(": ")[0]: item.split(": ")[1] if item.split(": ")[1] != "None" else None
-                for item in param_names_values.split(", ")
-            }
 
             if ctx.type_():
                 kotlin_return_type = ctx.type_().getText()
@@ -598,6 +594,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             self.symbol_table.add_scope() 
 
             if ctx.parameterList():
+                param_names_values_dict = {
+                    item.split(": ")[0]: item.split(": ")[1] if item.split(": ")[1] != "None" else None
+                    for item in param_names_values.split(", ")
+                }
+                
                 for param_type, param_name in zip(kotlin_param_types.split(", "), param_names.split(", ")):
                     if self.check_variable_already_declared_in_current_scope(ctx = ctx, var_name = param_name):
                         continue
