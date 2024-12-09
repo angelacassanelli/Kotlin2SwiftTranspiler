@@ -25,18 +25,15 @@ class LexicalErrorListener(ErrorListener):
         self.errors = []
         
 
-    def lexical_error(self, recognizer, offendingSymbol, line, column, msg, e):
+    def lexical_error(self, line, column, msg):
 
         """
         Callback method invoked when a lexical error is detected.
 
         Args:
-            recognizer (Recognizer): The recognizer where the error occurred.
-            offendingSymbol (Token): The symbol that caused the lexical error.
             line (int): The line number where the error occurred.
             column (int): The column number where the error occurred.
             msg (str): The error message describing the lexical issue.
-            e (RecognitionException): The exception thrown during the lexical error.
 
         Formats the error message and stores it in the `errors` list.
         """

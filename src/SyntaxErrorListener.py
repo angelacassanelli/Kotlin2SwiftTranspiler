@@ -25,18 +25,15 @@ class SyntaxErrorListener(ErrorListener):
         self.errors = []
 
 
-    def syntax_error(self, recognizer, offendingSymbol, line, column, msg, e):
+    def syntax_error(self, line, column, msg):
 
         """
         Callback method invoked when a syntax error is detected.
 
         Args:
-            recognizer (Recognizer): The recognizer where the error occurred.
-            offendingSymbol (Token): The symbol that caused the syntax error.
             line (int): The line number where the error occurred.
             column (int): The column number where the error occurred.
             msg (str): The error message describing the syntax issue.
-            e (RecognitionException): The exception thrown during the syntax error (not used in this method).
 
         Formats the error message and stores it in the `errors` list.
         """
