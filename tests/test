@@ -1,5 +1,3 @@
 class TestVariables {
-    fun test(a: Int = 5, b: String) {
-        var i : Int
-    }
+    var a: Int = readLine()
 }

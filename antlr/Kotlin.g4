@@ -66,14 +66,15 @@ forStatement
 // or a function call (IDENTIFIER(...)). 
 assignmentStatement
     : IDENTIFIER EQ expression
+    | IDENTIFIER EQ readStatement
     | callExpression    // Workaround for ambiguity between assignmentStatement and callExpression:
     ;
 
 // Variable declaration: declares a mutable or immutable variable with an optional type and initial value
 varDeclaration        
     : (VAR | VAL) IDENTIFIER COLON type
-    | (VAR | VAL) IDENTIFIER EQ expression
-    | (VAR | VAL) IDENTIFIER COLON type EQ expression
+    | (VAR | VAL) IDENTIFIER EQ (expression | readStatement)
+    | (VAR | VAL) IDENTIFIER COLON type EQ (expression | readStatement)
     ;
 
 // Function declaration: defines a function with parameters, an optional return type, and a body
@@ -96,7 +97,7 @@ classDeclaration
 
 // Class body: contains declarations of variables, functions, or comments
 classBody
-    : (varDeclaration | functionDeclaration | commentStatement)*
+    : (varDeclaration | functionDeclaration | assignmentStatement | commentStatement)*
     ;
 
 // Parameter list: used in function or class constructors

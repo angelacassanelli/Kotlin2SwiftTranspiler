@@ -92,7 +92,8 @@ class SymbolTable:
             if name in scope["variables"]:
                 scope["variables"][name].value = new_value
                 print(f"    📍 Variable '{name}' assigned new value: {new_value}.")
-        raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
+                return
+            raise ValueError(f"❌ Variable '{name}' is not declared in any scope.")
 
 
     def get_variable_info(self, name):

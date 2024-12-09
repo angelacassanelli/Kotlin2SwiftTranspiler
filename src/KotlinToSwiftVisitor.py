@@ -152,6 +152,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         statements.append(self.visit_var_declaration(stmt))
                     case KotlinParser.FunctionDeclarationContext():
                         statements.append(self.visit_function_declaration(stmt))
+                    case KotlinParser.AssignmentStatementContext():
+                        statements.append(self.visit_assignment_statement(stmt))
                     case KotlinParser.CommentStatementContext():
                         statements.append(self.visit_comment_statement(stmt))
                     case _:
@@ -182,9 +184,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
             # Check type mismatch, if variable is assigned            
             if ctx.expression():
+                # Check type mismatch
                 if not self.validate_value(ctx=ctx, type=kotlin_type):
                     return None
                 var_value = self.visit_expression(ctx.expression()) 
+            elif ctx.readStatement():
+                # Check type is String 
+                if kotlin_type != KotlinTypes.STRING.value:
+                    self.semantic_error_listener.semantic_error(
+                        msg = f"Type mismatch: Variable declared as '{kotlin_type}' but assigned a value of type 'String'.", 
+                        line = ctx.start.line, 
+                        column = ctx.start.column
+                    )
+                    return None
+                var_value = self.visit_read_statement(ctx.readStatement())
             else:
                 var_value = None
             
@@ -237,13 +250,27 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
                     return None
                 
-                # Check type mismatch            
-                if not self.validate_value(ctx=ctx, type=var_type):
-                    return None
-            
-                var_value = self.visit_expression(ctx=ctx.expression())
-                self.symbol_table.update_variable(name=var_name, new_value=var_value) 
-                return f"{var_name} = {var_value}"
+                if ctx.readStatement():
+                    # Check type is String 
+                    if var_type != KotlinTypes.STRING.value:
+                        self.semantic_error_listener.semantic_error(
+                            msg = f"Type mismatch: Variable declared as '{var_type}' but assigned a value of type 'String'.", 
+                            line = ctx.start.line, 
+                            column = ctx.start.column
+                        )
+                        return None
+                
+                    var_value = self.visit_read_statement(ctx=ctx.readStatement())
+                    self.symbol_table.update_variable(name=var_name, new_value=var_value) 
+                    return f"{var_name} = {var_value}"
+                else:
+                    # Check type mismatch            
+                    if not self.validate_value(ctx=ctx, type=var_type):
+                        return None
+                
+                    var_value = self.visit_expression(ctx=ctx.expression())
+                    self.symbol_table.update_variable(name=var_name, new_value=var_value) 
+                    return f"{var_name} = {var_value}"
 
 
     def visit_function_declaration(self, ctx: KotlinParser.FunctionDeclarationContext):
