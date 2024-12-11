@@ -2274,10 +2274,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Checks if a return statement is properly handled inside a `for` loop in a function.
 
-        This method ensures that:
-        1. If a return statement exists within the `for` loop's body, it is validated against 
-        the expected return type of the function.
-        2. The return statement, if present, adheres to the function's return type constraints.
+        This method ensures that the return statement, if present, matches to the function's
+        return type expected.
 
         Args:
             ctx: The context representing the `for` loop in the AST.
@@ -2308,8 +2306,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         This method ensures that:
         1. The return statement is validated in the `if` branch.
-        2. If an `else` branch exists, the return statement is validated there as well.
-        3. The return statement(s) in both branches, if present, adhere to the function's expected return type.
+        2. If an `else` branch exists, the return statement is validated in the `else` branch too.
+        3. The return statement(s) in both branches, if present, matches to the function's expected 
+        return type.
 
         Args:
             ctx: The context representing the `if-else` statement in the AST.
@@ -2318,7 +2317,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if all return statements in the `if` and `else` branches are valid, 
-                `False` otherwise.
+                  `False` otherwise.
         """
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else statement.")
         
@@ -2339,7 +2338,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         This method ensures that:
         1. The return statement is validated within the block of statements inside the `if` or `else` body.
-        2. If no return statement is found in the body, an error is raised indicating the function must have a return statement.
+        2. If no return statement is found in the body, an error is raised indicating the function must 
+        have a return statement.
 
         Args:
             ctx: The context representing the body of the `if` or `else` statement in the AST.
@@ -2348,7 +2348,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if a valid return statement is found in the body, 
-                `False` if no return statement is found and an error is raised.
+                  `False` if no return statement is found and an error is raised.
         """
         print(f"    🔍 Checking the return statement of the function {fun_name} in if-else body.")
         
@@ -2373,10 +2373,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_no_return_statement_in_for_statement(self, ctx, fun_name):
         """
-        Ensures that a function without a return type does not contain any return statements within a `for` loop.
+        Ensures that a function without a return type does not contain any return statements 
+        within a `for` loop.
 
-        This method checks whether a `for` loop contains any return statements in the function's body. 
-        If a return statement is found in a function that does not have a return type, it raises an error.
+        This method checks whether a `for` loop contains any return statements in the function's 
+        body. If a return statement is found in a function that does not have a return type, 
+        it raises an error.
 
         Args:
             ctx: The context representing the `for` loop statement in the AST.
@@ -2384,7 +2386,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if no return statement is found in the `for` loop (or it is correctly handled), 
-                `False` if a return statement is found and an error is raised.
+                  `False` if a return statement is found and an error is raised.
         """
         print(f"    🔍 Checking missing return statement of the function {fun_name} in for statement.")
         
@@ -2412,18 +2414,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_no_return_statement_in_if_else_statement(self, ctx, fun_name): 
         """
-        Ensures that a function without a return type does not contain any return statements within an `if-else` statement.
+        Ensures that a function without a return type does not contain any return statements 
+        within an `if-else` statement.
 
-        This method checks whether the `if` and `else` blocks within an `if-else` statement contain any return statements. 
-        If a return statement is found in a function that does not have a return type, it raises an error.
+        This method checks whether the `if` and `else` blocks within an `if-else` statement contain 
+        any return statements. If a return statement is found in a function that does not have a 
+        return type, it raises an error.
 
         Args:
             ctx: The context representing the `if-else` statement in the AST.
             fun_name: The name of the function being checked.
 
         Returns:
-            bool: `True` if no return statement is found in the `if` and `else` bodies (or it is correctly handled), 
-                `False` if a return statement is found and an error is raised.
+            bool: `True` if no return statement is found in the `if` and `else` bodies (or it is 
+                  correctly handled), `False` if a return statement is found and an error is raised.
         """
         print(f"    🔍 Checking missing return statement of the function {fun_name} in if-else statement.")
         
@@ -2440,7 +2444,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_no_return_statement_in_if_else_body(self, ctx, fun_name):
         """
-        Ensures that a function without a return type does not contain any return statements within the body of an `if-else` statement.
+        Ensures that a function without a return type does not contain any return statements within 
+        the body of an `if-else` statement.
 
         This method checks whether any `return` statements are present within the `if` or `else` body. 
         If a return statement is found in a function that does not have a return type, it raises an error.
@@ -2481,8 +2486,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Validates the return statement of a function to ensure type correctness.
 
-        This method checks if the return statement has an expression and if the type of the returned value matches the declared return type of the function.
-        If there is a type mismatch or if the return statement does not include an expression, an error is raised.
+        This method checks if the return statement has an expression and if the type of the returned 
+        value matches the declared return type of the function. If there is a type mismatch or if the 
+        return statement does not include an expression, an error is raised.
 
         Args:
             ctx: The context representing the return statement in the AST.
@@ -2490,7 +2496,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             fun_return_type: The declared return type of the function.
 
         Returns:
-            bool: `True` if the return statement is valid, `False` if an error is found (either due to a type mismatch or a missing return expression).
+            bool: `True` if the return statement is valid, `False` if an error is found (either due to 
+                  a type mismatch or a missing return expression).
         """
         print(f"    🔍 Validating return statement of the function {fun_name}.")
         
@@ -2519,8 +2526,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Checks the validity of the arguments for a function by verifying both their types and names.
 
-        This method checks if the arguments of the function match the expected types and if their names are valid.
-        It ensures that both argument types and names are correct before proceeding.
+        This method checks if the arguments of the function match the expected types and if their names 
+        are valid. It ensures that both argument types and names are correct before proceeding.
 
         Args:
             ctx: The context representing the arguments in the AST.
@@ -2536,11 +2543,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_types(self, ctx, fun_name):
         """
-        Checks the types of the arguments passed to a function and ensures that they match the expected types for the function.
+        Checks the types of the arguments passed to a function and ensures that they match the 
+        expected types for the function.
 
-        This method verifies that the provided argument types for a function call match one of the function signatures
-        declared in the current scope. It checks if the function is defined with the correct parameter types and
-        raises an error if there is no matching signature or if the argument types do not match.
+        This method verifies that the provided argument types for a function call match one of 
+        the function signatures declared in the current scope. It checks if the function is defined 
+        with the correct parameter types and raises an error if there is no matching signature or 
+        if the argument types do not match.
 
         Args:
             ctx: The context representing the function call and its argument list in the AST.
@@ -2594,12 +2603,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_names(self, ctx, fun_name):
         """
-        Checks the names of the arguments passed to a function and ensures that they match the expected names
-        for the function.
+        Checks the names of the arguments passed to a function and ensures that they match the 
+        expected names for the function's parameters.
 
-        This method verifies that the provided argument names for a function call match one of the function signatures
-        declared in the current scope. It checks if the function is defined with the correct parameter names and raises
-        an error if there is no matching signature or if the argument names do not match.
+        This method verifies that the provided argument names for a function call match one of the 
+        function signatures declared in the current scope. It checks if the function is defined with 
+        the correct parameter names and raises an error if there is no matching signature or if the 
+        argument names do not match.
 
         Args:
             ctx: The context representing the function call and its argument list in the AST.
@@ -2657,11 +2667,13 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Checks if a class with the given name is already declared in the current scope.
 
-        This method verifies whether a class has already been declared in the current scope (e.g., in the same file or block).
-        If the class is already declared, it raises a semantic error indicating that the class name is already in use.
+        This method verifies whether a class has already been declared in the current scope 
+        (e.g., in the same file). If the class is already declared, it raises a semantic error 
+        indicating that the class name is already in use.
 
         Args:
-            ctx: The context of the class declaration in the AST, which contains information about the line and column.
+            ctx: The context of the class declaration in the AST, which contains information about 
+                 the line and column.
             class_name: The name of the class to check for in the current scope.
 
         Returns:
