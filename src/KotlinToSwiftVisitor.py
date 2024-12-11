@@ -2090,7 +2090,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_call_expression(self, ctx):
         """
         Checks the validity of a function call expression, ensuring that the function is declared 
-        in the current scope, the argument types are correct, and the function has a return value.
+        in the current scope, the argument types and the function return value are correct.
 
         This method performs the following checks:
         1. Verifies if the called function is declared in the current scope with the given argument types.
@@ -2129,7 +2129,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Checks the types of the arguments in a function call expression.
 
         This method iterates over the arguments in the function call and checks the type of each argument 
-        using the `check_argument_type` method. It returns a comma-separated string of argument types.
+        using the `check_argument_type` method. It returns a comma-separated list of argument types.
 
         Args:
             ctx: The context of the argument list in the function call expression.
@@ -2172,7 +2172,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context of the argument list in the function call expression.
 
         Returns:
-            str: A comma-separated string of the argument names.
+            str: A comma-separated list of the argument names.
         """
         print(f"    🔍 Checking the name of the arguments list {ctx.getText()}.")
         
