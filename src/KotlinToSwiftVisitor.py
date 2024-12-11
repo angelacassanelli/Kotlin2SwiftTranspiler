@@ -585,7 +585,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         This method processes a block of Kotlin statements and generates the corresponding Swift code. 
         It visits each statement within the block, invoking the appropriate visit method for each statement, 
-        and then joins the results with newlines to form a properly structured Swift code block.
+        and then joins the results with newlines to form a properly structured Swift code block, filtering out 
+        any empty or unrecognized statements.
 
         Args:
             ctx (KotlinParser.BlockContext): The context object representing the block of statements 
@@ -594,17 +595,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Returns:
             str: A string representing the Swift equivalent of the Kotlin block, with each statement 
             joined by a newline.
-
-        Raises:
-            None: Returns None for any unrecognized or empty statements.
-
-        Side Effects:
-            - Visits each statement within the block and converts them to Swift.
-            - Joins the converted statements with newlines to form a complete Swift block.
-
-        Notes:
-            - Handles a sequence of statements in a Kotlin block and converts them in order to Swift.
-            - Filters out any empty or unrecognized statements before joining them.
         """
         print(f"    🔍 Visiting block: {ctx.getText()}")        
         
@@ -614,12 +604,11 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def visit_statement(self, ctx: KotlinParser.StatementContext):
         """
-        Handles various types of statements like read, print, if, for, etc., and converts them to Swift.
+        Handles various types of statements and converts them to Swift.
 
-        This method processes different types of Kotlin statements, such as variable declarations, assignments, 
-        control flow (if, for), and expressions (read, print), by delegating the work to specific visit methods 
-        based on the type of the statement. The corresponding Swift code for each statement is generated and 
-        returned.
+        This method processes different types of Kotlin statements by delegating the work to specific 
+        visit methods based on the type of the statement. The corresponding Swift code for each statement 
+        is generated and returned.
 
         Args:
             ctx (KotlinParser.StatementContext): The context object representing the statement 
@@ -627,19 +616,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: A string representing the Swift equivalent of the Kotlin statement. If the statement is 
-            unrecognized, an empty string is returned.
-
-        Raises:
-            None: Returns an empty string for unrecognized or invalid statements.
-
-        Side Effects:
-            - Invokes the appropriate visit method for each type of Kotlin statement, converting them to Swift.
-            - Prints diagnostic messages for recognized and unrecognized statements.
-
-        Notes:
-            - The method distinguishes between different types of Kotlin statements (read, print, if, for, etc.) 
-              and calls the corresponding visit methods for each.
-            - If the statement type is unrecognized, a diagnostic message is printed, and an empty string is returned.
+            unrecognized or invalid, an empty string is returned.
         """
         print(f"    🔍 Visiting statement: {ctx.getText()}")
         if ctx.readStatement():
@@ -667,9 +644,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Converts a Kotlin readLine statement to Swift, handling the conversion to the appropriate Swift syntax.
 
-        This method specifically handles Kotlin's `readLine()` function, converting it to the corresponding 
-        Swift syntax for reading input from the user. The function does not consider the mutability (var/val) 
-        of the variable, as it only processes the statement itself.
+        This method handles Kotlin's `readLine()` function, converting it to the corresponding Swift syntax for 
+        reading input from the user. This function only processes the statement itself.
 
         Args:
             ctx (KotlinParser.ReadStatementContext): The context object representing the `readLine` statement 
@@ -677,16 +653,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: A string representing the Swift equivalent of the Kotlin `readLine()` statement.
-
-        Raises:
-            None: No exceptions are raised.
-
-        Side Effects:
-            - Prints a diagnostic message for the `readLine()` statement.
-
-        Notes:
-            - The function converts Kotlin's `readLine()` directly to Swift's `readLine()` function without 
-              considering any variable declarations.
         """        
         print(f"    🔍 Visiting read statement: {ctx.getText()}")
         return f"readLine()"
@@ -696,25 +662,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Converts a Kotlin print statement to a Swift print statement.
 
-        This method converts Kotlin's `println()` or `print()` function to Swift's `print()` function.
-        It handles the conversion by extracting the expression inside the Kotlin print statement and
-        formatting it to Swift's print function syntax.
+        This method converts Kotlin's `println()` function to Swift's `print()` function.
+        The expression inside the print statement is handled by the `visit_expression()` method.
 
         Args:
             ctx (KotlinParser.PrintStatementContext): The context object representing the Kotlin print statement 
                                                       in the Kotlin AST.
 
         Returns:
-            str: A string representing the Swift equivalent of the Kotlin print statement, e.g., `print(expression)`.
-
-        Raises:
-            None: No exceptions are raised.
-
-        Side Effects:
-            - Prints a diagnostic message for the print statement.
-
-        Notes:
-            - This method assumes the expression inside the print statement is handled by the `visit_expression()` method.
+            str: A string representing the Swift equivalent of the Kotlin print statement.
         """
         print(f"    🔍 Visiting print statement: {ctx.getText()}")
         
@@ -727,25 +683,16 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Converts a Kotlin if-else statement into a Swift if-else statement.
 
         This method processes the Kotlin `if`-`else` construct, converting it to the Swift equivalent. 
-        It handles both the `if` block and the optional `else` block, including the condition expression and bodies of the statements.
+        It handles both the `if` block and the optional `else` block, including the condition expression and 
+        bodies of the statements. This method calls `visit_expression()` to process the condition expression
+        and `validate_if_condition()` to ensure the condition is valid.
 
         Args:
             ctx (KotlinParser.IfElseStatementContext): The context object representing the Kotlin `if`-`else` statement
                                                        in the Kotlin AST.
 
         Returns:
-            str: A string representing the Swift equivalent of the Kotlin `if`-`else` statement, formatted as `if {condition} {if_body} else {else_body}`.
-
-        Raises:
-            None: No exceptions are raised.
-
-        Side Effects:
-            - Prints a diagnostic message for the if statement.
-
-        Notes:
-            - This method calls `visit_expression()` to process the condition expression.
-            - If there is no `else` block, the method generates a Swift `if` statement without the `else` part.
-            - The method relies on `validate_if_condition()` to ensure the condition is valid.
+            str: A string representing the Swift equivalent of the Kotlin `if`-`else` statement.
         """
         print(f"    🔍 Visiting if statement: {ctx.getText()}")
         
@@ -776,15 +723,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: A string representing the Swift equivalent of the Kotlin `if` body, either a block of statements or a single statement.
-
-        Raises:
-            None: No exceptions are raised.
-
-        Side Effects:
-            - Prints a diagnostic message for the `if` body.
-
-        Notes:
-            - This method calls `visit_block()` to process the block of statements and `visit_statement()` for individual statements.
         """
         print(f"    🔍 Visiting if-else statement: {ctx.getText()}")
         
@@ -803,15 +741,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: A string representing the Swift equivalent of the Kotlin `else` body, either a block of statements or a single statement.
-
-        Raises:
-            None: No exceptions are raised.
-
-        Side Effects:
-            - Prints a diagnostic message for the `else` body.
-
-        Notes:
-            - This method calls `visit_block()` to process the block of statements and `visit_statement()` for individual statements.
         """
         print(f"    🔍 Visiting if-else statement: {ctx.getText()}")
         
