@@ -29,13 +29,13 @@ class SyntaxErrorListener(ErrorListener):
 
         """
         Callback method invoked when a syntax error is detected.
+        Formats the error message and stores it in the `errors` list.
 
         Args:
             line (int): The line number where the error occurred.
             column (int): The column number where the error occurred.
             msg (str): The error message describing the syntax issue.
 
-        Formats the error message and stores it in the `errors` list.
         """
 
         error_message = (
