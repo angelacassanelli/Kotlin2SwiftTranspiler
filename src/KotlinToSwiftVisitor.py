@@ -1292,9 +1292,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Adds a variable to the symbol table with its associated properties.
 
-        This method creates a new symbol representing the variable and inserts it
-        into the symbol table. The variable's name, type, mutability, and optional
-        initial value are provided as parameters.
+        This method creates a new `Symbol` object with the specified properties,
+        representing the variable, and inserts it into the symbol table. The variable's 
+        name, type, mutability, and optional initial value are provided as parameters.
 
         Args:
             var_name (str): The name of the variable to be added.
@@ -1304,16 +1304,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             None
-
-        Side Effects:
-            - Creates a `Symbol` object with the specified properties.
-            - Adds the created `Symbol` to the symbol table.
-
-        Notes:
-            - This method assumes the `Symbol` class is defined with properties `name`, `type`, 
-              `mutable`, and `value`.
-            - A diagnostic message is printed to indicate that the variable is being added 
-              to the symbol table.
         """
         print(f"    🔍 Adding variable {var_name} to the symbol table.")
         
@@ -1336,23 +1326,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if the variable is found in the symbol table; otherwise, `False`.
-
-        Side Effects:
-            - Logs a diagnostic message about the check.
-            - If the variable is not found, reports a semantic error through 
-              `self.semantic_error_listener`.
-
-        Notes:
-            - The `symbol_table.lookup_variable(var_name)` method is expected to return `None` 
-              if the variable is not found in the current or parent scopes.
-            - The semantic error provides the line and column information derived from 
-              the `ctx` object to assist in debugging.
-
-        Example:
-            If the symbol table does not contain `var_name`, an error like the following 
-            will be reported:
-            "Trying to access or assign variable 'x' before its declaration."
-
         """
         print(f"    🔍 Checking if variable {var_name} is already declared.")
         
@@ -1383,23 +1356,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Returns:
             bool: `True` if the variable is already declared in the current scope; 
                   otherwise, `False`.
-
-        Side Effects:
-            - Logs a diagnostic message about the check.
-            - If the variable is already declared, reports a semantic error through 
-              `self.semantic_error_listener`.
-
-        Notes:
-            - The `symbol_table.lookup_variable_in_current_scope(var_name)` method is 
-              expected to search only the current scope for the variable name.
-            - If the variable is found, a semantic error is raised with line and column 
-              information derived from the `ctx` object.
-
-        Example:
-            If `var_name` is already declared in the current scope, an error like the following 
-            will be reported:
-            "Variable 'x' is already declared in the current scope."
-
         """
         print(f"    🔍 Checking if variable {var_name} is already declared in the current scope.")
         
@@ -1417,10 +1373,10 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Checks if a variable has already been declared and assigned a value.
 
-        This method ensures that a variable is both declared and assigned before it is used.
-        If the variable is not declared, a semantic error is raised through 
-        `check_variable_already_declared`. If it is declared but not assigned, an additional 
-        semantic error is reported.
+        This method ensures that a variable is both declared and assigned before it 
+        is used. If the variable is not declared, a semantic error is raised through 
+        `check_variable_already_declared`, ande the the assignment check is skipped. 
+        If it is declared but not assigned, an additional semantic error is reported.
 
         Args:
             ctx: The context object (from the ANTLR parse tree) associated with the statement 
@@ -1429,21 +1385,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if the variable is declared and assigned; otherwise, `False`.
-
-        Side Effects:
-            - Logs a diagnostic message about the check.
-            - Reports a semantic error if the variable is not declared or not assigned.
-
-        Notes:
-            - The `check_variable_already_declared` method is called first to verify if the 
-              variable is declared. If it is not, the assignment check is skipped.
-            - If the variable is declared but not assigned, an error is raised with detailed 
-              location information.
-
-        Example:
-            - For a variable `x` used before assignment, the following error might be reported:
-              "Variable 'x' is not assigned yet."
-
         """
         print(f"    🔍 Checking if the variable {ctx.getText()} is already assigned.")
         
@@ -1466,8 +1407,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Validates if the given Kotlin type is supported by the transpiler.
 
         This method checks if the provided type exists within the predefined list of supported
-        Kotlin types. If the type is unsupported, a semantic error is raised, providing the
-        line and column information from the parsing context.
+        Kotlin types, which is derived from the `KotlinTypes` enum. If the type is unsupported, 
+        a semantic error is raised.
 
         Args:
             ctx: The context object (from the ANTLR parse tree) where the type is being checked.
@@ -1475,21 +1416,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if the type is supported; otherwise, `False`.
-
-        Side Effects:
-            - Logs a diagnostic message indicating the type being checked.
-            - Reports a semantic error if the type is unsupported.
-
-        Example:
-            Supported types include:
-                - `Int`
-                - `String`
-                - `Boolean`
-
-        Notes:
-            - The list of supported types is derived from the `KotlinTypes` enum.
-            - If a type is unsupported, a meaningful error is raised with its location.
-
         """
         print(f"    🔍 Checking if type {type} is supported.")
         
@@ -1508,7 +1434,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Validates the value assigned to a variable, ensuring type compatibility.
 
         This method checks if the type of the value assigned to a variable matches the variable's
-        declared type. If there is a type mismatch, a semantic error is raised.
+        declared type. The `check_expression_type` method is used to determine the type of the 
+        expression being assigned. If there is a type mismatch, a semantic error is raised.
 
         Args:
             ctx: The context object (from the ANTLR parse tree) representing the assignment.
@@ -1516,22 +1443,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if the value's type matches the expected type; otherwise, `False`.
-
-        Side Effects:
-            - Logs a diagnostic message about the validation process.
-            - Reports a semantic error if there is a type mismatch.
-
-        Example:
-            Input:
-                - Variable declared as `Int`
-                - Value assigned is a `String`
-            Output:
-                Error: Type mismatch: Variable declared as 'Int' but assigned a value of type 'String'.
-
-        Notes:
-            - The method relies on `check_expression_type` to determine the type of the expression being assigned.
-            - Supports detailed error reporting, including line and column information from the parsing context.
-
         """
         print(f"    🔍 Checking if the variable {ctx.getText()} has a valid type.")
         
@@ -1561,18 +1472,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if the variable is mutable; `False` otherwise.
-
-        Side Effects:
-            - Logs a diagnostic message about the mutability check.
-            - Reports a semantic error if an immutable variable is being reassigned.
-
-        Example:
-            Input:
-                - Variable `x` declared as immutable.
-                - Code attempts `x = 10`.
-            Output:
-                Error: Trying to update immutable variable 'x'.
-
         """
         print(f"    🔍 Checking if the variable {var_name} is mutable.")
         
@@ -1598,17 +1497,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             bool: `True` if the condition is valid (i.e., evaluates to a boolean); `False` otherwise.
-
-        Side Effects:
-            - Logs a diagnostic message about the validation process.
-            - Reports a semantic error if the condition does not evaluate to a boolean type.
-
-        Example:
-            Input:
-                - Kotlin Code: `if (1 + 2) { ... }`
-            Output:
-                Error: Invalid expression type in 'if' condition: expected Boolean, found 'Int'.
-
         """
         print(f"    🔍 Validating if statement condition.")
         
@@ -1627,24 +1515,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Determines the type of a given expression by recursively evaluating its components.
 
-        This method evaluates the expression represented in the given context to determine its type.
-        It acts as an entry point for type-checking all expressions, starting with logical OR expressions 
-        and proceeding deeper as needed.
+        This method evaluates the expression represented in the given context to determine 
+        its type. It is the entry point for type-checking all expressions, starting with 
+        logical OR expressions.
 
         Args:
             ctx: The context object (from the ANTLR parse tree) representing the expression.
 
         Returns:
             str: The type of the expression (e.g., "Int", "Boolean", "String").
-
-        Side Effects:
-            - Logs a diagnostic message about the expression being type-checked.
-
-        Example:
-            Input:
-                - Kotlin Code: `x && y || z`
-            Output:
-                - Type: "Boolean" (assuming `x`, `y`, and `z` are boolean expressions).
         """                
         print(f"    🔍 Checking the type of the expression {ctx.getText()}.")
         
@@ -1663,10 +1542,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: 'Boolean' if the expression is valid; otherwise, 'None'.
-
-        Side Effects:
-            - Logs a diagnostic message about the logical OR expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the logical or expression {ctx.getText()}.")
         
@@ -1697,10 +1572,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: 'Boolean' if the expression is valid; otherwise, 'None'.
-
-        Side Effects:
-            - Logs a diagnostic message about the logical AND expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the logical and expression {ctx.getText()}.")
         
@@ -1721,7 +1592,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_equality_expression_type(self, ctx):
         """
-        Determines the type of an equality expression ('==' or '!=') and validates operand compatibility.
+        Determines the type of an equality expression ('==' or '!=') and validates operand 
+        compatibility.
         
         This method checks whether the operands of the equality expression are of the same type,
         and ensures that the result is of type 'Boolean'.
@@ -1731,10 +1603,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: 'Boolean' if the expression is valid; otherwise, 'None'.
-
-        Side Effects:
-            - Logs a diagnostic message about the equality expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the equality expression {ctx.getText()}.")
         
@@ -1755,7 +1623,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_relational_expression_type(self, ctx):
         """
-        Determines the type of a relational expression ('<', '<=', '>', '>=') and validates operand compatibility.
+        Determines the type of a relational expression ('<', '<=', '>', '>=') and validates operand 
+        compatibility.
         
         This method checks whether the operands of the relational expression are of the same type,
         and ensures that the result is of type 'Boolean'.
@@ -1765,10 +1634,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: 'Boolean' if the expression is valid; otherwise, 'None'.
-
-        Side Effects:
-            - Logs a diagnostic message about the relational expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the relational expression {ctx.getText()}.")
         
@@ -1799,10 +1664,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: 'Int' if the expression is valid; otherwise, 'None'.
-
-        Side Effects:
-            - Logs a diagnostic message about the additive expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the additive expression {ctx.getText()}.")
         
@@ -1823,7 +1684,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_multiplicative_expression_type(self, ctx):
         """
-        Determines the type of a multiplicative expression ('*', '/', '%') and validates operand compatibility.
+        Determines the type of a multiplicative expression ('*', '/', '%') and validates operand 
+        compatibility.
         
         This method checks whether the operands of the multiplicative expression are of the same type,
         and ensures that the result is of type 'Int'.
@@ -1833,10 +1695,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: 'Int' if the expression is valid; otherwise, 'None'.
-
-        Side Effects:
-            - Logs a diagnostic message about the multiplicative expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the multiplicative expression {ctx.getText()}.")
         
@@ -1865,10 +1723,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: The type of the expression if valid; otherwise, 'None' if there is a type mismatch.
-
-        Side Effects:
-            - Logs a diagnostic message about the unary expression being type-checked.
-            - Reports semantic errors for type mismatches.
         """
         print(f"    🔍 Checking the type of the unary expression {ctx.getText()}.")
         
@@ -1899,7 +1753,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     def check_membership_expression_type(self, ctx):
         """
         Checks the type of a membership expression, such as using the 'in' operator in Kotlin.
-        Validates the left-hand side (LHS) variable and its type, mutability, and range expression.
+        Validates the left-hand side variable and its type, mutability, and range expression.
 
         Args:
             ctx: The context representing the membership expression in the ANTLR parse tree.
@@ -1957,7 +1811,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context representing the range expression in the ANTLR parse tree.
 
         Returns:
-            str: Returns 'Int' if valid, otherwise returns 'None' to indicate type errors.
+            str: Returns the type of the left operand if valid, otherwise returns 'None'
+            to indicate type errors.
         """
         print(f"    🔍 Checking the type of the range expression {ctx.getText()}.")
         
@@ -1979,12 +1834,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 line = ctx.start.line, 
                 column = ctx.start.column
             )
-        return "None"
+            return "None"
+        
+        return left_type
 
 
     def check_primary_expression_type(self, ctx):
         """
-        Checks the type of the primary expression (identifier, literal, function call, or parenthesized expression).
+        Checks the type of the primary expression (identifier, literal, function call, 
+        or parenthesized expression).
         
         Args:
             ctx: The context representing the primary expression in the ANTLR parse tree.
@@ -2023,7 +1881,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context representing the literal in the ANTLR parse tree.
 
         Returns:
-            str: The type of the literal expression if valid, otherwise returns 'None' to indicate errors.
+            str: The type of the literal expression if valid, otherwise returns 'None' 
+            to indicate errors.
         """
         print(f"    🔍 Checking the type of the literal expression {ctx.getText()}.")
         
