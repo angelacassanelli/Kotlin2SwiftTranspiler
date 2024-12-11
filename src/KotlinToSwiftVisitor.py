@@ -922,7 +922,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return f"{left}"
 
 
-# TODO
     def visit_additive_expression(self, ctx: KotlinParser.AdditiveExpressionContext):
         """
         Transforms a Kotlin additive expression into its Swift equivalent.
@@ -1127,7 +1126,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Transforms a list of Kotlin function arguments into Swift-compatible arguments.
 
         This method processes a list of arguments in a Kotlin function call and converts them 
-        into the corresponding Swift syntax, ensuring each argument is properly formatted.
+        into the corresponding Swift syntax, ensuring each argument is properly formatted. 
+        The resulting string will contain all arguments joined by commas, as required by Swift 
+        function calls.
 
         Args:
             ctx (KotlinParser.ArgumentListContext): The context object representing the 
@@ -1136,14 +1137,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: A string representing the transformed Swift arguments, separated by commas.
-
-        Side Effects:
-            - Prints a diagnostic message for the visited argument list.
-
-        Notes:
-            - The function assumes that all arguments in the list are properly formatted and 
-              only performs the transformation.
-            - The resulting string will contain all arguments joined by commas, as required by Swift function calls.
         """
         print(f"    🔍 Visiting argument list: {ctx.getText()}")
         
@@ -1155,7 +1148,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Converts a Kotlin argument into a Swift argument.
 
         This method processes an individual argument in a Kotlin function call and transforms it 
-        into the corresponding Swift argument format, taking into account both named and unnamed arguments.
+        into the corresponding Swift argument format, taking into account both named and unnamed 
+        arguments. If the argument has an identifier (name), the Swift argument will be in the 
+        format `name: value`; if the argument has no name, the Swift argument will just be the value.
 
         Args:
             ctx (KotlinParser.ArgumentContext): The context object representing a single argument 
@@ -1164,15 +1159,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Returns:
             str: A string representing the transformed Swift argument, either as a named argument 
                  (e.g., `name: value`) or just the argument value (e.g., `value`).
-
-        Side Effects:
-            - Prints a diagnostic message for the visited argument.
-
-        Notes:
-            - If the argument has an identifier (name), the Swift argument will be in the format 
-              `name: value`.
-            - If the argument has no name, the Swift argument will just be the value.
-            - The function assumes that the argument expression is correctly formatted in Kotlin.
         """
         print(f"    🔍 Visiting argument: {ctx.getText()}")
         
@@ -1188,7 +1174,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Handles literal expressions in Kotlin, such as string, integer, or boolean literals.
 
         This method processes a literal expression in Kotlin and directly returns its string representation.
-        The literal can be of various types, including numbers, booleans, or strings.
+        The literal can be of various types, including numbers, booleans, or strings. This function does not 
+        modify or interpret the literal value but simply returns it as it appears in the Kotlin source code.
 
         Args:
             ctx (KotlinParser.LiteralContext): The context object representing a literal expression 
@@ -1197,13 +1184,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         Returns:
             str: The string representation of the literal value in Kotlin, which is directly returned
                  as-is for use in Swift code.
-
-        Side Effects:
-            - Prints a diagnostic message for the visited literal.
-
-        Notes:
-            - This function does not modify or interpret the literal value but simply returns it as 
-              it appears in the Kotlin source code.
         """
         print(f"    🔍 Visiting literal: {ctx.getText()}")
         
@@ -1223,13 +1203,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: The transformed comment in Swift syntax, either a single-line or block comment.
-
-        Side Effects:
-            - Prints a diagnostic message for the visited comment statement.
-
-        Notes:
-            - Single-line comments in Kotlin (//) are converted to Swift's single-line comment syntax (//).
-            - Block comments in Kotlin (/* */) are converted to Swift's block comment syntax (/* */).
         """
         print(f"    🔍 Visiting comment: {ctx.getText()}")
         if ctx.LINE_COMMENT():
@@ -1253,13 +1226,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: The transformed comment in Swift syntax, prefixed with '#'.
-
-        Side Effects:
-            - Prints a diagnostic message for the visited comment.
-
-        Notes:
-            - This method trims the "//" prefix and any leading or trailing whitespace 
-              before converting the comment to Swift format.
         """
         print(f"    🔍 Visiting inline comment: {ctx.getText()}")
         comment = ctx.getText()[2:].strip() 
@@ -1279,13 +1245,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: The transformed comment in Swift syntax, enclosed in '/*' and '*/'.
-
-        Side Effects:
-            - Prints a diagnostic message for the visited block comment.
-
-        Notes:
-            - This method removes the '/*' and '*/' delimiters and any leading/trailing whitespace 
-              before converting the comment to Swift format.
         """
         print(f"    🔍 Visiting block comment: {ctx.getText()}")
         comment = ctx.getText()[2:-2].strip() 
