@@ -514,13 +514,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         based on the provided information.
 
         Args:
-            ctx (KotlinParser.FunctionDeclarationContext): The context object representing the function 
-                                                           declaration in the Kotlin Abstract Syntax Tree (AST).
+            ctx (KotlinParser.FunctionDeclarationContext): The context object representing the 
+                                                           function declaration in the Kotlin 
+                                                           Abstract Syntax Tree (AST).
 
         Returns:
-            str: The Swift equivalent of the Kotlin function declaration or None if the function is already 
-                 declared or if there are errors such as unsupported types, duplicate parameters, or missing 
-                 return types.
+            str: The Swift equivalent of the Kotlin function declaration or None if the function 
+                 is already declared or if there are errors such as unsupported types, duplicate 
+                 parameters, or missing return types.
         """
         print(f"    🔍 Visiting function declaration: {ctx.getText()}")
 
