@@ -2526,8 +2526,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         """
         Checks the validity of the arguments for a function by verifying both their types and names.
 
-        This method checks if the arguments of the function match the expected types and if their names 
-        are valid. It ensures that both argument types and names are correct before proceeding.
+        This method checks if the arguments of the function match the expected types and names. 
 
         Args:
             ctx: The context representing the arguments in the AST.
@@ -2543,13 +2542,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_types(self, ctx, fun_name):
         """
-        Checks the types of the arguments passed to a function and ensures that they match the 
-        expected types for the function.
-
-        This method verifies that the provided argument types for a function call match one of 
-        the function signatures declared in the current scope. It checks if the function is defined 
-        with the correct parameter types and raises an error if there is no matching signature or 
-        if the argument types do not match.
+        Checks if the argument types in the function call match the expected parameter types 
+        for that function.
+        
+        This method verifies that the argument types align with one of the valid function signatures 
+        defined in the current scope. If no matching signature is found or if the argument types are 
+        incorrect, an error is raised.
 
         Args:
             ctx: The context representing the function call and its argument list in the AST.
@@ -2603,13 +2601,12 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_argument_names(self, ctx, fun_name):
         """
-        Checks the names of the arguments passed to a function and ensures that they match the 
-        expected names for the function's parameters.
+        Checks if the argument names in the function call match the expected parameter names 
+        for that function.
 
-        This method verifies that the provided argument names for a function call match one of the 
-        function signatures declared in the current scope. It checks if the function is defined with 
-        the correct parameter names and raises an error if there is no matching signature or if the 
-        argument names do not match.
+        This method verifies that the argument names match to one of the valid function signatures 
+        defined in the current scope. If no matching signature is found or if the argument names are 
+        incorrect, an error is raised.
 
         Args:
             ctx: The context representing the function call and its argument list in the AST.
