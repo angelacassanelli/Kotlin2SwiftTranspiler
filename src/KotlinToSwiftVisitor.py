@@ -2332,7 +2332,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         return check_if
 
 
-#todo
     def check_return_statement_in_if_else_body(self, ctx, fun_name, fun_return_type):
         """
         Checks if a return statement is properly handled inside the body of an `if` or `else` statement.
