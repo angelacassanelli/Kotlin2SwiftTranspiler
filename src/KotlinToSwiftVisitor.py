@@ -1812,7 +1812,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: Returns the type of the left operand if valid, otherwise returns 'None'
-            to indicate type errors.
+                 to indicate type errors.
         """
         print(f"    🔍 Checking the type of the range expression {ctx.getText()}.")
         
@@ -1882,7 +1882,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         Returns:
             str: The type of the literal expression if valid, otherwise returns 'None' 
-            to indicate errors.
+                 to indicate errors.
         """
         print(f"    🔍 Checking the type of the literal expression {ctx.getText()}.")
         
@@ -1904,13 +1904,15 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_parameter_type_list(self, ctx):
         """
-        Checks the types of a list of parameters and returns a comma-separated string of valid types.
+        Checks the types of a list of parameters and returns a comma-separated string 
+        of valid types.
 
         Args:
             ctx: The context representing the parameter list in the ANTLR parse tree.
 
         Returns:
-            str: A comma-separated list of parameter types if valid, otherwise returns None to indicate errors.
+            str: A comma-separated list of parameter types if valid, otherwise returns None 
+                 to indicate errors.
         """
         print(f"    🔍 Checking the type of the parameters list {ctx.getText()}.")
         
@@ -1977,7 +1979,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context representing the function declaration in the ANTLR parse tree.
         
         Returns:
-            list: A list of parameter names.
+            str: A comma-separated list of parameter names. 
         """
         print(f"    🔍 Checking the name of the parameters list {ctx.getText()}.")
         
