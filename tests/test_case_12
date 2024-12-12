@@ -3,7 +3,7 @@
 class Rectangle(var width: Int, var height: Int) {
 
     // Semantic Error @ line 8: Trying to update immutable variable 'newWidth'.
-    // Semantic Error @ line 10: Variable declared as 'Int' but assigned a value of type 'String'.
+    // Semantic Error @ line 10: Expected type 'Int' but found expression of type 'String'.
     fun setDimensions(newWidth: Int, newHeight: Int = 10) {
         newWidth = 5 
         width = newWidth
