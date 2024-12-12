@@ -10,7 +10,7 @@ class Counter {
         count = count + 1
     }
 
-    // Semantic Error @ line 16: Trying to update immutable variable 'count'.
+    // Semantic Error @ line 17: Trying to update immutable variable 'count'.
     // Semantic Error @ line 18: Return type mismatch: Function 'reset' is declared to return type 'Boolean', but the actual return type is 'Int'.
     fun reset(): Boolean {
         println("Reset Counter")
@@ -23,17 +23,17 @@ class Counter {
         return count % 2 
     }
 
-    // Semantic Error @ line 32: Function 'checkEvenOrOdd' must have a return statement.
-    // Semantic Error @ line 36: The for loop requires a range in the iteration condition, but found Int.
-    // Semantic Error @ line 36: Invalid range found.
-    // Semantic Error @ line 40: Variable declared as 'Boolean' but assigned a value of type 'Int'
+    // Semantic Error @ line 31: Function 'checkEvenOrOdd' must have a return statement.
+    // Semantic Error @ line 35: The for loop requires a range in the iteration condition, but found Int.
+    // Semantic Error @ line 35: Invalid range found.
+    // Semantic Error @ line 39: Variable declared as 'Boolean' but assigned a value of type 'Int'
     // Semantic Error @ line 41: Invalid expression type in 'if' condition: expected Boolean, found 'Int'.
     fun checkEvenOrOdd(): String {
-        reset() //???
+        reset() 
 
         var i: Int = 1
         for (i in 5) {
-            increment() //???
+            increment() 
         }
 
         val isEven: Boolean = checkIfEven()

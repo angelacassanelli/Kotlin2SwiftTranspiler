@@ -32,7 +32,7 @@ class Rectangle(var width: Int, var height: Int) {
 
     // Semantic Error @ line 36: Trying to call function 'printDimensions' before its declaration.
     fun main() {        
-        setDimensions(8, 8) //???
+        setDimensions(8, 8) 
         printDimensions() 
     
         if (isSquare()) {
