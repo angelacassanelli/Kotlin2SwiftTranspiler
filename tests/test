@@ -2,8 +2,8 @@
 
 class Rectangle(var width: Int, var height: Int) {
 
-    fun test(): Int {
-        return 
+    fun reset(): Boolean {
+        return 0
     }
     
 }

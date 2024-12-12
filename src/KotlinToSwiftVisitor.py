@@ -1456,7 +1456,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         if type != value_type:
             self.semantic_error_listener.semantic_error(
-                msg = f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
+                msg = f"Type mismatch: Expected type '{type}' but found expression of type '{value_type}'.",
                 line = ctx.start.line,
                 column = ctx.start.column
             )
