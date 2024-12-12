@@ -326,18 +326,17 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         statements = []
         if ctx.children:
             for stmt in ctx.children:
-                match stmt:
-                    case KotlinParser.VarDeclarationContext():
-                        statements.append(self.visit_var_declaration(stmt))
-                    case KotlinParser.FunctionDeclarationContext():
-                        statements.append(self.visit_function_declaration(stmt))
-                    case KotlinParser.AssignmentStatementContext():
-                        statements.append(self.visit_assignment_statement(stmt))
-                    case KotlinParser.CommentStatementContext():
-                        statements.append(self.visit_comment_statement(stmt))
-                    case _:
-                        print(f"    ❌ Unrecognized statement: {stmt.getText()}")
-                        return ""
+                if isinstance(stmt, KotlinParser.VarDeclarationContext):                
+                    statements.append(self.visit_var_declaration(stmt))
+                elif isinstance(stmt, KotlinParser.FunctionDeclarationContext):
+                    statements.append(self.visit_function_declaration(stmt))
+                elif isinstance(stmt, KotlinParser.AssignmentStatementContext):
+                    statements.append(self.visit_assignment_statement(stmt))
+                elif isinstance(stmt, KotlinParser.CommentStatementContext):
+                    statements.append(self.visit_comment_statement(stmt))
+                else:
+                    print(f"    ❌ Unrecognized statement: {stmt.getText()}")
+                    return ""
             # Join and return the non-empty statements
             return "\n".join(filter(None, statements))
         else:

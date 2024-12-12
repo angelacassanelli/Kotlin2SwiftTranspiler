@@ -1,0 +1,14 @@
+class User {
+    var name: String
+
+    fun greet() {
+        println("Hello, $name!")
+    }
+}
+
+class Main {
+    fun main() {
+        val user: User = User()
+        user.greet()
+    }
+}
