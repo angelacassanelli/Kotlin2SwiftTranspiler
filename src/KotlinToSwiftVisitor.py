@@ -474,7 +474,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
                 # Check mutability
                 if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
-                    return None
+                    if self.check_variable_already_assigned(ctx, var_name):
+                        return None
                 
                 if ctx.readStatement():
                     # Check type is String 
@@ -1065,10 +1066,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         This method handles primary expressions in Kotlin, which can include literals, identifiers, 
         or function call expressions. It processes the context accordingly and generates the 
         appropriate Swift representation. If the primary expression is an identifier, the method 
-        checks if the variable has been assigned before and then returns the identifier name. If the
-        primary expression is a literal or a function call, it recursively processes and transforms 
-        those components. Parenthesized expressions are also handled by recursively visiting the 
-        enclosed expression.
+        returns the identifier name. If the primary expression is a literal or a function call, it 
+        recursively processes and transforms those components. Parenthesized expressions are also 
+        handled by recursively visiting the enclosed expression.
 
         Args:
             ctx (KotlinParser.PrimaryExpressionContext): The context object representing the 
@@ -1081,9 +1081,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting primary expression: {ctx.getText()}")
         
         if ctx.IDENTIFIER():
-            identifier = ctx.IDENTIFIER().getText()  
-            self.check_variable_already_assigned(ctx, identifier) 
-            return identifier # return identifier anyway
+            return ctx.IDENTIFIER().getText()              
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
             return f"({self.visit_expression(ctx.expression())})"  
         elif ctx.callExpression():
@@ -2258,9 +2256,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 )
                 return False
         else:
-            no_return_stmt = False
-            no_return_stmt_in_for = False
-            no__return_stmt_in_if_else = False
+            no_return_stmt = True
+            no_return_stmt_in_for = True
+            no__return_stmt_in_if_else = True
     
             for stmt in ctx.statement():
                 if stmt.returnStatement():
@@ -2269,7 +2267,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         line = ctx.start.line,  
                         column = ctx.start.column
                     )
-                    no_return_stmt = True
+                    no_return_stmt = False
             for stmt in ctx.statement():
                 if stmt.forStatement():
                     for_stmt = stmt.forStatement()

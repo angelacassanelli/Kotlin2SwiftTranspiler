@@ -1,5 +1,7 @@
-class TestVariables {
-    fun test(){
-        
+class Rectangle(var width: Int, var height: Int) {
+    fun setDimensions(newWidth: Int, newHeight: Int = 10) {
+        width = newWidth
+        height = newHeight
+        println("Updated dimensions.")
     }
 }
