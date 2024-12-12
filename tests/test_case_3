@@ -5,6 +5,7 @@ class Person(var name: String, var age: Int) {
     }
 
     fun main() {
+        var i: Int = 1
         for (i in 1..5) {
             greet()
         }
