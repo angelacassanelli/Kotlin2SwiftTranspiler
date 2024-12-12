@@ -14,9 +14,10 @@ class Rectangle(var width: Int, var height: Int) {
         return width == height
     }
 
-    // Semantic Error: depth not declared and assigned
     // Semantic Error @ line 19: Function 'calculateAarea' must have a return statement.
+    // Semantic Error @ line 20: Trying to access or assign variable 'depth' before its declaration.
     fun calculateAarea(): Int {
+        depth = 20 
         val result = width * height * depth 
     }
 
@@ -29,7 +30,7 @@ class Rectangle(var width: Int, var height: Int) {
         return 2 * width + 2 * height 
     }
 
-    // Semantic Error: function 'printDimensions' not declared
+    // Semantic Error @ line 35: Trying to call function 'printDimensions' before its declaration.
     fun main() {        
         setDimensions(8, 8)
         printDimensions() 

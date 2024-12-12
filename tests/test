@@ -2,12 +2,8 @@
 
 class Rectangle(var width: Int, var height: Int) {
 
-    fun calculateAarea(): Int {
+    fun calculateAarea(): Int {       
         return width * height * depth 
-    }
-
-    fun main() {        
-        printDimensions() 
     }
     
 }

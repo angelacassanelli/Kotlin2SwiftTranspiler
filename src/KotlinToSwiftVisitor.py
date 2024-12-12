@@ -1141,6 +1141,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting call expression: {ctx.getText()}")
         
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
+        
+        if not self.check_call_expression(ctx):
+            return None
 
         if ctx.argumentList():    
             if not self.check_arguments(ctx, fun_name): 
