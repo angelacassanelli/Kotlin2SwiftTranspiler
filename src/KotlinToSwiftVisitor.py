@@ -1142,7 +1142,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
         
-        self.check_call_expression(ctx) # TODO check this
+        self.check_call_expression(ctx) 
 
         if ctx.argumentList():    
             if not self.check_arguments(ctx, fun_name): 
