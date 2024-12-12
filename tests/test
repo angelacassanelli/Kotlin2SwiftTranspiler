@@ -2,11 +2,10 @@
 
 class Rectangle(var width: Int, var height: Int) {
 
-    fun test(){}
-
-    fun reset(): Boolean {
-        var a: String = test()
-        return true
+    fun test() {
+        fun test2() {
+            println("aaa")
+        }
     }
     
 }

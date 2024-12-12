@@ -604,7 +604,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Visiting block: {ctx.getText()}")        
         
         statements = [self.visit_statement(stmt) for stmt in ctx.statement()]
-        return "\n".join(filter(None, statements))
+        return "\n" + "\n".join(filter(None, statements)) + "\n"
 
 
     def visit_statement(self, ctx: KotlinParser.StatementContext):
