@@ -2064,7 +2064,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_function_already_declared_in_current_scope(self, ctx, fun_name, kotlin_param_types):
         """
-        Checks if a function with the given name and parameter types is already declared in the current scope.
+        Checks if a function with the given name and parameter types is already declared in the 
+        current scope.
 
         Args:
             ctx: The context of the function declaration or call.
@@ -2089,19 +2090,20 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def check_call_expression(self, ctx):
         """
-        Checks the validity of a function call expression, ensuring that the function is declared 
-        in the current scope, the argument types and the function return value are correct.
-
-        This method performs the following checks:
-        1. Verifies if the called function is declared in the current scope with the given argument types.
-        2. If the function is not declared or is called with incorrect argument types, a semantic error is raised.
-        3. Returns the function's return type if all checks pass; otherwise, returns "None".
-
+        Checks that a function call is properly declared and matches the expected signature. It 
+        retrieves the function name and arguments from the context, verifies the function's existence 
+        and signature, and determines its return type.
+        
         Args:
-            ctx: The context of the function call expression, containing the function name and the argument list.
+            ctx: Parser context for the function call.
 
         Returns:
-            str: The return type of the function if the call is valid, otherwise "None".
+            str: The function's return type if valid; "None" otherwise.
+
+        Steps:
+            1. Extracts the function name and argument types.
+            2. Checks if the function is declared with the correct signature.
+            3. Returns the function's return type or logs an error if undefined.
         """
         print(f"    🔍 Checking call expression {ctx.getText()}.")
         
