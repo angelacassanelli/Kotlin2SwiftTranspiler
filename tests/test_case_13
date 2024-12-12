@@ -1,0 +1,49 @@
+// Class representing a simple Counter
+
+class Counter {
+
+    val count: Int = 0
+
+    // Semantic Error @ line 10: Trying to update immutable variable 'count'.
+    fun increment() {
+        println("Increment Counter")
+        count = count + 1
+    }
+
+    // Semantic Error @ line 16: Trying to update immutable variable 'count'.
+    fun reset() {
+        println("Reset Counter")
+        count = 0
+    }
+
+    fun checkIfEven(): Int {
+        println("Check if counter is even")
+        return count % 2 
+    }
+
+    // Semantic Error @ line 31: Function 'checkEvenOrOdd' must have a return statement.
+    // Semantic Error @ line 35: The for loop requires a range in the iteration condition, but found Int.
+    // Semantic Error @ line 35: Invalid range found.
+    // Semantic Error @ line 39: Variable declared as 'Boolean' but assigned a value of type 'Int'
+    // Semantic Error @ line 41: Trying to access or assign variable 'isEven' before its declaration.
+    // Semantic Error @ line 41: Invalid expression type in 'if' condition: expected Boolean, found 'None'.
+    // Semantic Error @ line 44: Function 'checkEvenOrOdd' must have a return statement.    
+    fun checkEvenOrOdd(): String {
+        reset() //???
+
+        var i: Int = 1
+        for (i in 5) {
+            increment() //???
+        }
+
+        val isEven: Boolean = checkIfEven()
+
+        if (isEven) {
+            println("Counter is even")
+            return "Even"
+        } else {
+            println("Counter is odd")
+        }
+    }
+
+}
