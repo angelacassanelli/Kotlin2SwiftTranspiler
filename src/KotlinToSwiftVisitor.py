@@ -2239,25 +2239,23 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                     if stmt.returnStatement():
                         return_stmt = stmt.returnStatement()
                         valid_return_stmt = self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
-                for stmt in ctx.statement():
                     if stmt.forStatement():
                         for_stmt = stmt.forStatement()
                         valid_return_stmt_in_for = self.check_return_statement_in_for_statement(for_stmt, fun_name, fun_return_type) 
-                for stmt in ctx.statement():
                     if stmt.ifElseStatement():
                         if_stmt = stmt.ifElseStatement()
                         valid_return_stmt_in_if_else = self.check_return_statement_in_if_else_statement(if_stmt, fun_name, fun_return_type) 
                 
                 if valid_return_stmt or valid_return_stmt_in_for or valid_return_stmt_in_if_else:
                     return True
-                
-                # Return statement not found
-                self.semantic_error_listener.semantic_error(
-                    msg = f"Function '{fun_name}' must have a return statement.", 
-                    line = ctx.start.line, 
-                    column = ctx.start.column
-                )
-                return False
+                else:
+                    # Return statement not valid
+                    self.semantic_error_listener.semantic_error(
+                        msg = f"Function '{fun_name}' must have a valid return statement.", 
+                        line = ctx.start.line, 
+                        column = ctx.start.column
+                    )
+                    return False
         else:
             no_return_stmt = True
             no_return_stmt_in_for = True
@@ -2271,11 +2269,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                         column = ctx.start.column
                     )
                     no_return_stmt = False
-            for stmt in ctx.statement():
                 if stmt.forStatement():
                     for_stmt = stmt.forStatement()
                     no_return_stmt_in_for = self.check_no_return_statement_in_for_statement(for_stmt, fun_name)
-            for stmt in ctx.statement():
                 if stmt.ifElseStatement():
                     if_stmt = stmt.ifElseStatement()
                     no__return_stmt_in_if_else = self.check_no_return_statement_in_if_else_statement(if_stmt, fun_name)
@@ -2376,11 +2372,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             if stmt.returnStatement():
                 return_stmt = stmt.returnStatement()
                 return self.validate_return_statement(return_stmt, fun_name, fun_return_type) 
-        self.semantic_error_listener.semantic_error(
-            msg = f"Function '{fun_name}' must have a return statement.", 
-            line = ctx.start.line,  
-            column = ctx.start.column
-        )
+        
         return False
 
 

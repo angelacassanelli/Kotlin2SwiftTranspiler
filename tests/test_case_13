@@ -10,8 +10,9 @@ class Counter {
         count = count + 1
     }
 
-    // Semantic Error @ line 17: Trying to update immutable variable 'count'.
-    // Semantic Error @ line 18: Return type mismatch: Function 'reset' is declared to return type 'Boolean', but the actual return type is 'Int'.
+    // Semantic Error @ line 18: Trying to update immutable variable 'count'.
+    // Semantic Error @ line 19: Expected type 'Boolean' but found expression of type 'Int'.
+    // Semantic Error @ line 19: Return type mismatch: Function 'reset' is declared to return type 'Boolean', but the actual return type is 'Int'.
     fun reset(): Boolean {
         println("Reset Counter")
         count = 0
