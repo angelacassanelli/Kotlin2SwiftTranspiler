@@ -575,9 +575,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
             if ctx.type_():
                 return_type = self.visit_type(ctx.type_()) 
-                swift_function = f"func {fun_name}({parameters}) -> {return_type} {{ {body} }}"
+                swift_function = f"func {fun_name}({parameters}) -> {return_type} {{{body}}}"
             else:
-                swift_function = f"func {fun_name}({parameters}) {{ {body} }}"
+                swift_function = f"func {fun_name}({parameters}) {{{body}}}"
 
             self.symbol_table.remove_scope()
 
@@ -712,9 +712,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if ctx.ELSE():
             else_body = self.visit_else_body(ctx.elseBody())
 
-            return f"if {condition} {{ {if_body} }} else {{ {else_body} }}"
+            return f"if {condition} {{{if_body}}} else {{{else_body}}}"
 
-        return f"if {condition} {{ {if_body} }}"
+        return f"if {condition} {{{if_body}}}"
 
     
     def visit_if_body(self, ctx: KotlinParser.IfBodyContext):
@@ -786,7 +786,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             body = self.visit_block(ctx.block())
         else:  
             body = self.visit_statement(ctx.statement())
-        return f"for {expression} {{ {body} }}"
+        return f"for {expression} {{{body}}}"
 
 
     def visit_return_statement(self, ctx: KotlinParser.ReturnStatementContext):

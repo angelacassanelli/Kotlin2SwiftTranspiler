@@ -1,43 +1,41 @@
 # Class representing a simple Rectangle
 class Rectangle() {
-
 var width: Int
 var height: Int
-
 init(width: Int, height: Int) {
 self.width = width
 self.height = height
 }
 # Function to update the dimensions of the rectangle
-func setDimensions(newWidth: Int, newHeight: Int = 10) { 
+func setDimensions(newWidth: Int, newHeight: Int = 10) {
 width = newWidth
 height = newHeight
- }
+}
 # Function to check if the rectangle is a square (width == height)
-func isSquare() -> Bool { 
+func isSquare() -> Bool {
 return width == height
- }
+}
 # Function to calculate the area of the rectangle
-func calculateAarea() -> Int { 
+func calculateAarea() -> Int {
 return width * height
- }
+}
 # Function to calculate the perimeter of the rectangle
-func calculatePerimeter() -> Int { 
+func calculatePerimeter() -> Int {
 return 2 * (width + height)
- }
+}
 # Example usage of the Rectangle class
-func main() { 
+func main() {
 # Updating the dimensions
 setDimensions(8, 8)
 # Checking if it's a square
-if isSquare() { 
+if isSquare() {
 print("The rectangle is a square.")
- } else { 
+} else {
 print("The rectangle is not a square.")
- }
+}
 # Calculating and printing the perimeter
 let perimeter = calculatePerimeter()
 print("Perimeter is:")
 print(perimeter)
- }
+}
 }
