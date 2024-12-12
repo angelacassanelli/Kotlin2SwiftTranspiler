@@ -1446,15 +1446,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         value_type = self.check_expression_type(ctx.expression())
         
-        if not value_type: # TODO: check this in return stmt
-            self.semantic_error_listener.semantic_error(
-                msg = f"Trying to assign the result of a function which does not return any value.",
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
-            return False
-        
-        if type != value_type:
+        if not value_type or type != value_type:
             self.semantic_error_listener.semantic_error(
                 msg = f"Type mismatch: Expected type '{type}' but found expression of type '{value_type}'.",
                 line = ctx.start.line,
