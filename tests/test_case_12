@@ -1,14 +1,49 @@
-class User {
-    var name: String
+// Class representing a simple Rectangle
 
-    fun greet() {
-        println("Hello, $name!")
+class Rectangle(var width: Int, var height: Int) {
+
+    // Semantic Error @ line 9: Trying to update immutable variable 'newWidth'.
+    // Semantic Error @ line 11: Variable declared as 'Int' but assigned a value of type 'String'.
+    fun setDimensions(newWidth: Int, newHeight: Int = 10) {
+        newWidth = 5 
+        width = newWidth
+        height = "ten"
     }
+
+    fun isSquare(): Boolean {
+        return width == height
+    }
+
+    // Semantic Error: depth not declared and assigned
+    // Semantic Error @ line 19: Function 'calculateAarea' must have a return statement.
+    fun calculateAarea(): Int {
+        val result = width * height * depth 
+    }
+
+    fun calculatePerimeter(): Int {
+        return 2 * (width + height)
+    }
+
+    // Semantic Error @ line 34: Function 'calculatePerimeter' is already declared in the current scope.
+    fun calculatePerimeter(): Int {
+        return 2 * width + 2 * height 
+    }
+
+    // Semantic Error: function 'printDimensions' not declared
+    fun main() {        
+        setDimensions(8, 8)
+        printDimensions() 
+    
+        if (isSquare()) {
+            println("The rectangle is a square.")
+        } else {
+            println("The rectangle is not a square.")
+        }
+    
+        val perimeter = calculatePerimeter()
+        println("Perimeter is:")
+        println(perimeter)
+    }
+    
 }
 
-class Main {
-    fun main() {
-        val user: User = User()
-        user.greet()
-    }
-}

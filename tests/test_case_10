@@ -3,10 +3,9 @@
 class Rectangle(var width: Int, var height: Int) {
 
     // Function to update the dimensions of the rectangle
-    fun setDimensions(newWidth: Int = 5, newHeight: Int = 10) {
+    fun setDimensions(newWidth: Int, newHeight: Int = 10) {
         width = newWidth
         height = newHeight
-        println("Updated dimensions.")
     }
 
     // Function to check if the rectangle is a square (width == height)

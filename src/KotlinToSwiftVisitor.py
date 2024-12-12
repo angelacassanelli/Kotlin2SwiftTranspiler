@@ -474,8 +474,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
                 # Check mutability
                 if not self.check_mutability(ctx=ctx, var_name=var_name, is_mutable=is_mutable):
-                    if self.check_variable_already_assigned(ctx, var_name):
-                        return None
+                    return None
                 
                 if ctx.readStatement():
                     # Check type is String 
@@ -1358,9 +1357,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         if self.symbol_table.lookup_variable_in_current_scope(var_name):
             self.semantic_error_listener.semantic_error(
-                msg=f"Variable '{var_name}' is already declared in the current scope.",
-                line=ctx.start.line,
-                column=ctx.start.column
+                msg = f"Variable '{var_name}' is already declared in the current scope.",
+                line = ctx.start.line,
+                column = ctx.start.column
             )
             return True
         return False
@@ -1390,9 +1389,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
         if not self.symbol_table.get_variable_assigned(var_name):
             self.semantic_error_listener.semantic_error(
-                msg=f"Variable '{var_name}' is not assigned yet.",
-                line=ctx.start.line,
-                column=ctx.start.column
+                msg = f"Variable '{var_name}' is not assigned yet.",
+                line = ctx.start.line,
+                column = ctx.start.column
             )
             return False
         
@@ -1418,9 +1417,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         if type not in [item.value for item in KotlinTypes]:
             self.semantic_error_listener.semantic_error(
-                f"Unsupported type '{type}'.",
-                line=ctx.start.line,
-                column=ctx.start.column
+                msg = f"Unsupported type '{type}'.",
+                line = ctx.start.line,
+                column = ctx.start.column
             )
             return False
         return True
@@ -1446,9 +1445,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         value_type = self.check_expression_type(ctx.expression())
         if value_type and type != value_type:
             self.semantic_error_listener.semantic_error(
-                f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
-                line=ctx.start.line,
-                column=ctx.start.column
+                msg = f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
+                line = ctx.start.line,
+                column = ctx.start.column
             )
             return False
         return True
@@ -1959,9 +1958,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if duplicate_params:
             duplicates = ", ".join(duplicate_params)
             self.semantic_error_listener.semantic_error(
-                msg=f"Function '{fun_name}' has duplicate parameters: {duplicates}.",
-                line=ctx.start.line,
-                column=ctx.start.column,
+                msg = f"Function '{fun_name}' has duplicate parameters: {duplicates}.",
+                line = ctx.start.line,
+                column = ctx.start.column,
             )
             return False
 
@@ -2576,9 +2575,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         if not function_versions:
             self.semantic_error_listener.semantic_error(
-                msg=f"Function '{fun_name}' with argument types {argument_types} is not declared in any scope.",
-                line=ctx.start.line,
-                column=ctx.start.column,
+                msg = f"Function '{fun_name}' with argument types {argument_types} is not declared in any scope.",
+                line = ctx.start.line,
+                column = ctx.start.column,
             )
             return False            
         
@@ -2602,9 +2601,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         # If no matches are found
         self.semantic_error_listener.semantic_error(
-            msg=f"Function '{fun_name}' with argument types {argument_types} does not match any signature in the current scope.",
-            line=ctx.start.line,
-            column=ctx.start.column,
+            msg = f"Function '{fun_name}' with argument types {argument_types} does not match any signature in the current scope.",
+            line = ctx.start.line,
+            column = ctx.start.column,
         )
         return False 
  
@@ -2634,9 +2633,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
         if not function_versions:
             self.semantic_error_listener.semantic_error(
-                msg=f"Function '{fun_name}' with argument names {argument_names} is not declared in any scope.",
-                line=ctx.start.line,
-                column=ctx.start.column,
+                msg = f"Function '{fun_name}' with argument names {argument_names} is not declared in any scope.",
+                line = ctx.start.line,
+                column = ctx.start.column,
             )
             return False            
 
@@ -2663,9 +2662,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         # If no matches are found
         self.semantic_error_listener.semantic_error(
-            msg=f"Function '{fun_name}' with argument names {argument_names} does not match any signature in the current scope.",
-            line=ctx.start.line,
-            column=ctx.start.column,
+            msg = f"Function '{fun_name}' with argument names {argument_names} does not match any signature in the current scope.",
+            line = ctx.start.line,
+            column = ctx.start.column,
         )
         return False
 
