@@ -1142,8 +1142,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         fun_name = self.visit_identifier(ctx.IDENTIFIER())
         
-        if not self.check_call_expression(ctx):
-            return None
+        self.check_call_expression(ctx) # TODO check this
 
         if ctx.argumentList():    
             if not self.check_arguments(ctx, fun_name): 
@@ -1446,13 +1445,23 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         print(f"    🔍 Checking if the variable {ctx.getText()} has a valid type.")
         
         value_type = self.check_expression_type(ctx.expression())
-        if value_type and type != value_type:
+        
+        if not value_type: # TODO: check this in return stmt
+            self.semantic_error_listener.semantic_error(
+                msg = f"Trying to assign the result of a function which does not return any value.",
+                line = ctx.start.line, 
+                column = ctx.start.column
+            )
+            return False
+        
+        if type != value_type:
             self.semantic_error_listener.semantic_error(
                 msg = f"Type mismatch: Variable declared as '{type}' but assigned a value of type '{value_type}'.",
                 line = ctx.start.line,
                 column = ctx.start.column
             )
             return False
+
         return True
     
     
@@ -2094,8 +2103,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         This method performs the following checks:
         1. Verifies if the called function is declared in the current scope with the given argument types.
         2. If the function is not declared or is called with incorrect argument types, a semantic error is raised.
-        3. Checks if the function has a valid return type. If the function does not return a value, a semantic error is raised.
-        4. Returns the function's return type if all checks pass; otherwise, returns "None".
+        3. Returns the function's return type if all checks pass; otherwise, returns "None".
 
         Args:
             ctx: The context of the function call expression, containing the function name and the argument list.
@@ -2112,13 +2120,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return "None"
         
         return_type = self.symbol_table.get_function_return_type(fun_name, argument_types)        
-        if not return_type:
-            self.semantic_error_listener.semantic_error(
-                msg = f"Trying to assign the result of function '{fun_name}', which does not return any value.",
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
-            return "None"
         
         return return_type
     

@@ -6,5 +6,6 @@ init(width: Int, height: Int) {
 self.width = width
 self.height = height
 }
-func calculateAarea() -> Int { return width * height * depth }
+func test() -> Int { print("ciao")
+return 5 }
 }
