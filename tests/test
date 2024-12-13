@@ -1,9 +1,10 @@
 // Class representing a simple Rectangle
 
-class Rectangle(var width: Int, var height: Int) {
+class Test() {
 
-    fun calculateAarea(): Int {
-        return width * height * depth
+    fun test() {
+        var c : Boolean = true
+        println(c)
     }
     
 }

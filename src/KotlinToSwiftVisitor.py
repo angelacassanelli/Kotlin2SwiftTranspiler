@@ -666,21 +666,25 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
 
     def visit_print_statement(self, ctx: KotlinParser.PrintStatementContext):
         """
-        Converts a Kotlin print statement to a Swift print statement.
+        Translates a Kotlin print statement to its Swift equivalent.
 
-        This method converts Kotlin's `println()` function to Swift's `print()` function.
-        The expression inside the print statement is handled by the `visit_expression()` method.
+        This method transforms Kotlin's `println()` function into Swift's `print()` function.
+        The expression inside the print statement is processed using the `visit_expression()` method.
 
         Args:
             ctx (KotlinParser.PrintStatementContext): The context object representing the Kotlin print 
-                                                      statement in the Kotlin AAbstract Syntax Tree (AST).
+                                                      statement in the Kotlin Abstract Syntax Tree (AST).
 
         Returns:
-            str: A string representing the Swift equivalent of the Kotlin print statement.
+            str: A string containing the Swift equivalent of the Kotlin print statement.
         """
         print(f"    🔍 Visiting print statement: {ctx.getText()}")
         
         expression = self.visit_expression(ctx.expression())
+        
+        # Check the variable in the expression is declared if it references a variable
+        self.check_expression_type(ctx.expression())
+        
         return f"print({expression})"
     
 
