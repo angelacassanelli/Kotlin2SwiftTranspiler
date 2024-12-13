@@ -1,18 +1,12 @@
-class Person() {
-var name: String
-var age: Int
-init(name: String, age: Int) {
-self.name = name
-self.age = age
+# Class representing a simple Rectangle
+class Rectangle() {
+var width: Int
+var height: Int
+init(width: Int, height: Int) {
+self.width = width
+self.height = height
 }
-func greet() {
-print("Hello!")
-print(name)
-}
-func main() {
-var i : Int = 1
-for i in 1 ... 5 {
-greet()
-}
+func calculateAarea() -> Int {
+return width * height * depth
 }
 }
