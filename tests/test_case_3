@@ -2,9 +2,8 @@
 
 class Rectangle(var width: Int, var height: Int) {
 
-    // Semantic Error @ line 9: Expected type 'Int' but found expression of type 'String'.
-    fun setDimensions(newWidth: Int, newHeight: Int = 10) {
-        newWidth = 5 
+    // Semantic Error @ line 8: Expected type 'Int' but found expression of type 'String'.
+    fun setDimensions(newWidth: Int = 5, newHeight: Int = 10) {
         width = newWidth
         height = "ten"
         height = newHeight
@@ -14,8 +13,8 @@ class Rectangle(var width: Int, var height: Int) {
         return width == height
     }
 
-    // Semantic Error @ line 19: Function 'calculateAarea' must have a valid return statement.
-    // Semantic Error @ line 20: Trying to access or assign variable 'depth' before its declaration.
+    // Semantic Error @ line 18: Function 'calculateAarea' must have a valid return statement.
+    // Semantic Error @ line 19: Trying to access or assign variable 'depth' before its declaration.
     fun calculateAarea(): Int {
         depth = 20 
         val result = width * height  
@@ -25,7 +24,7 @@ class Rectangle(var width: Int, var height: Int) {
         return 2 * (width + height)
     }
 
-    // Semantic Error @ line 29: Function 'calculatePerimeter' is already declared in the current scope.
+    // Semantic Error @ line 28: Function 'calculatePerimeter' is already declared in the current scope.
     fun calculatePerimeter(): Int {
         return 2 * width + 2 * height 
     }
