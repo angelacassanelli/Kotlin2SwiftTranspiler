@@ -1,12 +1,45 @@
-class Example() {
-    fun main() {
-        var x: Int = 10
-        val y: String = "Hello"
-        
-        if (x > 5) {
-            println("x is greater than 5")
-        } else {
-            println("x is less than or equal to 5")
-        }
+// Class representing a simple Rectangle
+
+class Rectangle(var width: Int, var height: Int) {
+
+    // Function to update the dimensions of the rectangle
+    fun setDimensions(newWidth: Int, newHeight: Int = 10) {
+        width = newWidth
+        height = newHeight
     }
+
+    // Function to check if the rectangle is a square (width == height)
+    fun isSquare(): Boolean {
+        return width == height
+    }
+
+    // Function to calculate the area of the rectangle
+    fun calculateAarea(): Int {
+        return width * height 
+    }
+
+    // Function to calculate the perimeter of the rectangle
+    fun calculatePerimeter(): Int {
+        return 2 * (width + height)
+    }
+
+    // Example usage of the Rectangle class
+    fun main() {        
+        // Updating the dimensions
+        setDimensions(8, 8)
+    
+        // Checking if it's a square
+        if (isSquare()) {
+            println("The rectangle is a square.")
+        } else {
+            println("The rectangle is not a square.")
+        }
+    
+        // Calculating and printing the perimeter
+        val perimeter = calculatePerimeter()
+        println("Perimeter is:")
+        println(perimeter)
+    }
+    
 }
+

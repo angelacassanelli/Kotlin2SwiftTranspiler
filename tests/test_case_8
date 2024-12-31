@@ -1,7 +1,0 @@
-class TestFor {
-    fun iterate() {
-        for (number in 10) { // Errore: '10' non è un range o una collezione iterabile
-            println(number)
-        }
-    }
-}

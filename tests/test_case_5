@@ -1,18 +1,10 @@
-class TestFunctions {
-    fun sayHello() {
-        println("Hello")
-    }
+// Sample Class, with Lexical and Syntax Errors
 
-    fun sayHello() { // Error: Redeclaration of function 'sayHello'
-        println("Duplicate Hello")
-    }
-
-    fun add(a: Int, b: Int) {
-        println(a+b)
-    }
-
-    fun add(a: Int, b: String) { 
-        println(a)
-        println(b)
-    }
+class Example {  
+    // Lexical error @ line 6: token recognition error at: '&='
+    // Lexical error @ line 6: no viable alternative at input 'valx5'
+    val x &= 5    
+    
+    // Syntax error @ line 9: extraneous input '5' expecting '}'
+    val y : Int 5  
 }
