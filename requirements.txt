@@ -1,1 +1,1 @@
-antlr4-python3-runtime==4.13.2  # Runtime di ANTLR per Python, per il supporto del parser
+antlr4-python3-runtime==4.13.2  # ANTLR Runtime for Python, for parser support

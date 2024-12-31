@@ -859,7 +859,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         left = self.visit_logical_and_expression(ctx.logicalAndExpression(0))
         for i in range(1, len(ctx.logicalAndExpression())):
-            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            operator = ctx.getChild(2 * i - 1).getText()  # The operators are located at position 2i - 1 
             right = self.visit_logical_and_expression(ctx.logicalAndExpression(i))
             left = f"{left} {operator} {right}" if right is not None else f"{left}" 
         return f"{left}"
@@ -886,7 +886,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         left = self.visit_equality_expression(ctx.equalityExpression(0))  
         for i in range(1, len(ctx.equalityExpression())):
-            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            operator = ctx.getChild(2 * i - 1).getText()  # The operators are located at position 2i - 1 
             right = self.visit_equality_expression(ctx.equalityExpression(i)) 
             left = f"{left} {operator} {right}"
         return f"{left}"
@@ -914,9 +914,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         left = self.visit_relational_expression(ctx.relationalExpression(0))
         for i in range(1, len(ctx.relationalExpression())):
-            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
-            right = self.visit_relational_expression(ctx.relationalExpression(i))  # Visita il prossimo unary expression
-            left = f"{left} {operator} {right}"  # Combina il risultato precedente con l'operatore corrente
+            operator = ctx.getChild(2 * i - 1).getText()  # The operators are located at position 2i - 1 
+            right = self.visit_relational_expression(ctx.relationalExpression(i))  
+            left = f"{left} {operator} {right}"  
         return f"{left}"
 
 
@@ -942,7 +942,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         left = self.visit_additive_expression(ctx.additiveExpression(0))
         if len(ctx.additiveExpression()) > 1:
-            operator = ctx.getChild(1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
+            operator = ctx.getChild(1).getText()  # The operators are located at position 2i - 1 
             right = self.visit_additive_expression(ctx.additiveExpression(1))
             return f"{left} {operator} {right}" 
         return f"{left}"
@@ -970,9 +970,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         left = self.visit_multiplicative_expression(ctx.multiplicativeExpression(0))
         for i in range(1, len(ctx.multiplicativeExpression())):
-            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
-            right = self.visit_multiplicative_expression(ctx.multiplicativeExpression(i))  # Visita il prossimo unary expression
-            left = f"{left} {operator} {right}"  # Combina il risultato precedente con l'operatore corrente
+            operator = ctx.getChild(2 * i - 1).getText()  # The operators are located at position 2i - 1 
+            right = self.visit_multiplicative_expression(ctx.multiplicativeExpression(i)) 
+            left = f"{left} {operator} {right}" 
         return f"{left}"  
 
 
@@ -998,9 +998,9 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         
         left = self.visit_unary_expression(ctx.unaryExpression(0))
         for i in range(1, len(ctx.unaryExpression())):
-            operator = ctx.getChild(2 * i - 1).getText()  # Gli operatori sono al posto 2*i-1 (MULT, DIV, MOD)
-            right = self.visit_unary_expression(ctx.unaryExpression(i))  # Visita il prossimo unary expression
-            left = f"{left} {operator} {right}"  # Combina il risultato precedente con l'operatore corrente
+            operator = ctx.getChild(2 * i - 1).getText()  # The operators are located at position 2i - 1 
+            right = self.visit_unary_expression(ctx.unaryExpression(i))
+            left = f"{left} {operator} {right}" 
         return f"{left}" 
 
 
@@ -1031,7 +1031,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return f"{self.visit_memebership_expression(ctx.membershipExpression())}"
 
 
-    def visit_memebership_expression(self, ctx: KotlinParser.PrimaryExpressionContext):
+    def visit_memebership_expression(self, ctx: KotlinParser.MembershipExpressionContext):
         """
         Transforms a Kotlin membership expression into its Swift equivalent.
 
@@ -1042,7 +1042,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         `rangeExpression` is present, it is processed and included in the final string.
 
         Args:
-            ctx (KotlinParser.PrimaryExpressionContext): The context object representing the 
+            ctx (KotlinParser.MembershipExpressionContext): The context object representing the 
                                                          membership expression in the Kotlin 
                                                          Abstract Syntax Tree (AST).
 
@@ -1093,7 +1093,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return self.visit_literal(ctx.literal())
 
 
-    def visit_range_expression(self, ctx: KotlinParser.PrimaryExpressionContext):
+    def visit_range_expression(self, ctx: KotlinParser.RangeExpressionContext):
         """
         Transforms a Kotlin range expression into its Swift equivalent.
 
@@ -1103,7 +1103,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         encountered (i.e., one of the range bounds is missing), a semantic error is reported.
 
         Args:
-            ctx (KotlinParser.PrimaryExpressionContext): The context object representing the 
+            ctx (KotlinParser.RangeExpressionContext): The context object representing the 
                                                          range expression in the Kotlin 
                                                          Abstract Syntax Tree (AST).
 
@@ -1402,6 +1402,39 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return False
         
         return True
+    
+
+    def check_variable_not_assigned(self, ctx, var_name):
+        """
+        Checks if a variable has already been declared and not assigned a value.
+
+        This method ensures that a variable is declared and not assigned before it 
+        is used. If the variable is not declared, a semantic error is raised through 
+        `check_variable_already_declared`, ande the the assignment check is skipped. 
+        If it is declared and assigned, an additional semantic error is reported.
+
+        Args:
+            ctx: The context object (from the ANTLR parse tree) associated with the statement 
+                 where the variable is being checked.
+            var_name (str): The name of the variable to check.
+
+        Returns:
+            bool: `True` if the variable is declared and assigned; otherwise, `False`.
+        """
+        print(f"    🔍 Checking if the variable {ctx.getText()} is already assigned.")
+        
+        if not self.check_variable_already_declared(ctx, var_name): 
+            return False
+    
+        if self.symbol_table.get_variable_assigned(var_name):
+            self.semantic_error_listener.semantic_error(
+                msg = f"Variable '{var_name}' is already assigned.",
+                line = ctx.start.line,
+                column = ctx.start.column
+            )
+            return False
+        
+        return True
         
     
     def check_supported_type(self, ctx, type):
@@ -1463,29 +1496,31 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
     
     def check_mutability(self, ctx, var_name, is_mutable):
         """
-        Checks if the specified variable is mutable before performing an assignment.
+        Validates the mutability of a variable before allowing an assignment.
 
-        This method ensures that a variable marked as immutable (e.g., declared with `val` in Kotlin)
-        is not being reassigned. If an attempt is made to update an immutable variable, a semantic
-        error is raised.
+        This method ensures that an immutable variable (e.g., declared with `val` in Kotlin)
+        is not reassigned. If an attempt is made to modify an immutable variable, a semantic
+        error is reported.
 
         Args:
-            ctx: The context object (from the ANTLR parse tree) representing the assignment.
+            ctx: The context object (from the ANTLR parse tree) representing the assignment operation.
             var_name (str): The name of the variable being checked.
-            is_mutable (bool): A flag indicating whether the variable is mutable (`True`) or immutable (`False`).
+            is_mutable (bool): Indicates whether the variable is mutable (`True`) or immutable (`False`).
 
         Returns:
-            bool: `True` if the variable is mutable; `False` otherwise.
+            bool: `True` if the variable is mutable and the assignment is valid; `False` if the variable
+                is immutable and the assignment is not allowed.
         """
         print(f"    🔍 Checking if the variable {var_name} is mutable.")
-        
-        if not is_mutable:               
-            self.semantic_error_listener.semantic_error(
-                msg = f"Trying to update immutable variable '{var_name}'.", 
-                line = ctx.start.line, 
-                column = ctx.start.column
-            )
-            return False
+                
+        if not is_mutable:
+            if not self.check_variable_not_assigned(ctx=ctx, var_name=var_name):               
+                self.semantic_error_listener.semantic_error(
+                    msg = f"Trying to update immutable variable '{var_name}'.", 
+                    line = ctx.start.line, 
+                    column = ctx.start.column
+                )
+                return False
         return True
     
 
@@ -1779,6 +1814,8 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             
                 if not self.check_variable_already_declared(ctx, var_name): 
                     return "None"
+                elif not self.check_variable_already_assigned(ctx=ctx, var_name=var_name):
+                    return "None"
                 else:
                     left_type = self.check_primary_expression_type(ctx.primaryExpression())
                     var_type, is_mutable = self.symbol_table.get_variable_info(var_name)
@@ -1865,6 +1902,14 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             identifier = self.visit_identifier(ctx.IDENTIFIER())        
             if not self.check_variable_already_declared(ctx=ctx, var_name=identifier):        
                 return "None"
+            
+            # TODO: work in progress (occhio, questo check non va fatto sempre ma solo 
+            # quando è necessaria l'assegnazione -> quando è necessaria ?)
+            # idea: passa un flag attraverso le fun check_expression_xxx per indicare se 
+            # questo check va fatto o meno
+            if not self.check_variable_already_assigned(ctx=ctx, var_name=identifier):
+                return "None"
+            
             var_type, _ = self.symbol_table.get_variable_info(identifier)
             return var_type
         elif ctx.LEFT_ROUND_BRACKET() and ctx.RIGHT_ROUND_BRACKET():
@@ -2694,3 +2739,6 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             )
             return True
         return False
+    
+
+    # TODO: parametri x funzioni e proprietà x classi non devono dare errore semantico se non assegnati

@@ -2,23 +2,23 @@
 
 class Rectangle(var width: Int, var height: Int) {
 
-    // Semantic Error @ line 8: Trying to update immutable variable 'newWidth'.
-    // Semantic Error @ line 10: Expected type 'Int' but found expression of type 'String'.
+    // Semantic Error @ line 9: Expected type 'Int' but found expression of type 'String'.
     fun setDimensions(newWidth: Int, newHeight: Int = 10) {
         newWidth = 5 
         width = newWidth
         height = "ten"
+        height = newHeight
     }
 
     fun isSquare(): Boolean {
         return width == height
     }
 
-    // Semantic Error @ line 19: Function 'calculateAarea' must have a return statement.
+    // Semantic Error @ line 19: Function 'calculateAarea' must have a valid return statement.
     // Semantic Error @ line 20: Trying to access or assign variable 'depth' before its declaration.
     fun calculateAarea(): Int {
         depth = 20 
-        val result = width * height * depth 
+        val result = width * height  
     }
 
     fun calculatePerimeter(): Int {
@@ -30,7 +30,7 @@ class Rectangle(var width: Int, var height: Int) {
         return 2 * width + 2 * height 
     }
 
-    // Semantic Error @ line 36: Trying to call function 'printDimensions' before its declaration.
+    // Semantic Error @ line 35: Trying to call function 'printDimensions' before its declaration.
     fun main() {        
         setDimensions(8, 8) 
         printDimensions() 

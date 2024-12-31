@@ -76,7 +76,7 @@ def transpile_kotlin_to_swift(kotlin_code):
         
     # Check if the parsing was successful (i.e., the tree is not None)
     if tree is None:
-        Exception(f"❌ Oops! Parsing failed: no parse tree generated.")
+        raise Exception(f"❌ Oops! Parsing failed: no parse tree generated.")
         
     # Create a new symbol table
     symbol_table = SymbolTable()  
@@ -144,10 +144,8 @@ def parse_kotlin_code(kotlin_code):
         tree = parser.program()
 
         # Check for lexical and syntax errors
-        if lexical_error_listener.has_errors():
-            raise Exception("\n".join(lexical_error_listener.get_errors()))  # Raise if lexical errors are found
-        if syntax_error_listener.has_errors():
-            raise Exception("\n".join(syntax_error_listener.get_errors()))  # Raise if syntax errors are found
+        if lexical_error_listener.has_errors() or syntax_error_listener.has_errors():
+            raise Exception("\n".join(lexical_error_listener.get_errors() + syntax_error_listener.get_errors()))  # Raise if lexical or syntax errors are found            
         else:
             print(f"✅ Tree generated successfully:\n    {tree.toStringTree(recog=parser)}")        
             return tree  # Return the parse tree if parsing is successful

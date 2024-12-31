@@ -25,7 +25,7 @@ class LexicalErrorListener(ErrorListener):
         self.errors = []
         
 
-    def lexical_error(self, line, column, msg):
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
 
         """
         Callback method invoked when a lexical error is detected.

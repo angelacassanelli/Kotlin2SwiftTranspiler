@@ -79,7 +79,7 @@ varDeclaration
     | (VAR | VAL) IDENTIFIER COLON type EQ (expression | readStatement)
     ;
 
-// Function declaration: defines a function with parameters, an optional return type, and a body
+// Function declaration: defines a function with optional parameters, an optional return type, and a body
 functionDeclaration
     : FUN IDENTIFIER LEFT_ROUND_BRACKET parameterList? RIGHT_ROUND_BRACKET 
       (COLON type)? block

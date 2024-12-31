@@ -2,19 +2,19 @@
 
 class Counter {
 
-    val count: Int = 0
+    var count: Int = 0
+    val count2: Int = 0
 
-    // Semantic Error @ line 10: Trying to update immutable variable 'count'.
+    // Semantic Error @ line 13: Variable 'count2' is already assigned yet
+    // Semantic Error @ line 13: Trying to update immutable variable 'count2'.    
     fun increment() {
         println("Increment Counter")
         count = count + 1
+        count2 = count2 + 1
     }
 
-    // Semantic Error @ line 17: Function 'reset' must have a valid return statement.
-    // Semantic Error @ line 19: Trying to update immutable variable 'count'.
-    // Semantic Error @ line 20: Expected type 'Boolean' but found expression of type 'Int'.
-    // Semantic Error @ line 20: Function 'reset' is declared to return type 'Boolean', but the actual return type is 'Int'.
-    fun reset(): Boolean {
+    // Semantic Error @ line 17: Function 'reset' has no return type, but includes a return statement.
+    fun reset() {
         println("Reset Counter")
         count = 0
         return count
@@ -25,16 +25,15 @@ class Counter {
         return count % 2 
     }
 
-    // Semantic Error @ line 33: Function 'checkEvenOrOdd' must have a valid return statement.
-    // Semantic Error @ line 37: The for loop requires a range in the iteration condition, but found Int.
-    // Semantic Error @ line 37: Invalid range found.
-    // Semantic Error @ line 41: Expected type 'Boolean' but found expression of type 'Int'.
-    // Semantic Error @ line 43: Invalid expression type in 'if' condition: expected Boolean, found 'Int'.
+    // Semantic Error @ line 32: Function 'checkEvenOrOdd' must have a valid return statement.
+    // Semantic Error @ line 36: The range operator '..' is only supported for Int types, found Int and Boolean instead.
+    // Semantic Error @ line 40: Type mismatch: Expected type 'Boolean' but found expression of type 'Int'.
+    // Semantic Error @ line 42: Invalid expression type in 'if' condition: expected Boolean, found 'Int'.
     fun checkEvenOrOdd(): String {
         reset() 
 
         var i: Int = 1
-        for (i in 5) {
+        for (i in 1..true) {
             increment() 
         }
 

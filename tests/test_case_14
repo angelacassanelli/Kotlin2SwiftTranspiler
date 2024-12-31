@@ -1,0 +1,8 @@
+class Example {  
+    // Lexical error @ line 4: token recognition error at: '&='
+    // Lexical error @ line 4: no viable alternative at input 'valx5'
+    val x &= 5    
+    
+    // Syntax error @ line 7: extraneous input '5' expecting '}'
+    val y : Int 5  
+}

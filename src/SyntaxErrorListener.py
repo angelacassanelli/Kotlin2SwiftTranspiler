@@ -25,7 +25,7 @@ class SyntaxErrorListener(ErrorListener):
         self.errors = []
 
 
-    def syntax_error(self, line, column, msg):
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
 
         """
         Callback method invoked when a syntax error is detected.
