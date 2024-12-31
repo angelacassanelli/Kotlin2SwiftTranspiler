@@ -1,52 +1,45 @@
-// Class representing a simple Counter
+// Class representing a simple Rectangle
 
-class Counter {
+class Rectangle(var width: Int, var height: Int) {
 
-    // Variable to store the current value of the counter.
-    var count: Int = 0
-
-    // Function to increment the counter by 1.
-    fun increment() {
-        println("Increment Counter")
-        count = count + 1
+    // Function to update the dimensions of the rectangle
+    fun setDimensions(newWidth: Int, newHeight: Int = 10) {
+        width = newWidth
+        height = newHeight
     }
 
-    // Function to reset the counter to 0.
-    fun reset() {
-        println("Reset Counter")
-        count = 0
+    // Function to check if the rectangle is a square (width == height)
+    fun isSquare(): Boolean {
+        return width == height
     }
 
-    // Function to check if the counter value is even.
-    // Returns true if even, false otherwise.
-    fun checkIfEven(): Boolean {
-        println("Check if counter is even")
-        return count % 2 == 0
+    // Function to calculate the area of the rectangle
+    fun calculateAarea(): Int {
+        return width * height 
     }
 
-    /* Function to test the counter's behavior:
-    1. Resets the counter;
-    2. Increments the counter 5 times;
-    3. Checks if the counter value is even or odd;
-    4. Prints the result;
-    5. Returns a string "Even" or "Odd" based on the result. */
-    fun checkEvenOrOdd(): String {
-        reset()
+    // Function to calculate the perimeter of the rectangle
+    fun calculatePerimeter(): Int {
+        return 2 * (width + height)
+    }
 
-        var i: Int = 1
-        for (i in 1..5) {
-            increment()
-        }
-
-        val isEven: Boolean = checkIfEven()
-
-        if (isEven) {
-            println("Counter is even")
-            return "Even"
+    // Example usage of the Rectangle class
+    fun main() {        
+        // Updating the dimensions
+        setDimensions(8, 8)
+    
+        // Checking if it's a square
+        if (isSquare()) {
+            println("The rectangle is a square.")
         } else {
-            println("Counter is odd")
-            return "Odd"
+            println("The rectangle is not a square.")
         }
+    
+        // Calculating and printing the perimeter
+        val perimeter = calculatePerimeter()
+        println("Perimeter is:")
+        println(perimeter)
     }
-
+    
 }
+

@@ -1,50 +1,49 @@
-// Class representing a simple Counter, with Semantic Errors
+// Class representing a simple Rectangle, with Semantic Errors
 
-class Counter {
+class Rectangle(var width: Int, var height: Int) {
 
-    var count: Int = 0
-    val count2: Int = 0
-
-    // Semantic Error @ line 13: Variable 'count2' is already assigned yet
-    // Semantic Error @ line 13: Trying to update immutable variable 'count2'.    
-    fun increment() {
-        println("Increment Counter")
-        count = count + 1
-        count2 = count2 + 1
+    // Semantic Error @ line 8: Expected type 'Int' but found expression of type 'String'.
+    fun setDimensions(newWidth: Int = 5, newHeight: Int = 10) {
+        width = newWidth
+        height = "ten"
+        height = newHeight
     }
 
-    // Semantic Error @ line 17: Function 'reset' has no return type, but includes a return statement.
-    fun reset() {
-        println("Reset Counter")
-        count = 0
-        return count
+    fun isSquare(): Boolean {
+        return width == height
     }
 
-    fun checkIfEven(): Int {
-        println("Check if counter is even")
-        return count % 2 
+    // Semantic Error @ line 18: Function 'calculateAarea' must have a valid return statement.
+    // Semantic Error @ line 19: Trying to access or assign variable 'depth' before its declaration.
+    fun calculateAarea(): Int {
+        depth = 20 
+        val result = width * height  
     }
 
-    // Semantic Error @ line 32: Function 'checkEvenOrOdd' must have a valid return statement.
-    // Semantic Error @ line 36: The range operator '..' is only supported for Int types, found Int and Boolean instead.
-    // Semantic Error @ line 40: Type mismatch: Expected type 'Boolean' but found expression of type 'Int'.
-    // Semantic Error @ line 42: Invalid expression type in 'if' condition: expected Boolean, found 'Int'.
-    fun checkEvenOrOdd(): String {
-        reset() 
+    fun calculatePerimeter(): Int {
+        return 2 * (width + height)
+    }
 
-        var i: Int = 1
-        for (i in 1..true) {
-            increment() 
-        }
+    // Semantic Error @ line 28: Function 'calculatePerimeter' is already declared in the current scope.
+    fun calculatePerimeter(): Int {
+        return 2 * width + 2 * height 
+    }
 
-        val isEven: Boolean = checkIfEven()
-
-        if (10) {
-            println("Counter is even")
-            return "Even"
+    // Semantic Error @ line 35: Trying to call function 'printDimensions' before its declaration.
+    fun main() {        
+        setDimensions(8, 8) 
+        printDimensions() 
+    
+        if (isSquare()) {
+            println("The rectangle is a square.")
         } else {
-            println("Counter is odd")
+            println("The rectangle is not a square.")
         }
+    
+        val perimeter = calculatePerimeter()
+        println("Perimeter is:")
+        println(perimeter)
     }
-
+    
 }
+
