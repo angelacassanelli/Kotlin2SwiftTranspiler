@@ -1,3 +1,6 @@
-class Example {
-var ab1c : Int = 10
+class Test {
+func test() {
+var a = "aaa"
+print(a)
+}
 }

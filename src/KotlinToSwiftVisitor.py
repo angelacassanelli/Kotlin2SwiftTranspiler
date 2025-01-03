@@ -1833,7 +1833,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                             column = ctx.start.column
                         )
                         return left_type
-                    self.check_range_expression(ctx.rangeExpression())
+                    self.check_range_expression_type(ctx.rangeExpression())
                     return KotlinTypes.BOOLEAN.value 
             else:
                 left_type = self.check_primary_expression_type(ctx.primaryExpression())
@@ -1848,7 +1848,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return left_type
     
 
-    def check_range_expression(self, ctx):
+    def check_range_expression_type(self, ctx):
         """
         Checks the types of the range expression (i.e., '..' operator in Kotlin).
         Validates that both the left and right operands are of type 'Int'.
