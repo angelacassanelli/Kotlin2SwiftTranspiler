@@ -1589,7 +1589,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if(len(ctx.logicalAndExpression()) > 1):
             for i in range(1, len(ctx.logicalAndExpression())):
                 right_type = self.check_logical_and_expression_type(ctx.logicalAndExpression(i))
-                if right_type != left_type:
+                if right_type != left_type or right_type != KotlinTypes.BOOLEAN.value:
                     self.semantic_error_listener.semantic_error(
                         msg = f"Cannot apply logical or operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
                         line = ctx.start.line, 
@@ -1620,7 +1620,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if(len(ctx.equalityExpression()) > 1):
             for i in range(1, len(ctx.equalityExpression())):
                 right_type = self.check_equality_expression_type(ctx.equalityExpression(i))
-                if right_type != left_type:
+                if right_type != left_type or right_type != KotlinTypes.BOOLEAN.value:                
                     self.semantic_error_listener.semantic_error(
                         msg = f"Cannot apply logical and operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
                         line = ctx.start.line, 
@@ -1683,7 +1683,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
                 
         if len(ctx.additiveExpression()) > 1:
             right_type = self.check_additive_expression_type(ctx.additiveExpression(1)) 
-            if right_type != left_type:
+            if right_type != left_type or right_type != KotlinTypes.INT.value:
                 self.semantic_error_listener.semantic_error(
                     msg = f"Cannot apply relational operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
                     line = ctx.start.line, 
@@ -1714,7 +1714,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if(len(ctx.multiplicativeExpression()) > 1):
             for i in range(1, len(ctx.multiplicativeExpression())):
                 right_type = self.check_multiplicative_expression_type(ctx.multiplicativeExpression(i))
-                if right_type != left_type:
+                if right_type != left_type or right_type != KotlinTypes.INT.value:
                     self.semantic_error_listener.semantic_error(
                         msg = f"Cannot apply additive operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
                         line = ctx.start.line, 
@@ -1746,7 +1746,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
         if(len(ctx.unaryExpression()) > 1):
             for i in range(1, len(ctx.unaryExpression())):
                 right_type = self.check_unary_expression_type(ctx.unaryExpression(i))
-                if right_type != left_type:
+                if right_type != left_type or right_type != KotlinTypes.INT.value:
                     self.semantic_error_listener.semantic_error(
                         msg = f"Cannot apply multiplicative operator to operands of type '{left_type}' and '{right_type}' in expression '{ctx.getText()}'", 
                         line = ctx.start.line, 
