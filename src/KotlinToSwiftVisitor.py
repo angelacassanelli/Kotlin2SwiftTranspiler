@@ -1902,11 +1902,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             identifier = self.visit_identifier(ctx.IDENTIFIER())        
             if not self.check_variable_already_declared(ctx=ctx, var_name=identifier):        
                 return "None"
-            
-            # TODO: work in progress (occhio, questo check non va fatto sempre ma solo 
-            # quando è necessaria l'assegnazione -> quando è necessaria ?)
-            # idea: passa un flag attraverso le fun check_expression_xxx per indicare se 
-            # questo check va fatto o meno
+
             if not self.check_variable_already_assigned(ctx=ctx, var_name=identifier):
                 return "None"
             
@@ -2740,5 +2736,3 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             return True
         return False
     
-
-    # TODO: parametri x funzioni e proprietà x classi non devono dare errore semantico se non assegnati
