@@ -7,18 +7,18 @@
 This project implements a transpiler that translates Kotlin code into equivalent Swift code using a simplified grammar of Kotlin. The functionality includes grammar definition, automatic generation of the lexer and parser, lexical and syntactical analysis to build a parse tree, and semantic analysis to ensure logical correctness of the translation. The transpiler translates Kotlin syntax structures into Swift code, preserving logic and flow while performing the necessary checks.
 
 ## Table of Contents
-- [🛠️ Technologies Used](#technologies-used)
-- [🎯 Features](#features)
-- [⚙️ Project Setup](#project-setup)
-- [🚀 Running the Transpiler](#running-the-transpiler)
-- [🏗️ Architecture of the Transpiler](#architecture-of-the-transpiler)
-- [📚 Kotlin Grammar](#kotlin-grammar)
-  - [🧩 Supported Constructs](#supported-constructs)
-  - [📝 Grammar Rules](#grammar-rules)
-  - [⚠️ Limitations](#limitations)
-  - [👩🏻‍💻 Example Code](#example-code)
-- [✅ Validation of the Transpiler](#validation-of-the-transpiler)
-- [💌 Get in Touch](#get-in-touch)
+- [🛠️ Technologies Used](#-technologies-used)
+- [🎯 Features](#-features)
+- [⚙️ Project Setup](#-project-setup)
+- [🚀 Running the Transpiler](#-running-the-transpiler)
+- [🏗️ Architecture of the Transpiler](#-architecture-of-the-transpiler)
+- [📚 Kotlin Grammar](#-kotlin-grammar)
+  - [🧩 Supported Constructs](#-supported-constructs)
+  - [📝 Grammar Rules](#-grammar-rules)
+  - [⚠️ Limitations](#-limitations)
+  - [👩🏻‍💻 Example Code](#-example-code)
+- [✅ Validation of the Transpiler](#-validation-of-the-transpiler)
+- [💌 Get in Touch](#-get-in-touch)
 
 ## 🛠️ Technologies Used
 
