@@ -1,5 +1,7 @@
 # Kotlin to Swift Transpiler
 
+![Kotlin2SwiftTranspiler Logo](https://github.com/[angelacassanelli]/[Kotlin2SwiftTranspiler]/blob/main/doc/logo.png?raw=true)
+
 This project implements a transpiler that translates Kotlin code into equivalent Swift code using a simplified grammar of Kotlin. The functionality includes grammar definition, automatic generation of the lexer and parser, lexical and syntactical analysis to build a parse tree, and semantic analysis to ensure logical correctness of the translation. The transpiler translates Kotlin syntax structures into Swift code, preserving logic and flow while performing the necessary checks.
 
 ## Table of Contents
