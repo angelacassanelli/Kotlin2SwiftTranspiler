@@ -57,7 +57,7 @@ def transpile_kotlin_to_swift(kotlin_code):
     """
     Transpiles the Kotlin code to Swift.
 
-    This function parses the Kotlin code and then uses a visitor pattern to transform the abstract syntax tree (AST) into Swift code.
+    This function parses the Kotlin code and then uses a visitor pattern to transform the parse tree into Swift code.
 
     Args:
         kotlin_code (str): The Kotlin code to transpile.
@@ -71,7 +71,7 @@ def transpile_kotlin_to_swift(kotlin_code):
 
     print("🚀 Transpiling Kotlin code...")
 
-    # Parse the Kotlin code using the parseKotlinCode function to generate the abstract syntax tree (AST)
+    # Parse the Kotlin code using the parseKotlinCode function to generate the parse tree
     tree = parse_kotlin_code(kotlin_code)
         
     # Check if the parsing was successful (i.e., the tree is not None)
