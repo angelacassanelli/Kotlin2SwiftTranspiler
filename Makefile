@@ -25,7 +25,7 @@ build:
 
 # Run the transpiler
 run:
-	$(PYTHON) $(SRC_DIR)/Transpiler.py $(KOTLIN_FILE)
+	$(PYTHON) $(SRC_DIR)/transpiler.py $(KOTLIN_FILE)
 
 # Clean the generated and output files
 clean:

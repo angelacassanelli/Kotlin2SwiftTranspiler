@@ -2,7 +2,7 @@
 
 class Example {  
     // Lexical error @ line 6: token recognition error at: '&='
-    // Lexical error @ line 6: no viable alternative at input 'valx5'
+    // Syntax error @ line 6: no viable alternative at input 'valx5'
     val x &= 5    
     
     // Syntax error @ line 9: extraneous input '5' expecting '}'

@@ -71,7 +71,7 @@ The transpiler can be executed using the Makefile. Here are the commands to run:
     Replace path_to_kotlin_file with the path to the Kotlin file you want to convert. For example:
 
     ```bash
-    make run KOTLIN_FILE=tests/test_case_1.kt
+    make run KOTLIN_FILE=tests/test_case_1
     ```
 
     The transpiler will read the Kotlin code, generate the parse tree, perform semantic checks, and generate the corresponding Swift code. Any errors (lexical, syntactical, or semantic) will be displayed with detailed information about their type and location. If there are no errors, the generated Swift code will be printed to the console and saved in output/output.swift.

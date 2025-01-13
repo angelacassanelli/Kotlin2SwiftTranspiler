@@ -1,41 +1,42 @@
-# Class representing a simple Rectangle
-class Rectangle() {
-var width: Int
-var height: Int
-init(width: Int, height: Int) {
-self.width = width
-self.height = height
+# Class representing a simple Counter
+class Counter {
+# Variable to store the current value of the counter.
+var count : Int = 0
+# Function to increment the counter by 1.
+func increment() {
+print("Increment Counter")
+count = count + 1
 }
-# Function to update the dimensions of the rectangle
-func setDimensions(newWidth: Int = 5, newHeight: Int = 10) {
-width = newWidth
-height = newHeight
+# Function to reset the counter to 0.
+func reset() {
+print("Reset Counter")
+count = 0
 }
-# Function to check if the rectangle is a square (width == height)
-func isSquare() -> Bool {
-return width == height
+# Function to check if the counter value is even.
+# Returns true if even, false otherwise.
+func checkIfEven() -> Bool {
+print("Check if counter is even")
+return count % 2 == 0
 }
-# Function to calculate the area of the rectangle
-func calculateAarea() -> Int {
-return width * height
+/* Function to test the counter's behavior:
+    1. Resets the counter;
+    2. Increments the counter 5 times;
+    3. Checks if the counter value is even or odd;
+    4. Prints the result;
+    5. Returns a string "Even" or "Odd" based on the result. */
+func checkEvenOrOdd() -> String {
+reset()
+var i : Int = 1
+for i in 1 ... 5 {
+increment()
 }
-# Function to calculate the perimeter of the rectangle
-func calculatePerimeter() -> Int {
-return 2 * (width + height)
-}
-# Example usage of the Rectangle class
-func main() {
-# Updating the dimensions
-setDimensions(8, 8)
-# Checking if it's a square
-if isSquare() {
-print("The rectangle is a square.")
+let isEven : Bool = checkIfEven()
+if isEven {
+print("Counter is even")
+return "Even"
 } else {
-print("The rectangle is not a square.")
+print("Counter is odd")
+return "Odd"
 }
-# Calculating and printing the perimeter
-let perimeter = calculatePerimeter()
-print("Perimeter is:")
-print(perimeter)
 }
 }
