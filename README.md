@@ -7,18 +7,18 @@
 This project implements a transpiler that translates Kotlin code into equivalent Swift code using a simplified grammar of Kotlin. The functionality includes grammar definition, automatic generation of the lexer and parser, lexical and syntactical analysis to build a parse tree, and semantic analysis to ensure logical correctness of the translation. The transpiler translates Kotlin syntax structures into Swift code, preserving logic and flow while performing the necessary checks.
 
 ## Table of Contents
-- [🛠️ Technologies Used](#-technologies-used)
-- [🎯 Features](#-features)
-- [⚙️ Project Setup](#-project-setup)
-- [🚀 Running the Transpiler](#-running-the-transpiler)
-- [🏗️ Architecture of the Transpiler](#-architecture-of-the-transpiler)
-- [📚 Kotlin Grammar](#-kotlin-grammar)
-  - [🧩 Supported Constructs](#-supported-constructs)
-  - [📝 Grammar Rules](#-grammar-rules)
-  - [⚠️ Limitations](#-limitations)
-  - [👩🏻‍💻 Example Code](#-example-code)
-- [✅ Validation of the Transpiler](#-validation-of-the-transpiler)
-- [💌 Get in Touch](#-get-in-touch)
+- [🛠️ Technologies Used](#🛠️-technologies-used)
+- [🎯 Features](#🎯-features)
+- [⚙️ Project Setup](#⚙️-project-setup)
+- [🚀 Running the Transpiler](#🚀-running-the-transpiler)
+- [🏗️ Architecture of the Transpiler](#🏗️-architecture-of-the-transpiler)
+- [📚 Kotlin Grammar](#📚-kotlin-grammar)
+  - [🧩 Supported Constructs](#🧩-supported-constructs)
+  - [📝 Grammar Rules](#📝-grammar-rules)
+  - [⚠️ Limitations](#⚠️-limitations)
+  - [👩🏻‍💻 Example Code](#👩🏻‍💻-example-code)
+- [✅ Validation of the Transpiler](#✅-validation-of-the-transpiler)
+- [💌 Get in Touch](#💌-get-in-touch)
 
 ## 🛠️ Technologies Used
 
@@ -38,14 +38,21 @@ This project implements a transpiler that translates Kotlin code into equivalent
 
 To run the transpiler, please follow these steps:
 
-1.  Clone the repository:
+1. Ensure the following prerequisites are met (the project was developed on macOS, so some instructions might vary on other operating systems):
+
+    - Install Java, with a minimum version of 17.0.2 (Java 17.0.12 is recommended). If you're using a different version, update the `JAVA_HOME` variable in your `.zshrc` file.
+    - Install Python 3.x (recommended version: 3.13.0) and activate a virtual environment (`venv`) to isolate the project's dependencies. Depending on your Python version, you may encounter certificate verification errors. To resolve this, manually install certificates by running the `Install Certificates.command` in `/Applications/Python 3.x`.
+    - Install ANTLR using the command: `pip install antlr4-tools`.
+    - Configure the environment variables properly. On Unix-based systems, run: `source .zshrc`. For non-Unix systems, different commands may be required to achieve the same behavior with environment variables.
+
+2.  Clone the repository:
 
     ```bash
     git clone https://github.com/angelacassanelli/Kotlin2SwiftTranspiler
     cd Kotlin2SwiftTranspiler
     ```
 
-2.  Set up a virtual environment (recommended):
+3.  Set up a virtual environment (recommended):
 
     ```bash
     python3 -m venv venv
@@ -54,15 +61,21 @@ To run the transpiler, please follow these steps:
 
 ## 🚀 Running the Transpiler
 
-The transpiler can be executed using the Makefile. Here are the commands to run:
+Once the prerequisites are set, the transpiler can be executed using the Makefile. Here are the commands to run:
 
-1.  To build the transpiler and generate the necessary files, use:
+1. To clean the development environment, use:
+
+    ```bash
+    make clean
+    ```
+
+2. To build the transpiler and generate the necessary files, use:
 
     ```bash
     make all
     ```
 
-2.  To run the transpiler with a specific Kotlin file, use the following command:
+3.  To run the transpiler with a specific Kotlin file, use the following command:
    
     ```bash
     make run KOTLIN_FILE=path_to_kotlin_file
