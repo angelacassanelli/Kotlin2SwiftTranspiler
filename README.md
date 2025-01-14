@@ -23,6 +23,7 @@ This project implements a transpiler that translates Kotlin code into equivalent
 ## 🛠️ Technologies Used
 
 - **ANTLR (ANother Tool for Language Recognition)**: A powerful tool for generating parsers from custom grammars. ANTLR simplifies parser creation, reduces development complexity, and minimizes error risks.
+- **Java 17.0.2 or higher**: The transpiler is implemented and tested using Java 17.0.12.
 - **Python 3.x**: The transpiler is implemented and tested using Python 3.13.0.
 - **Makefile**: A tool to automate build, execution, and cleanup tasks related to the transpiler.
 
@@ -279,6 +280,7 @@ The expected output for each test case is either:
 - A Swift code that is syntactically and semantically equivalent to the original Kotlin program if no errors are present, or
 - Accurate reporting of any lexical, syntactic, or semantic errors, thereby preventing the generation of invalid code.
 
+<a name="get-in-touch"></a>
 ## 💌 Get in Touch 
 
 - **GitHub Repository**: [Kotlin2SwiftTranspiler](https://github.com/angelacassanelli/Kotlin2SwiftTranspiler)  
