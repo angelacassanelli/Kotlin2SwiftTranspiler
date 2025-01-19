@@ -1580,7 +1580,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context object representing the logical OR expression in the ANTLR parse tree.
 
         Returns:
-            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+            str: 'Boolean' or left operand type if the expression is valid; otherwise, 'None'.
         """
         print(f"    🔍 Checking the type of the logical or expression {ctx.getText()}.")
         
@@ -1611,7 +1611,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context object representing the logical AND expression in the ANTLR parse tree.
 
         Returns:
-            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+            str: 'Boolean' or left operand type if the expression is valid; otherwise, 'None'.
         """
         print(f"    🔍 Checking the type of the logical and expression {ctx.getText()}.")
         
@@ -1643,7 +1643,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context object representing the equality expression in the ANTLR parse tree.
 
         Returns:
-            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+            str: 'Boolean' or left operand type if the expression is valid; otherwise, 'None'.
         """
         print(f"    🔍 Checking the type of the equality expression {ctx.getText()}.")
         
@@ -1675,7 +1675,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context object representing the relational expression in the ANTLR parse tree.
 
         Returns:
-            str: 'Boolean' if the expression is valid; otherwise, 'None'.
+            str: 'Boolean' or left operand type if the expression is valid; otherwise, 'None'.
         """
         print(f"    🔍 Checking the type of the relational expression {ctx.getText()}.")
         
@@ -1705,7 +1705,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context object representing the additive expression in the ANTLR parse tree.
 
         Returns:
-            str: 'Int' if the expression is valid; otherwise, 'None'.
+            str: 'Int' or left operand type if the expression is valid; otherwise, 'None'.
         """
         print(f"    🔍 Checking the type of the additive expression {ctx.getText()}.")
         
@@ -1737,7 +1737,7 @@ class KotlinToSwiftVisitor(ParseTreeVisitor):
             ctx: The context object representing the multiplicative expression in the ANTLR parse tree.
 
         Returns:
-            str: 'Int' if the expression is valid; otherwise, 'None'.
+            str: 'Int' or left operand type if the expression is valid; otherwise, 'None'.
         """
         print(f"    🔍 Checking the type of the multiplicative expression {ctx.getText()}.")
         

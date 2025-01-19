@@ -268,7 +268,7 @@ The expected output for each test case is either:
 
 ## 💌 Get in Touch 
 
-- **Documentation**: Check the detailed project [documentation](./doc) in the repository.  
+- **Documentation**: Check the detailed project [documentation](./doc/Kotlin2SwiftTranspiler.pdf) in the repository.  
 - **Support**: For issues or questions, feel free to open an [issue](https://github.com/angelacassanelli/Kotlin2SwiftTranspiler/issues) or contact the development team at [angelacassanelli98@gmail.com](mailto:angelacassanelli98@gmail.com).  
 
 Thank you for checking out the **Kotlin to Swift Transpiler**! ✨
